@@ -1,6 +1,9 @@
 import React, { ReactNode } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { colors } from '../../constants/colors';
 
@@ -20,21 +23,29 @@ export default function AppScreenLayout({
   backgroundColor = colors.GRAY_00,
 }: Props) {
   const insets = useSafeAreaInsets();
-  const tabBarHeight = useBottomTabBarHeight();
+  let tabBarHeightSafe = 0;
+  try {
+    tabBarHeightSafe = useBottomTabBarHeight();
+  } catch {
+    tabBarHeightSafe = 0;
+  }
+
+  const topInset =
+    Platform.OS === 'android' ? StatusBar.currentHeight ?? 0 : insets.top;
 
   return (
-    <View
+    <SafeAreaView
       style={[
         styles.container,
         { backgroundColor },
-        !disableTopInset && { paddingTop: insets.top },
+        !disableTopInset && { paddingTop: topInset },
         !disableBottomInset && {
-          paddingBottom: withTabBar ? tabBarHeight : insets.bottom,
+          paddingBottom: withTabBar ? tabBarHeightSafe : insets.bottom,
         },
       ]}
     >
       {children}
-    </View>
+    </SafeAreaView>
   );
 }
 
