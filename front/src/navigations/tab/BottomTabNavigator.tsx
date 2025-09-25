@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, Platform } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../../constants/colors';
+import { drawerHeaderOptions } from '../common/headers';
 
 import HomeScreen from '../../screens/HomeScreen';
 import VehicleStatusScreen from '../../screens/VehicleStatusScreen';
 import DispatchRequestsScreen from '../../screens/DispatchRequestsScreen';
 import TasksScreen from '../../screens/TasksScreen';
 import NotificationsScreen from '../../screens/NotificationsScreen';
-import { colors } from '../../constants/colors';
 
-export type BottomTabParamList = {
+export type MainTabParamList = {
   Home: undefined;
   VehicleStatus: undefined;
   DispatchRequests: undefined;
@@ -18,53 +19,51 @@ export type BottomTabParamList = {
   Notifications: undefined;
 };
 
-const Tab = createBottomTabNavigator<BottomTabParamList>();
-
-const ACTIVE = colors.PRIMARY_50;
-const INACTIVE = colors.GRAY_50;
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export default function BottomTabNavigator() {
   const insets = useSafeAreaInsets();
+  const ACTIVE = colors.PRIMARY_50;
+  const INACTIVE = '#9CA3AF';
+  const tabBarHeight = Platform.select({ ios: 64, android: 60 }) ?? 60;
+
+  const iconMap = useMemo(
+    () => ({
+      Home: require('../../assets/bottom-tabs/Home.png'),
+      VehicleStatus: require('../../assets/bottom-tabs/VehicleStatus.png'),
+      DispatchRequests: require('../../assets/bottom-tabs/DispatchRequests.png'),
+      Tasks: require('../../assets/bottom-tabs/Tasks.png'),
+      Notifications: require('../../assets/bottom-tabs/Notifications.png'),
+    }),
+    [],
+  );
 
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: colors.PRIMARY_50,
-        tabBarInactiveTintColor: colors.GRAY_50,
+        ...drawerHeaderOptions,
+        tabBarActiveTintColor: ACTIVE,
+        tabBarInactiveTintColor: INACTIVE,
         tabBarStyle: {
-          height: Platform.OS === 'ios' ? 80 : 65,
-          paddingBottom: insets.bottom,
+          height: tabBarHeight + 20,
           paddingTop: 6,
+          paddingBottom: insets.bottom,
           backgroundColor: '#fff',
           borderTopColor: colors.GRAY_10,
           borderTopWidth: 1,
         },
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '500',
-          lineHeight: 15.4,
-        },
-        tabBarIcon: ({ focused }) => {
-          const icons: Record<string, any> = {
-            Home: require('../../assets/bottom-tabs/Home.png'),
-            VehicleStatus: require('../../assets/bottom-tabs/VehicleStatus.png'),
-            DispatchRequests: require('../../assets/bottom-tabs/DispatchRequests.png'),
-            Tasks: require('../../assets/bottom-tabs/Tasks.png'),
-            Notifications: require('../../assets/bottom-tabs/Notifications.png'),
-          };
-          return (
-            <Image
-              source={icons[route.name]}
-              style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? ACTIVE : INACTIVE,
-              }}
-              resizeMode="contain"
-            />
-          );
-        },
+        tabBarLabelStyle: { fontSize: 12, marginBottom: 2 },
+        tabBarIcon: ({ focused }) => (
+          <Image
+            source={iconMap[route.name as keyof typeof iconMap]}
+            style={{
+              width: 24,
+              height: 24,
+              tintColor: focused ? ACTIVE : INACTIVE,
+            }}
+            resizeMode="contain"
+          />
+        ),
       })}
     >
       <Tab.Screen
@@ -75,12 +74,12 @@ export default function BottomTabNavigator() {
       <Tab.Screen
         name="VehicleStatus"
         component={VehicleStatusScreen}
-        options={{ title: '차량현황' }}
+        options={{ title: '차량상태' }}
       />
       <Tab.Screen
         name="DispatchRequests"
         component={DispatchRequestsScreen}
-        options={{ title: '배차요청건' }}
+        options={{ title: '배차요청' }}
       />
       <Tab.Screen
         name="Tasks"
