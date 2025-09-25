@@ -20,8 +20,8 @@ export type BottomTabParamList = {
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
-const ACTIVE = '#3352F2';
-const INACTIVE = '#7A7F8A';
+const ACTIVE = colors.PRIMARY_50;
+const INACTIVE = colors.GRAY_50;
 
 export default function BottomTabNavigator() {
   const insets = useSafeAreaInsets();
@@ -30,7 +30,7 @@ export default function BottomTabNavigator() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.BLUE_50,
+        tabBarActiveTintColor: colors.PRIMARY_50,
         tabBarInactiveTintColor: colors.GRAY_50,
         tabBarStyle: {
           height: Platform.OS === 'ios' ? 80 : 65,
