@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import AppScreenLayout from '../components/layout/AppScreenLayout';
+import AppScreenLayout from '../../../components/layout/AppScreenLayout';
 
-export default function VehicleStatusScreen() {
+export default function ContractListScreen() {
   return (
     <AppScreenLayout withTabBar>
       <View style={s.container}>
-        <Text style={s.title}>차량현황</Text>
+        <Text style={s.title}>계약서 목록</Text>
       </View>
     </AppScreenLayout>
   );

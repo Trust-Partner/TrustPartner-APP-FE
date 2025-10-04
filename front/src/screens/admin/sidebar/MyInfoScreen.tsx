@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import AppScreenLayout from '../components/layout/AppScreenLayout';
+import AppScreenLayout from '../../../components/layout/AppScreenLayout';
 
-export default function TasksScreen() {
+export default function MyInfoScreen() {
   return (
     <AppScreenLayout withTabBar>
       <View style={s.container}>
-        <Text style={s.title}>할일</Text>
+        <Text style={s.title}>내 정보</Text>
       </View>
     </AppScreenLayout>
   );

@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import AppScreenLayout from '../../components/layout/AppScreenLayout';
+import AppScreenLayout from '../../../components/layout/AppScreenLayout';
 
-export default function ReservationScreen() {
+export default function PrepayScreen() {
   return (
     <AppScreenLayout withTabBar>
       <View style={s.container}>
-        <Text style={s.title}>예약 관리</Text>
+        <Text style={s.title}>사전지급 관리</Text>
       </View>
     </AppScreenLayout>
   );
