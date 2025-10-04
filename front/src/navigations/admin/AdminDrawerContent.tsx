@@ -1,4 +1,3 @@
-// src/navigations/drawer/CustomDrawerContent.tsx
 import React from 'react';
 import {
   DrawerContentComponentProps,
@@ -7,18 +6,21 @@ import {
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { colors } from '../../constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuthStore } from '../../states/useAuthStore';
 
-export default function CustomDrawerContent(
-  props: DrawerContentComponentProps,
-) {
-  const parent = props.navigation.getParent();
+export default function AdminDrawerContent(props: DrawerContentComponentProps) {
+  const logout = useAuthStore(s => s.logout);
 
-  const go = (
-    name: 'MyInfo' | 'Partners' | 'Contracts' | 'Prepay' | 'Reservations',
-  ) => {
+  const go = (name: string) => {
     props.navigation.closeDrawer();
-    parent?.navigate(name as never);
+    props.navigation.navigate(name as never);
   };
+
+  const handleLogout = () => {
+    logout();
+    props.navigation.closeDrawer();
+  };
+
   const insets = useSafeAreaInsets();
 
   return (
@@ -59,9 +61,7 @@ export default function CustomDrawerContent(
       <DrawerItem
         label="로그아웃"
         labelStyle={s.logout}
-        onPress={() => {
-          props.navigation.closeDrawer();
-        }}
+        onPress={handleLogout}
       />
     </ScrollView>
   );

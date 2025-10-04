@@ -5,23 +5,23 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
 import { drawerHeaderOptions } from '../common/headers';
 
-import HomeScreen from '../../screens/HomeScreen';
-import VehicleStatusScreen from '../../screens/VehicleStatusScreen';
-import DispatchRequestsScreen from '../../screens/DispatchRequestsScreen';
-import TasksScreen from '../../screens/TasksScreen';
-import NotificationsScreen from '../../screens/NotificationsScreen';
+import HomeScreen from '../../screens/user/tab/HomeScreen';
+import VehicleStatusScreen from '../../screens/user/tab/VehicleStatusScreen';
+import DispatchRequestsScreen from '../../screens/user/tab/DispatchRequestsScreen';
+import SalesManageScreen from '../../screens/user/tab/SalesManageScreen';
+import NotificationsScreen from '../../screens/user/tab/NotificationsScreen';
 
-export type MainTabParamList = {
+export type UserTabParamList = {
   Home: undefined;
   VehicleStatus: undefined;
   DispatchRequests: undefined;
-  Tasks: undefined;
+  Sales: undefined;
   Notifications: undefined;
 };
 
-const Tab = createBottomTabNavigator<MainTabParamList>();
+const Tab = createBottomTabNavigator<UserTabParamList>();
 
-export default function BottomTabNavigator() {
+export default function UserBottomTabs() {
   const insets = useSafeAreaInsets();
   const ACTIVE = colors.PRIMARY_50;
   const INACTIVE = '#9CA3AF';
@@ -32,7 +32,7 @@ export default function BottomTabNavigator() {
       Home: require('../../assets/bottom-tabs/Home.png'),
       VehicleStatus: require('../../assets/bottom-tabs/VehicleStatus.png'),
       DispatchRequests: require('../../assets/bottom-tabs/DispatchRequests.png'),
-      Tasks: require('../../assets/bottom-tabs/Tasks.png'),
+      Sales: require('../../assets/bottom-tabs/Sales.png'),
       Notifications: require('../../assets/bottom-tabs/Notifications.png'),
     }),
     [],
@@ -82,9 +82,9 @@ export default function BottomTabNavigator() {
         options={{ title: '배차요청' }}
       />
       <Tab.Screen
-        name="Tasks"
-        component={TasksScreen}
-        options={{ title: '할일' }}
+        name="Sales"
+        component={SalesManageScreen}
+        options={{ title: '매출관리' }}
       />
       <Tab.Screen
         name="Notifications"
