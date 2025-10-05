@@ -31,7 +31,6 @@ export default function AdminHomeScreen() {
 
   const [alerts, setAlerts] = useState(initialAlerts);
 
-  // ✅ 클릭 시 해당 알림 제거
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
   };
@@ -148,7 +147,6 @@ export default function AdminHomeScreen() {
                   </Text>
                 </View>
 
-                {/* 오른쪽: 시간 + ● */}
                 <View style={s.alertRight}>
                   <Text style={s.alertTime}>{item.time}</Text>
                   <View style={s.unreadDot} />
@@ -163,6 +161,7 @@ export default function AdminHomeScreen() {
           />
         </View>
       </View>
+      <View style={{ marginBottom: 20 }} />
     </ScrollView>
   );
 }
@@ -170,7 +169,7 @@ export default function AdminHomeScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.WHITE,
+    backgroundColor: colors.GRAY_00,
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
