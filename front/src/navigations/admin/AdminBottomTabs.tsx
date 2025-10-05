@@ -74,7 +74,7 @@ export default function AdminBottomTabs() {
       <Tab.Screen
         name="VehicleStatus"
         component={VehicleStatusScreen}
-        options={{ headerShown: false }}
+        options={{ title: '차량상태', headerShown: false }}
       />
       <Tab.Screen
         name="DispatchRequests"
