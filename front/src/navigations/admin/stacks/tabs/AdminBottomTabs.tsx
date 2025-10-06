@@ -2,14 +2,14 @@ import React, { useMemo } from 'react';
 import { Image, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../constants/colors';
-import { drawerHeaderOptions } from '../common/headers';
+import { colors } from '../../../../constants/colors';
+import { drawerHeaderOptions } from '../../../common/headers';
 
-import HomeScreen from '../../screens/admin/tab/HomeScreen';
-import VehicleStatusScreen from '../../screens/admin/tab/VehicleStatusScreen';
-import DispatchRequestsScreen from '../../screens/admin/tab/DispatchRequestsScreen';
-import TasksScreen from '../../screens/admin/tab/TasksScreen';
-import NotificationsScreen from '../../screens/admin/tab/NotificationsScreen';
+import DispatchRequestStack from './DispatchRequestStack';
+import HomeStack from './HomeStack';
+import NotificationsStack from './NotificationsStack';
+import TasksStack from './TasksStack';
+import VehicleStatusStack from './VehicleStatusStack';
 
 export type AdminTabParamList = {
   Home: undefined;
@@ -29,11 +29,11 @@ export default function AdminBottomTabs() {
 
   const iconMap = useMemo(
     () => ({
-      Home: require('../../assets/bottom-tabs/Home.png'),
-      VehicleStatus: require('../../assets/bottom-tabs/VehicleStatus.png'),
-      DispatchRequests: require('../../assets/bottom-tabs/DispatchRequests.png'),
-      Tasks: require('../../assets/bottom-tabs/Tasks.png'),
-      Notifications: require('../../assets/bottom-tabs/Notifications.png'),
+      Home: require('../../../../assets/bottom-tabs/Home.png'),
+      VehicleStatus: require('../../../../assets/bottom-tabs/VehicleStatus.png'),
+      DispatchRequests: require('../../../../assets/bottom-tabs/DispatchRequests.png'),
+      Tasks: require('../../../../assets/bottom-tabs/Tasks.png'),
+      Notifications: require('../../../../assets/bottom-tabs/Notifications.png'),
     }),
     [],
   );
@@ -66,29 +66,25 @@ export default function AdminBottomTabs() {
         ),
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: '홈' }}
-      />
+      <Tab.Screen name="Home" component={HomeStack} options={{ title: '홈' }} />
       <Tab.Screen
         name="VehicleStatus"
-        component={VehicleStatusScreen}
+        component={VehicleStatusStack}
         options={{ title: '차량상태', headerShown: false }}
       />
       <Tab.Screen
         name="DispatchRequests"
-        component={DispatchRequestsScreen}
+        component={DispatchRequestStack}
         options={{ title: '배차요청건' }}
       />
       <Tab.Screen
         name="Tasks"
-        component={TasksScreen}
+        component={TasksStack}
         options={{ title: '할일' }}
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={NotificationsStack}
         options={{ title: '알림' }}
       />
     </Tab.Navigator>

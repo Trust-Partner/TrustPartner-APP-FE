@@ -3,21 +3,20 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StatusBar } from 'react-native';
 import { colors } from '../../constants/colors';
 
-import BottomTabNavigator from './AdminBottomTabs';
 import CustomDrawerContent from './AdminDrawerContent';
-
-import MyInfoStack from './stacks/MyInfoStack';
-import PartnersStack from './stacks/PartnersStack';
-import ContractsStack from './stacks/ContractsStack';
-import PrepayStack from './stacks/PrepayStack';
-import ReservationsStack from './stacks/ReservationsStack';
+import ContractsStack from '../user/stacks/ContractsStack';
+import MyInfoStack from '../user/stacks/MyInfoStack';
+import PartnersStack from './stacks/drawer/PartnersStack';
+import PrepayStack from './stacks/drawer/PrepayStack';
+import ReservationsStack from './stacks/drawer/ReservationsStack';
+import AdminBottomTabs from './stacks/tabs/AdminBottomTabs';
 
 const Drawer = createDrawerNavigator();
 
 export default function AdminDrawer() {
   return (
     <Drawer.Navigator
-      initialRouteName="AdminTabs"
+      initialRouteName="AdminTabsStack"
       screenOptions={{
         headerShown: false,
         drawerType: 'front',
@@ -33,8 +32,8 @@ export default function AdminDrawer() {
       )}
     >
       <Drawer.Screen
-        name="AdminTabs"
-        component={BottomTabNavigator}
+        name="AdminTabsStack"
+        component={AdminBottomTabs}
         options={{ drawerLabel: () => null, title: undefined }}
       />
       <Drawer.Screen name="MyInfo" component={MyInfoStack} />
