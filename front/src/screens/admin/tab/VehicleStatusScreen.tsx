@@ -16,6 +16,14 @@ import {
 } from '../../../mock/vehicleDispatchMock';
 import { colors } from '../../../constants/colors';
 import AppHeader from '../../../components/common/AppHeader';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { VehicleStatusStackParamList } from '../../../navigations/admin/stacks/tabs/VehicleStatusStack';
+
+type NavProp = NativeStackNavigationProp<
+  VehicleStatusStackParamList,
+  'VehicleStatusMain'
+>;
 
 export default function VehicleStatusScreen() {
   const [tab, setTab] = useState<'dispatch' | 'status'>('dispatch');
@@ -68,6 +76,8 @@ export default function VehicleStatusScreen() {
 
 /* 배차하기 섹션 */
 function DispatchSection() {
+  const navigation = useNavigation<NavProp>();
+
   const [selectedType, setSelectedType] = useState<'sedan' | 'suv' | 'import'>(
     'sedan',
   );
@@ -113,7 +123,17 @@ function DispatchSection() {
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         renderItem={({ item }) => (
-          <Pressable style={s.card} onPress={() => console.log(item.name)}>
+          <Pressable
+            style={s.card}
+            onPress={() =>
+              navigation.navigate('DispatchGroupDetail', {
+                groupId: item.id,
+                groupName: item.name,
+                totalCount: item.total,
+                type: selectedType, // ✅ 타입도 같이 전달
+              })
+            }
+          >
             <View style={s.cardHeader}>
               <Text style={s.cardTitle}>{item.name}</Text>
               <Text style={s.cardBadge}>{item.total}대</Text>

@@ -8,7 +8,7 @@ export type DispatchGroup = {
 
 // 세단
 export const sedanDispatchList: DispatchGroup[] = [
-  { id: 1, name: '모닝급', total: 7, ready: 0, active: 2 },
+  { id: 1, name: '모닝급', total: 30, ready: 0, active: 23 },
   { id: 2, name: 'G80', total: 5, ready: 0, active: 2 },
   { id: 3, name: '아반떼급', total: 14, ready: 0, active: 5 },
   { id: 4, name: '쏘나타급', total: 9, ready: 0, active: 4 },
