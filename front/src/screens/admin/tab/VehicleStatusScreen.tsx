@@ -90,7 +90,7 @@ function DispatchSection() {
       : importDispatchList;
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {/* 필터 */}
       <View style={s.filterRow}>
         {[
@@ -177,7 +177,7 @@ function StatusSection() {
   ];
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {/* 통계 */}
       <View style={s.statsRow}>
         {stats.map((item, index, arr) => (
@@ -200,6 +200,7 @@ function StatusSection() {
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => (
           <Pressable style={s.card}>
             <View style={s.cardHeader}>
@@ -219,6 +220,7 @@ function StatusSection() {
 
 const s = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: colors.GRAY_00,
     paddingHorizontal: 16,
   },
