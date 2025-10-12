@@ -12,7 +12,7 @@ export const vehicleGroupList: VehicleGroup[] = [
   { id: 3, name: '렉시온', assigned: 11, waiting: 0, returning: 0 },
   { id: 4, name: 'ESA', assigned: 11, waiting: 0, returning: 0 },
   { id: 5, name: '경성 자동차', assigned: 9, waiting: 1, returning: 1 },
-  { id: 6, name: '위너스모터스', assigned: 9, waiting: 1, returning: 1 },
+  { id: 6, name: '위너스모터스', assigned: 1, waiting: 4, returning: 1 },
   { id: 7, name: '대창', assigned: 9, waiting: 1, returning: 1 },
   { id: 8, name: '동성', assigned: 9, waiting: 1, returning: 1 },
   { id: 9, name: '노원현대', assigned: 9, waiting: 1, returning: 1 },
