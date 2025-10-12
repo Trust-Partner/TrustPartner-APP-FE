@@ -130,7 +130,7 @@ function DispatchSection() {
                 groupId: item.id,
                 groupName: item.name,
                 totalCount: item.total,
-                type: selectedType, // ✅ 타입도 같이 전달
+                type: selectedType,
               })
             }
           >
@@ -156,6 +156,7 @@ function DispatchSection() {
 
 /* 차량현황 탭 */
 function StatusSection() {
+  const navigation = useNavigation<NavProp>();
   const data = vehicleGroupList;
 
   const totals = data.reduce(
@@ -202,7 +203,15 @@ function StatusSection() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => (
-          <Pressable style={s.card}>
+          <Pressable
+            style={s.card}
+            onPress={() =>
+              navigation.navigate('VehicleCompanyDetail', {
+                companyId: item.id,
+                companyName: item.name,
+              })
+            }
+          >
             <View style={s.cardHeader}>
               <Text style={s.cardTitle}>{item.name}</Text>
             </View>
@@ -210,6 +219,10 @@ function StatusSection() {
               <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
               <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
               <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
+              <Image
+                source={require('../../../assets/admin-vehicle/right_arrow.png')}
+                style={s.arrowIcon}
+              />
             </View>
           </Pressable>
         )}
