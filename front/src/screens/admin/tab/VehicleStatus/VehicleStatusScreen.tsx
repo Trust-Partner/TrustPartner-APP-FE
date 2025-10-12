@@ -8,17 +8,17 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { vehicleGroupList } from '../../../mock/vehicleStatusMock';
+import { vehicleGroupList } from '../../../../mock/vehicleStatusMock';
 import {
   sedanDispatchList,
   suvDispatchList,
   importDispatchList,
-} from '../../../mock/vehicleDispatchMock';
-import { colors } from '../../../constants/colors';
-import AppHeader from '../../../components/common/AppHeader';
+} from '../../../../mock/vehicleDispatchMock';
+import { colors } from '../../../../constants/colors';
+import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { VehicleStatusStackParamList } from '../../../navigations/admin/stacks/tabs/VehicleStatusStack';
+import { VehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/VehicleStatusStack';
 
 type NavProp = NativeStackNavigationProp<
   VehicleStatusStackParamList,
@@ -143,7 +143,7 @@ function DispatchSection() {
               <Text style={[s.badge, s.badgeGreen]}>{item.ready}</Text>
               <Text style={[s.badge, s.badgeBlue]}>{item.active}</Text>
               <Image
-                source={require('../../../assets/admin-vehicle/right_arrow.png')}
+                source={require('../../../../assets/admin-vehicle/right_arrow.png')}
                 style={s.arrowIcon}
               />
             </View>
@@ -220,7 +220,7 @@ function StatusSection() {
               <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
               <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
               <Image
-                source={require('../../../assets/admin-vehicle/right_arrow.png')}
+                source={require('../../../../assets/admin-vehicle/right_arrow.png')}
                 style={s.arrowIcon}
               />
             </View>

@@ -8,12 +8,12 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AppHeader from '../../../components/common/AppHeader';
-import { colors } from '../../../constants/colors';
+import AppHeader from '../../../../components/common/AppHeader';
+import { colors } from '../../../../constants/colors';
 import {
   dispatchDetailMock,
   DispatchDetail,
-} from '../../../mock/vehicleDispatchDetailMock';
+} from '../../../../mock/vehicleDispatchDetailMock';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
@@ -35,7 +35,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             style={s.backButton}
           >
             <Image
-              source={require('../../../assets/admin-vehicle/left_arrow.png')}
+              source={require('../../../../assets/admin-vehicle/left_arrow.png')}
               style={{ width: 20, height: 20 }}
             />
           </TouchableOpacity>
@@ -47,7 +47,6 @@ export default function DispatchGroupDetailScreen({ route }: any) {
           </View>
         </View>
 
-        {/* ✅ padding 16 영역 안에서만 표시되도록 */}
         <View style={s.tableWrapper}>
           <View style={s.tableHeader}>
             <Text style={[s.th, { flex: 66 }]}>차종</Text>
@@ -57,7 +56,6 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             <Text style={[s.th, { flex: 44 }]}>세차</Text>
           </View>
 
-          {/* ✅ 내부만 스크롤 */}
           <FlatList
             data={data}
             keyExtractor={item => item.id.toString()}
@@ -141,7 +139,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    overflow: 'hidden', // ✅ 테두리 밖으로 리스트 안 나가게
+    overflow: 'hidden',
   },
   row: {
     flexDirection: 'row',

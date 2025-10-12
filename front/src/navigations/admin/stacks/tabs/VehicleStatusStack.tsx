@@ -1,8 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import VehicleStatusScreen from '../../../../screens/admin/tab/VehicleStatusScreen';
-import DispatchGroupDetailScreen from '../../../../screens/admin/tab/DispatchGroupDetailScreen';
-import VehicleCompanyDetailScreen from '../../../../screens/admin/tab/VehicleCompanyDetailScreen';
+import VehicleStatusScreen from '../../../../screens/admin/tab/VehicleStatus/VehicleStatusScreen';
+import DispatchGroupDetailScreen from '../../../../screens/admin/tab/VehicleStatus/DispatchGroupDetailScreen';
+import VehicleCompanyDetailScreen from '../../../../screens/admin/tab/VehicleStatus/VehicleCompanyDetailScreen';
 
 export type VehicleStatusStackParamList = {
   VehicleStatusMain: undefined;
