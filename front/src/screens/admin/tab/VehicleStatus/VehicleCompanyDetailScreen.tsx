@@ -12,9 +12,9 @@ import {
   TextInput,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { colors } from '../../../constants/colors';
-import AppHeader from '../../../components/common/AppHeader';
-import { vehicleCompanyDetailMock } from '../../../mock/vehicleCompanyDetailMock';
+import { colors } from '../../../../constants/colors';
+import AppHeader from '../../../../components/common/AppHeader';
+import { vehicleCompanyDetailMock } from '../../../../mock/vehicleCompanyDetailMock';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation = useNavigation();
@@ -77,7 +77,7 @@ export default function VehicleCompanyDetailScreen() {
             style={s.backButton}
           >
             <Image
-              source={require('../../../assets/admin-vehicle/left_arrow.png')}
+              source={require('../../../../assets/admin-vehicle/left_arrow.png')}
               style={{ width: 20, height: 20 }}
             />
           </TouchableOpacity>
@@ -112,7 +112,7 @@ export default function VehicleCompanyDetailScreen() {
           style={s.backButton}
         >
           <Image
-            source={require('../../../assets/admin-vehicle/left_arrow.png')}
+            source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={{ width: 20, height: 20 }}
           />
         </TouchableOpacity>
@@ -206,14 +206,14 @@ export default function VehicleCompanyDetailScreen() {
                       <View style={{ alignItems: 'flex-end' }}>
                         <View style={s.row}>
                           <Image
-                            source={require('../../../assets/admin-vehicle/calendar.png')}
+                            source={require('../../../../assets/admin-vehicle/calendar.png')}
                             style={s.smallIcon}
                           />
                           <Text style={s.date}>{item.lastUpdate}</Text>
                         </View>
                         <View style={s.row}>
                           <Image
-                            source={require('../../../assets/admin-vehicle/clock.png')}
+                            source={require('../../../../assets/admin-vehicle/clock.png')}
                             style={s.smallIcon}
                           />
                           <Text style={s.time}>{item.duration}</Text>
@@ -225,7 +225,7 @@ export default function VehicleCompanyDetailScreen() {
                         style={s.arrowWrap}
                       >
                         <Animated.Image
-                          source={require('../../../assets/admin-vehicle/down_arrow.png')}
+                          source={require('../../../../assets/admin-vehicle/down_arrow.png')}
                           style={[
                             s.arrowIcon,
                             {
