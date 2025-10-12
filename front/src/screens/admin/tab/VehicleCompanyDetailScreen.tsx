@@ -9,6 +9,7 @@ import {
   Pressable,
   Animated,
   LayoutAnimation,
+  TextInput,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../constants/colors';
@@ -23,6 +24,7 @@ export default function VehicleCompanyDetailScreen() {
     companyName: string;
   };
 
+  const [query, setQuery] = useState('');
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
@@ -31,11 +33,18 @@ export default function VehicleCompanyDetailScreen() {
 
   const company = vehicleCompanyDetailMock.find(c => c.companyId === companyId);
   const filteredVehicles =
-    company && activeStatus === '전체'
-      ? company.vehicles
-      : company
-      ? company.vehicles.filter(v => v.status === activeStatus)
-      : [];
+    company?.vehicles
+      ?.filter(v =>
+        activeStatus === '전체' ? true : v.status === activeStatus,
+      )
+      ?.filter(v => {
+        if (!query.trim()) return true;
+        const lower = query.toLowerCase();
+        return (
+          v.name.toLowerCase().includes(lower) ||
+          v.plateNumber.replace(/\s+/g, '').includes(lower)
+        );
+      }) ?? [];
 
   const toggleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -51,7 +60,17 @@ export default function VehicleCompanyDetailScreen() {
   if (!company) {
     return (
       <View style={{ flex: 1 }}>
-        <AppHeader />
+        <AppHeader
+          centerContent={
+            <TextInput
+              value={query}
+              onChangeText={setQuery}
+              placeholder="차량번호를 검색하세요"
+              placeholderTextColor={colors.GRAY_40}
+              style={s.headerSearchInput}
+            />
+          }
+        />
         <View style={s.subHeader}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -74,7 +93,17 @@ export default function VehicleCompanyDetailScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <AppHeader />
+      <AppHeader
+        centerContent={
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="차량번호를 검색하세요"
+            placeholderTextColor={colors.GRAY_40}
+            style={s.headerSearchInput}
+          />
+        }
+      />
 
       {/* 헤더 */}
       <View style={s.subHeader}>
@@ -250,6 +279,16 @@ const s = StyleSheet.create({
   emptyText: {
     fontSize: 15,
     color: colors.GRAY_40,
+  },
+  headerSearchInput: {
+    width: 220,
+    height: 36,
+    backgroundColor: colors.WHITE,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    fontSize: 13,
   },
   subHeader: {
     flexDirection: 'row',
