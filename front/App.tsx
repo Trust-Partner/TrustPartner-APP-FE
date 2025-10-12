@@ -17,10 +17,6 @@ LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
 ]);
 
-LogBox.ignoreLogs([
-  'VirtualizedLists should never be nested inside plain ScrollViews',
-]);
-
 export default function App() {
   return (
     <SafeAreaProvider>
