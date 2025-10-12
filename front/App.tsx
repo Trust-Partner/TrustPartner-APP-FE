@@ -1,10 +1,17 @@
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import React from 'react';
-import { LogBox, StatusBar } from 'react-native';
+import { LogBox, Platform, StatusBar, UIManager } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RootNavigator from './src/navigations/root/RootNavigator';
+
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 LogBox.ignoreLogs([
   'VirtualizedLists should never be nested inside plain ScrollViews',
