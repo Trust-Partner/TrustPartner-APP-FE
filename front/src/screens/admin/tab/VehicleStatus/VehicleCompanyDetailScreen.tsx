@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   Pressable,
-  Animated,
   LayoutAnimation,
   TextInput,
 } from 'react-native';
@@ -29,7 +28,6 @@ export default function VehicleCompanyDetailScreen() {
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
   >('전체');
-  const rotateAnim = useRef(new Animated.Value(0)).current;
 
   const company = vehicleCompanyDetailMock.find(c => c.companyId === companyId);
   const filteredVehicles =
@@ -50,17 +48,7 @@ export default function VehicleCompanyDetailScreen() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const same = expandedId === id;
     setExpandedId(same ? null : id);
-    Animated.timing(rotateAnim, {
-      toValue: same ? 0 : 1,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
   };
-
-  const rotate = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '180deg'],
-  });
 
   if (!company) {
     return (
@@ -128,34 +116,36 @@ export default function VehicleCompanyDetailScreen() {
       <View style={s.container}>
         {/* 통계 */}
         <View style={s.summaryContainer}>
-          {[
-            {
-              label: '배차중',
-              value: company.summary.dispatched,
-              color: colors.YELLOW_50,
-            },
-            {
-              label: '대기중',
-              value: company.summary.waiting,
-              color: colors.PRIMARY_50,
-            },
-            {
-              label: '반납신청',
-              value: company.summary.returning,
-              color: colors.RED_50,
-            },
-            {
-              label: '전체',
-              value: company.summary.total,
-              color: colors.GRAY_90,
-            },
-          ].map((box, idx) => {
+          {(
+            [
+              {
+                label: '배차중',
+                value: company.summary.dispatched,
+                color: colors.YELLOW_50,
+              },
+              {
+                label: '대기중',
+                value: company.summary.waiting,
+                color: colors.PRIMARY_50,
+              },
+              {
+                label: '반납신청',
+                value: company.summary.returning,
+                color: colors.RED_50,
+              },
+              {
+                label: '전체',
+                value: company.summary.total,
+                color: colors.GRAY_90,
+              },
+            ] as const
+          ).map((box, idx) => {
             const isActive = activeStatus === box.label;
             return (
               <TouchableOpacity
                 key={box.label}
                 style={[s.summaryCell, idx !== 3 && s.rightDivider]}
-                onPress={() => setActiveStatus(box.label as any)}
+                onPress={() => setActiveStatus(box.label)}
               >
                 <Text style={[s.value, { color: box.color }]}>{box.value}</Text>
                 <Text style={s.label}>{box.label}</Text>
@@ -173,10 +163,6 @@ export default function VehicleCompanyDetailScreen() {
           renderItem={({ item }) => {
             const expanded = expandedId === item.id;
             const isDispatched = item.status === '배차중';
-            const rotate = rotateAnim.interpolate({
-              inputRange: [0, 1],
-              outputRange: ['0deg', '180deg'],
-            });
 
             return (
               <View style={s.item}>
@@ -224,17 +210,18 @@ export default function VehicleCompanyDetailScreen() {
                           <Text style={s.time}>{item.duration}</Text>
                         </View>
                       </View>
-
                       <Pressable
                         onPress={() => toggleExpand(item.id)}
                         style={s.arrowWrap}
                       >
-                        <Animated.Image
+                        <Image
                           source={require('../../../../assets/admin-vehicle/down_arrow.png')}
                           style={[
                             s.arrowIcon,
                             {
-                              transform: [{ rotate }],
+                              transform: [
+                                { rotate: expanded ? '180deg' : '0deg' },
+                              ],
                             },
                           ]}
                         />
