@@ -57,6 +57,11 @@ export default function VehicleCompanyDetailScreen() {
     }).start();
   };
 
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+
   if (!company) {
     return (
       <View style={{ flex: 1 }}>
@@ -229,9 +234,7 @@ export default function VehicleCompanyDetailScreen() {
                           style={[
                             s.arrowIcon,
                             {
-                              transform: [
-                                { rotate: expanded ? '180deg' : '0deg' },
-                              ],
+                              transform: [{ rotate }],
                             },
                           ]}
                         />

@@ -101,7 +101,9 @@ function DispatchSection() {
           <Pressable
             key={item.key}
             style={s.filterItem}
-            onPress={() => setSelectedType(item.key as any)}
+            onPress={() =>
+              setSelectedType(item.key as 'sedan' | 'suv' | 'import')
+            }
           >
             <View
               style={[
@@ -339,41 +341,56 @@ const s = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 4,
   },
-  statBox: { alignItems: 'center', flex: 1 },
-  statNum: { fontSize: 20, fontWeight: '600', color: '#3352F2' },
-  statLabel: { fontSize: 11, fontWeight: '400', color: colors.GRAY_60 },
+  statBox: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNum: {
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  statLabel: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_60,
+  },
   divider: {
     width: 1,
     backgroundColor: colors.GRAY_15,
     alignSelf: 'stretch',
   },
-  filterRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
+  filterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   checkBox: {
-    width: 18,
-    height: 18,
+    width: 16,
+    height: 16,
     borderRadius: 4,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.GRAY_10,
     marginRight: 6,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
   },
   checkBoxActive: {
-    borderColor: '#3352F2',
-    backgroundColor: '#3352F2',
+    borderColor: colors.PRIMARY_50,
+    backgroundColor: colors.PRIMARY_50,
   },
   checkIcon: {
-    color: '#fff',
-    fontSize: 12,
+    color: colors.GRAY_00,
+    fontSize: 8,
     fontWeight: '600',
     lineHeight: 14,
   },
   filterText: {
     marginRight: 8,
-    color: '#333',
-    fontSize: 13,
+    color: colors.GRAY_80,
+    fontSize: 11,
+    fontWeight: '400',
     lineHeight: 15.4,
+    marginBottom: 4,
   },
   filterItem: {
     flexDirection: 'row',
