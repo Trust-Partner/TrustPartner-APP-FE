@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
@@ -9,8 +9,10 @@ import { colors } from '../../constants/colors';
 
 export default function AppHeader({
   canGoBack = false,
+  centerContent,
 }: {
   canGoBack?: boolean;
+  centerContent?: React.ReactNode;
 }) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -25,6 +27,7 @@ export default function AppHeader({
         },
       ]}
     >
+      {/* 왼쪽: 뒤로가기 또는 드로어 */}
       <View style={s.left}>
         {canGoBack ? (
           <HeaderBackButton onPress={() => navigation.goBack()} />
@@ -32,9 +35,12 @@ export default function AppHeader({
           <DrawerToggleButton />
         )}
       </View>
+
+      {/* 가운데: 기본은 GreetingPill, 아니면 centerContent */}
       <View style={s.center}>
-        <GreetingPill text="서승동님 오늘도 화이팅하세요" />
+        {centerContent ?? <GreetingPill text="서승동님 오늘도 화이팅하세요" />}
       </View>
+
       <View style={s.right} />
     </View>
   );
