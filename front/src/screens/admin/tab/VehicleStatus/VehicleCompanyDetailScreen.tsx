@@ -13,7 +13,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
-import { vehicleCompanyDetailMock } from '../../../../mock/vehicleCompanyDetailMock';
+import { vehicleCompanyDetailMock } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation = useNavigation();
