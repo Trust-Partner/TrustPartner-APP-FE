@@ -22,6 +22,7 @@ type LoginForm = {
 export default function AuthScreen() {
   const login = useAuthStore(s => s.login);
   const { control, handleSubmit, watch } = useForm<LoginForm>({
+    mode: 'onBlur',
     defaultValues: { username: '', password: '' },
   });
 
@@ -52,17 +53,27 @@ export default function AuthScreen() {
       <View style={s.card}>
         <Text style={s.logo}>Trust Solution</Text>
 
+        {/* 아이디 */}
         <Text style={s.label}>아이디</Text>
         <Controller
           control={control}
           name="username"
           rules={{ required: '아이디를 입력해주세요.' }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
             <>
               <TextInput
                 placeholder="아이디를 입력하세요"
                 value={value}
                 onChangeText={onChange}
+                onBlur={onBlur}
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="username"
+                autoComplete="username"
+                returnKeyType="next"
                 style={[s.input, error && s.inputError]}
               />
               {error && <Text style={s.errorText}>{error.message}</Text>}
@@ -70,24 +81,39 @@ export default function AuthScreen() {
           )}
         />
 
+        {/* 비밀번호 */}
         <Text style={s.label}>비밀번호</Text>
         <Controller
           control={control}
           name="password"
           rules={{ required: '비밀번호를 입력해주세요.' }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
+          render={({
+            field: { onChange, onBlur, value },
+            fieldState: { error },
+          }) => (
             <>
-              <View style={s.inputContainer}>
+              <View style={[s.inputContainer, error && s.inputError]}>
                 <TextInput
                   placeholder="비밀번호를 입력하세요"
                   value={value}
                   secureTextEntry={secure}
                   onChangeText={onChange}
-                  style={[s.inputField, error && s.inputError]}
+                  onBlur={onBlur}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  textContentType="password"
+                  autoComplete="password"
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit(onSubmit)}
+                  style={s.inputField}
                 />
                 <TouchableOpacity
                   onPress={() => setSecure(!secure)}
                   style={s.eyeBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={
+                    secure ? '비밀번호 표시' : '비밀번호 숨기기'
+                  }
                 >
                   <Image
                     source={
@@ -104,6 +130,7 @@ export default function AuthScreen() {
           )}
         />
 
+        {/* 자동 로그인 */}
         <TouchableOpacity
           style={s.checkboxRow}
           onPress={() => setAutoLogin(!autoLogin)}
@@ -114,6 +141,7 @@ export default function AuthScreen() {
           <Text style={s.checkboxLabel}>자동 로그인</Text>
         </TouchableOpacity>
 
+        {/* 로그인 버튼 */}
         <TouchableOpacity
           style={[s.loginBtn, !(username && password) && s.loginBtnDisabled]}
           onPress={handleSubmit(onSubmit)}
@@ -129,6 +157,7 @@ export default function AuthScreen() {
           </Text>
         </TouchableOpacity>
 
+        {/* 하단 링크 */}
         <View style={s.bottomLinks}>
           <TouchableOpacity>
             <Text style={s.link}>아이디 찾기</Text>
@@ -266,7 +295,7 @@ const s = StyleSheet.create({
   },
   errorText: {
     color: colors.RED_50,
-    fontSize: 9,
+    fontSize: 10,
     marginBottom: 6,
     marginTop: -10,
   },
