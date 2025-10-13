@@ -215,7 +215,7 @@ export default function VehicleCompanyDetailScreen() {
                         style={s.arrowWrap}
                       >
                         <Image
-                          source={require('../../../../assets/admin-vehicle/down_arrow.png')}
+                          source={require('../../../../assets/common/down_arrow.png')}
                           style={[
                             s.arrowIcon,
                             {
