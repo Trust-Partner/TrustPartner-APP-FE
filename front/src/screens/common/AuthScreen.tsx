@@ -8,6 +8,8 @@ import {
   Alert,
   Image,
   Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuthStore } from '../../states/useAuthStore';
@@ -49,126 +51,128 @@ export default function AuthScreen() {
   };
 
   return (
-    <View style={s.container}>
-      <View style={s.card}>
-        <Text style={s.logo}>Trust Solution</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={s.container}>
+        <View style={s.card}>
+          <Text style={s.logo}>Trust Solution</Text>
 
-        {/* 아이디 */}
-        <Text style={s.label}>아이디</Text>
-        <Controller
-          control={control}
-          name="username"
-          rules={{ required: '아이디를 입력해주세요.' }}
-          render={({
-            field: { onChange, onBlur, value },
-            fieldState: { error },
-          }) => (
-            <>
-              <TextInput
-                placeholder="아이디를 입력하세요"
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="username"
-                autoComplete="username"
-                returnKeyType="next"
-                style={[s.input, error && s.inputError]}
-              />
-              {error && <Text style={s.errorText}>{error.message}</Text>}
-            </>
-          )}
-        />
-
-        {/* 비밀번호 */}
-        <Text style={s.label}>비밀번호</Text>
-        <Controller
-          control={control}
-          name="password"
-          rules={{ required: '비밀번호를 입력해주세요.' }}
-          render={({
-            field: { onChange, onBlur, value },
-            fieldState: { error },
-          }) => (
-            <>
-              <View style={[s.inputContainer, error && s.inputError]}>
+          {/* 아이디 */}
+          <Text style={s.label}>아이디</Text>
+          <Controller
+            control={control}
+            name="username"
+            rules={{ required: '아이디를 입력해주세요.' }}
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <>
                 <TextInput
-                  placeholder="비밀번호를 입력하세요"
+                  placeholder="아이디를 입력하세요"
                   value={value}
-                  secureTextEntry={secure}
                   onChangeText={onChange}
                   onBlur={onBlur}
                   autoCapitalize="none"
                   autoCorrect={false}
-                  textContentType="password"
-                  autoComplete="password"
-                  returnKeyType="done"
-                  onSubmitEditing={handleSubmit(onSubmit)}
-                  style={s.inputField}
+                  textContentType="username"
+                  autoComplete="username"
+                  returnKeyType="next"
+                  style={[s.input, error && s.inputError]}
                 />
-                <TouchableOpacity
-                  onPress={() => setSecure(!secure)}
-                  style={s.eyeBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel={
-                    secure ? '비밀번호 표시' : '비밀번호 숨기기'
-                  }
-                >
-                  <Image
-                    source={
-                      secure
-                        ? require('../../assets/auth/Eye.png')
-                        : require('../../assets/auth/Eye-off.png')
-                    }
-                    style={s.eyeImg}
+                {error && <Text style={s.errorText}>{error.message}</Text>}
+              </>
+            )}
+          />
+
+          {/* 비밀번호 */}
+          <Text style={s.label}>비밀번호</Text>
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: '비밀번호를 입력해주세요.' }}
+            render={({
+              field: { onChange, onBlur, value },
+              fieldState: { error },
+            }) => (
+              <>
+                <View style={[s.inputContainer, error && s.inputError]}>
+                  <TextInput
+                    placeholder="비밀번호를 입력하세요"
+                    value={value}
+                    secureTextEntry={secure}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    textContentType="password"
+                    autoComplete="password"
+                    returnKeyType="done"
+                    onSubmitEditing={handleSubmit(onSubmit)}
+                    style={s.inputField}
                   />
-                </TouchableOpacity>
-              </View>
-              {error && <Text style={s.errorText}>{error.message}</Text>}
-            </>
-          )}
-        />
+                  <TouchableOpacity
+                    onPress={() => setSecure(!secure)}
+                    style={s.eyeBtn}
+                    accessibilityRole="button"
+                    accessibilityLabel={
+                      secure ? '비밀번호 표시' : '비밀번호 숨기기'
+                    }
+                  >
+                    <Image
+                      source={
+                        secure
+                          ? require('../../assets/auth/Eye.png')
+                          : require('../../assets/auth/Eye-off.png')
+                      }
+                      style={s.eyeImg}
+                    />
+                  </TouchableOpacity>
+                </View>
+                {error && <Text style={s.errorText}>{error.message}</Text>}
+              </>
+            )}
+          />
 
-        {/* 자동 로그인 */}
-        <TouchableOpacity
-          style={s.checkboxRow}
-          onPress={() => setAutoLogin(!autoLogin)}
-        >
-          <View style={s.checkbox}>
-            {autoLogin && <Text style={s.checkmark}>✓</Text>}
-          </View>
-          <Text style={s.checkboxLabel}>자동 로그인</Text>
-        </TouchableOpacity>
-
-        {/* 로그인 버튼 */}
-        <TouchableOpacity
-          style={[s.loginBtn, !(username && password) && s.loginBtnDisabled]}
-          onPress={handleSubmit(onSubmit)}
-          disabled={!(username && password)}
-        >
-          <Text
-            style={[
-              s.loginText,
-              !(username && password) && { color: colors.WHITE },
-            ]}
+          {/* 자동 로그인 */}
+          <TouchableOpacity
+            style={s.checkboxRow}
+            onPress={() => setAutoLogin(!autoLogin)}
           >
-            로그인
-          </Text>
-        </TouchableOpacity>
+            <View style={s.checkbox}>
+              {autoLogin && <Text style={s.checkmark}>✓</Text>}
+            </View>
+            <Text style={s.checkboxLabel}>자동 로그인</Text>
+          </TouchableOpacity>
 
-        {/* 하단 링크 */}
-        <View style={s.bottomLinks}>
-          <TouchableOpacity>
-            <Text style={s.link}>아이디 찾기</Text>
+          {/* 로그인 버튼 */}
+          <TouchableOpacity
+            style={[s.loginBtn, !(username && password) && s.loginBtnDisabled]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={!(username && password)}
+          >
+            <Text
+              style={[
+                s.loginText,
+                !(username && password) && { color: colors.WHITE },
+              ]}
+            >
+              로그인
+            </Text>
           </TouchableOpacity>
-          <Text style={s.divider}> | </Text>
-          <TouchableOpacity>
-            <Text style={s.link}>비밀번호 찾기</Text>
-          </TouchableOpacity>
+
+          {/* 하단 링크 */}
+          <View style={s.bottomLinks}>
+            <TouchableOpacity>
+              <Text style={s.link}>아이디 찾기</Text>
+            </TouchableOpacity>
+            <Text style={s.divider}> | </Text>
+            <TouchableOpacity>
+              <Text style={s.link}>비밀번호 찾기</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -276,7 +280,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_15,
   },
   loginText: {
-    color: '#fff',
+    color: colors.WHITE,
     fontWeight: '400',
     fontSize: 11,
   },
