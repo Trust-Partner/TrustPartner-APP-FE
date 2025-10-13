@@ -8,12 +8,12 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { vehicleGroupList } from '../../../../mock/vehicleStatusMock';
+import { vehicleGroupList } from '../../../../mock/vehicleStatus/vehicleStatusMock';
 import {
   sedanDispatchList,
   suvDispatchList,
   importDispatchList,
-} from '../../../../mock/vehicleDispatchMock';
+} from '../../../../mock/vehicleStatus/vehicleDispatchMock';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';

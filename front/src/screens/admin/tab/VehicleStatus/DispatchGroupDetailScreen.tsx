@@ -13,7 +13,7 @@ import { colors } from '../../../../constants/colors';
 import {
   dispatchDetailMock,
   DispatchDetail,
-} from '../../../../mock/vehicleDispatchDetailMock';
+} from '../../../../mock/vehicleStatus/vehicleDispatchDetailMock';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
