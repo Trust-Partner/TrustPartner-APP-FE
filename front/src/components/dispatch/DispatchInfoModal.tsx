@@ -13,8 +13,8 @@ type Props = {
 };
 
 export default function DispatchInfoModal({ visible, item, onClose }: Props) {
-  if (!item) return null;
   const [toastMsg, setToastMsg] = useState('');
+  if (!item) return null;
 
   const handleCopy = (text: string, label: string) => {
     Clipboard.setString(text);
