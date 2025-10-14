@@ -129,6 +129,7 @@ export default function DispatchRequestScreen() {
       <DispatchRejectModal
         visible={rejectVisible}
         onClose={() => setRejectVisible(false)}
+        onReject={() => setRejectVisible(false)}
       />
     </View>
   );
