@@ -11,9 +11,9 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { colors } from '../../../constants/colors';
-import { returnCompanyDetailMock } from '../../../mock/todoReturnDetailMock';
-import AppHeader from '../../../components/common/AppHeader';
+import { colors } from '../../../../constants/colors';
+import { returnCompanyDetailMock } from '../../../../mock/todo/todoReturnDetailMock';
+import AppHeader from '../../../../components/common/AppHeader';
 
 export default function TodoReturnDetailScreen() {
   const navigation = useNavigation();
@@ -51,7 +51,7 @@ export default function TodoReturnDetailScreen() {
       <View style={s.subHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
           <Image
-            source={require('../../../assets/admin-vehicle/left_arrow.png')}
+            source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={s.backIcon}
           />
         </TouchableOpacity>
@@ -89,14 +89,14 @@ export default function TodoReturnDetailScreen() {
                     <View style={{ alignItems: 'flex-end' }}>
                       <View style={s.row}>
                         <Image
-                          source={require('../../../assets/common/calendar.png')}
+                          source={require('../../../../assets/common/calendar.png')}
                           style={s.smallIcon}
                         />
                         <Text style={s.date}>{item.lastUpdate}</Text>
                       </View>
                       <View style={s.row}>
                         <Image
-                          source={require('../../../assets/common/clock.png')}
+                          source={require('../../../../assets/common/clock.png')}
                           style={s.smallIcon}
                         />
                         <Text style={s.time}>{item.duration}</Text>
@@ -107,7 +107,7 @@ export default function TodoReturnDetailScreen() {
                       style={s.arrowWrap}
                     >
                       <Image
-                        source={require('../../../assets/common/down_arrow.png')}
+                        source={require('../../../../assets/common/down_arrow.png')}
                         style={[
                           s.arrowIcon,
                           {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TodoScreen from '../../../../screens/admin/tab/TodoScreen';
-import TodoReturnDetailScreen from '../../../../screens/admin/tab/TodoReturnDetailScreen';
-import TodoWashFuelDetailScreen from '../../../../screens/admin/tab/TodoWashFuelDetailScreen';
+import TodoScreen from '../../../../screens/admin/tab/todo/TodoScreen';
+import TodoReturnDetailScreen from '../../../../screens/admin/tab/todo/TodoReturnDetailScreen';
+import TodoWashFuelDetailScreen from '../../../../screens/admin/tab/todo/TodoWashFuelDetailScreen';
 
 export type TodoStackParamList = {
   TodoMain: undefined;

@@ -11,9 +11,9 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { colors } from '../../../constants/colors';
-import { washFuelCompanyDetailMock } from '../../../mock/todoWashFuelDetailMock';
-import CommonModal from '../../../components/common/CommonModal';
+import { colors } from '../../../../constants/colors';
+import { washFuelCompanyDetailMock } from '../../../../mock/todo/todoWashFuelDetailMock';
+import CommonModal from '../../../../components/common/CommonModal';
 
 export default function TodoWashFuelDetailScreen() {
   const navigation = useNavigation();
@@ -59,7 +59,7 @@ export default function TodoWashFuelDetailScreen() {
       <View style={s.subHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
           <Image
-            source={require('../../../assets/admin-vehicle/left_arrow.png')}
+            source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={s.backIcon}
           />
         </TouchableOpacity>
@@ -89,13 +89,13 @@ export default function TodoWashFuelDetailScreen() {
                     <View style={s.iconRow}>
                       {item.hasWash && (
                         <Image
-                          source={require('../../../assets/admin-todo/wash.png')}
+                          source={require('../../../../assets/admin-todo/wash.png')}
                           style={s.washIcon}
                         />
                       )}
                       {item.hasFuel && (
                         <Image
-                          source={require('../../../assets/admin-todo/fuel.png')}
+                          source={require('../../../../assets/admin-todo/fuel.png')}
                           style={s.fuelIcon}
                         />
                       )}
@@ -111,14 +111,14 @@ export default function TodoWashFuelDetailScreen() {
                     <View style={{ alignItems: 'flex-end' }}>
                       <View style={s.row}>
                         <Image
-                          source={require('../../../assets/common/calendar.png')}
+                          source={require('../../../../assets/common/calendar.png')}
                           style={s.smallIcon}
                         />
                         <Text style={s.date}>{item.lastUpdate}</Text>
                       </View>
                       <View style={s.row}>
                         <Image
-                          source={require('../../../assets/common/clock.png')}
+                          source={require('../../../../assets/common/clock.png')}
                           style={s.smallIcon}
                         />
                         <Text style={s.time}>{item.duration}</Text>
@@ -129,7 +129,7 @@ export default function TodoWashFuelDetailScreen() {
                       style={s.arrowWrap}
                     >
                       <Image
-                        source={require('../../../assets/common/down_arrow.png')}
+                        source={require('../../../../assets/common/down_arrow.png')}
                         style={[
                           s.arrowIcon,
                           {
