@@ -197,14 +197,14 @@ export default function VehicleCompanyDetailScreen() {
                       <View style={{ alignItems: 'flex-end' }}>
                         <View style={s.row}>
                           <Image
-                            source={require('../../../../assets/admin-vehicle/calendar.png')}
+                            source={require('../../../../assets/common/calendar.png')}
                             style={s.smallIcon}
                           />
                           <Text style={s.date}>{item.lastUpdate}</Text>
                         </View>
                         <View style={s.row}>
                           <Image
-                            source={require('../../../../assets/admin-vehicle/clock.png')}
+                            source={require('../../../../assets/common/clock.png')}
                             style={s.smallIcon}
                           />
                           <Text style={s.time}>{item.duration}</Text>
