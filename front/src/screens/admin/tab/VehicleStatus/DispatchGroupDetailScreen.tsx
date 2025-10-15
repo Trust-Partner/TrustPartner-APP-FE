@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AppHeader from '../../../../components/common/AppHeader';
@@ -107,6 +108,7 @@ const s = StyleSheet.create({
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   countBadge: {
     marginLeft: 8,
