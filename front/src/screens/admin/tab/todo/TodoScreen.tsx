@@ -7,11 +7,14 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { colors } from '../../../constants/colors';
-import { returnRequestList, washFuelList } from '../../../mock/todoMock';
+import { colors } from '../../../../constants/colors';
+import {
+  returnRequestList,
+  washFuelList,
+} from '../../../../mock/todo/todoMock';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { TodoStackParamList } from '../../../navigations/admin/stacks/tabs/TodoStack';
+import { TodoStackParamList } from '../../../../navigations/admin/stacks/tabs/TodoStack';
 
 export default function TodoScreen() {
   const [tab, setTab] = useState<'return' | 'wash'>('return');
@@ -92,7 +95,6 @@ export default function TodoScreen() {
             <Text style={s.cardTitle}>{item.name}</Text>
 
             {tab === 'return' ? (
-              // 🔹 반납신청 탭 : 즉시반납 / 고객연락 / 금일회수
               <View style={s.badgeRow}>
                 <Text style={[s.badge, s.badgeRed]}>
                   {item.immediateReturn}
@@ -102,17 +104,16 @@ export default function TodoScreen() {
                 </Text>
                 <Text style={[s.badge, s.badgeBlue]}>{item.todayPickup}</Text>
                 <Image
-                  source={require('../../../assets/common/right_arrow.png')}
+                  source={require('../../../../assets/common/right_arrow.png')}
                   style={s.arrowIcon}
                 />
               </View>
             ) : (
-              // 🔹 세차/주유 탭 : 아이콘 포함 뱃지
               <View style={s.badgeRow}>
                 {/* 세차 뱃지 */}
                 <View style={[s.badgeWrap, s.badgeBlueBg]}>
                   <Image
-                    source={require('../../../assets/admin-todo/wash.png')}
+                    source={require('../../../../assets/admin-todo/wash.png')}
                     style={s.badgeIcon}
                   />
                   <Text style={s.badgeText}>{item.washCount}</Text>
@@ -121,14 +122,14 @@ export default function TodoScreen() {
                 {/* 주유 뱃지 */}
                 <View style={[s.badgeWrap, s.badgeRedBg]}>
                   <Image
-                    source={require('../../../assets/admin-todo/fuel.png')}
+                    source={require('../../../../assets/admin-todo/fuel.png')}
                     style={s.badgeIcon}
                   />
                   <Text style={s.badgeText}>{item.fuelCount}</Text>
                 </View>
 
                 <Image
-                  source={require('../../../assets/common/right_arrow.png')}
+                  source={require('../../../../assets/common/right_arrow.png')}
                   style={s.arrowIcon}
                 />
               </View>
