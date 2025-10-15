@@ -13,7 +13,6 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import { returnCompanyDetailMock } from '../../../../mock/todo/todoReturnDetailMock';
-import AppHeader from '../../../../components/common/AppHeader';
 
 export default function TodoReturnDetailScreen() {
   const navigation = useNavigation();
@@ -32,6 +31,10 @@ export default function TodoReturnDetailScreen() {
 
   const company = returnCompanyDetailMock.find(c => c.companyId === companyId);
   const data = company?.vehicles ?? [];
+
+  const handleCollect = (vehicleId: number) => {
+    console.log('회수 처리:', vehicleId);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -124,7 +127,10 @@ export default function TodoReturnDetailScreen() {
                 {/* 하단 버튼 영역 */}
                 {expanded && (
                   <View style={s.buttonRow}>
-                    <Pressable style={[s.actionBtn, s.blueBtn]}>
+                    <Pressable
+                      style={[s.actionBtn, s.blueBtn]}
+                      onPress={() => handleCollect(item.id)}
+                    >
                       <Text style={[s.actionText, { color: colors.WHITE }]}>
                         회수하기
                       </Text>
