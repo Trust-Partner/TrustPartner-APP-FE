@@ -145,7 +145,7 @@ function DispatchSection() {
               <Text style={[s.badge, s.badgeGreen]}>{item.ready}</Text>
               <Text style={[s.badge, s.badgeBlue]}>{item.active}</Text>
               <Image
-                source={require('../../../../assets/admin-vehicle/right_arrow.png')}
+                source={require('../../../../assets/common/right_arrow.png')}
                 style={s.arrowIcon}
               />
             </View>
@@ -222,7 +222,7 @@ function StatusSection() {
               <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
               <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
               <Image
-                source={require('../../../../assets/admin-vehicle/right_arrow.png')}
+                source={require('../../../../assets/common/right_arrow.png')}
                 style={s.arrowIcon}
               />
             </View>
@@ -252,16 +252,16 @@ const s = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   btn: {
-    flex: 1,
+    width: '49%',
     borderWidth: 1,
     borderColor: colors.PRIMARY_50,
     borderRadius: 4,
     padding: 10,
     alignItems: 'center',
-    marginHorizontal: 4,
   },
   activeBtn: {
     backgroundColor: colors.PRIMARY_50,
@@ -275,7 +275,7 @@ const s = StyleSheet.create({
     color: colors.WHITE,
   },
   card: {
-    width: '48%',
+    width: '49%',
     backgroundColor: colors.WHITE,
     borderRadius: 4,
     paddingHorizontal: 12,
@@ -285,7 +285,7 @@ const s = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 9,
+    marginBottom: 8,
   },
   cardTitle: {
     fontWeight: '600',
