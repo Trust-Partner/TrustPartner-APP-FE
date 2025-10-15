@@ -9,9 +9,15 @@ import {
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import { returnRequestList, washFuelList } from '../../../mock/todoMock';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TodoStackParamList } from '../../../navigations/admin/stacks/tabs/TodoStack';
 
 export default function TodoScreen() {
   const [tab, setTab] = useState<'return' | 'wash'>('return');
+  const navigation =
+    useNavigation<NativeStackNavigationProp<TodoStackParamList>>();
+
   const data = tab === 'return' ? returnRequestList : washFuelList;
 
   const totalReturnBadges = returnRequestList.reduce(
@@ -67,7 +73,22 @@ export default function TodoScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => (
-          <Pressable style={s.card}>
+          <Pressable
+            style={s.card}
+            onPress={() => {
+              if (tab === 'return') {
+                navigation.navigate('TodoReturnDetail', {
+                  companyId: item.id,
+                  companyName: item.name,
+                });
+              } else {
+                navigation.navigate('TodoWashFuelDetail', {
+                  companyId: item.id,
+                  companyName: item.name,
+                });
+              }
+            }}
+          >
             <Text style={s.cardTitle}>{item.name}</Text>
 
             {tab === 'return' ? (
