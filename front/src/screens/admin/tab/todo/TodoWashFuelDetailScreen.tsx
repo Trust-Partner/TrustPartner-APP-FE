@@ -48,9 +48,10 @@ export default function TodoWashFuelDetailScreen() {
   );
   const data = company?.vehicles ?? [];
 
-  const getStatusColor = (item: any) => {
+  const getStatusColor = (item: { hasWash?: boolean; hasFuel?: boolean }) => {
     if (item.hasWash) return colors.PRIMARY_50;
     if (item.hasFuel) return colors.RED_50;
+    return colors.GRAY_20;
   };
 
   return (
