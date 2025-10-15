@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AppScreenLayout from '../../../components/layout/AppScreenLayout';
 
-export default function TasksScreen() {
+export default function TodoScreen() {
   return (
     <AppScreenLayout withTabBar>
       <View style={s.container}>

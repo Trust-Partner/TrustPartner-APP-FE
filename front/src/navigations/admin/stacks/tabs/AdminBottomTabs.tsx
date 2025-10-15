@@ -8,14 +8,14 @@ import { drawerHeaderOptions } from '../../../common/headers';
 import DispatchRequestStack from './DispatchRequestStack';
 import HomeStack from './HomeStack';
 import NotificationsStack from './NotificationsStack';
-import TasksStack from './TasksStack';
+import TodoStack from './TodoStack';
 import VehicleStatusStack from './VehicleStatusStack';
 
 export type AdminTabParamList = {
   Home: undefined;
   VehicleStatus: undefined;
   DispatchRequests: undefined;
-  Tasks: undefined;
+  Todo: undefined;
   Notifications: undefined;
 };
 
@@ -32,7 +32,7 @@ export default function AdminBottomTabs() {
       Home: require('../../../../assets/bottom-tabs/Home.png'),
       VehicleStatus: require('../../../../assets/bottom-tabs/VehicleStatus.png'),
       DispatchRequests: require('../../../../assets/bottom-tabs/DispatchRequests.png'),
-      Tasks: require('../../../../assets/bottom-tabs/Tasks.png'),
+      Todo: require('../../../../assets/bottom-tabs/Todo.png'),
       Notifications: require('../../../../assets/bottom-tabs/Notifications.png'),
     }),
     [],
@@ -78,8 +78,8 @@ export default function AdminBottomTabs() {
         options={{ title: '배차요청건' }}
       />
       <Tab.Screen
-        name="Tasks"
-        component={TasksStack}
+        name="Todo"
+        component={TodoStack}
         options={{ title: '할일' }}
       />
       <Tab.Screen
