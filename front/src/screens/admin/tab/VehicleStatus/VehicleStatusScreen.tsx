@@ -238,6 +238,7 @@ const s = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.GRAY_00,
     paddingHorizontal: 16,
+    paddingTop: 16,
   },
   headerSearchInput: {
     width: 220,
