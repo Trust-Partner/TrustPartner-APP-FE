@@ -16,7 +16,7 @@ export type WashFuelCompanyDetail = {
 
 export const washFuelCompanyDetailMock: WashFuelCompanyDetail[] = [
   {
-    companyId: 1,
+    companyId: 3,
     companyName: 'ESA',
     vehicles: [
       {
