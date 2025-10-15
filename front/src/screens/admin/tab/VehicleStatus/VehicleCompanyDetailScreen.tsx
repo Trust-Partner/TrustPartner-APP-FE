@@ -9,6 +9,7 @@ import {
   Pressable,
   LayoutAnimation,
   TextInput,
+  Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
@@ -296,6 +297,7 @@ const s = StyleSheet.create({
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   summaryContainer: {
     flexDirection: 'row',
