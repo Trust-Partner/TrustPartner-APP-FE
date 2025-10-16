@@ -4,12 +4,12 @@ import { StatusBar } from 'react-native';
 import { colors } from '../../constants/colors';
 
 import CustomDrawerContent from './AdminDrawerContent';
-import ContractsStack from '../user/stacks/ContractsStack';
-import MyInfoStack from '../user/stacks/MyInfoStack';
 import PartnersStack from './stacks/drawer/PartnersStack';
 import PrepayStack from './stacks/drawer/PrepayStack';
 import ReservationsStack from './stacks/drawer/ReservationsStack';
 import AdminBottomTabs from './stacks/tabs/AdminBottomTabs';
+import MyInfoStack from './stacks/drawer/MyInfoStack';
+import ContractsStack from './stacks/drawer/ContractsStack';
 
 const Drawer = createDrawerNavigator();
 
