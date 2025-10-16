@@ -42,6 +42,12 @@ export default function NotificationScreen() {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => handleRead(item.id)}
+              accessibilityRole="button"
+              accessibilityLabel={`${item.message}, ${item.time}`}
+              accessibilityState={{ selected: item.read }}
+              accessibilityHint={
+                item.read ? undefined : '읽음으로 표시하려면 탭하세요'
+              }
               style={[
                 s.alertItem,
                 !item.read && { backgroundColor: colors.PRIMARY_00 },
