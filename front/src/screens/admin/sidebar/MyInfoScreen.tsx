@@ -15,8 +15,9 @@ import AppHeader from '../../../components/common/AppHeader';
 
 export default function MyInfoScreen() {
   const data = adminMyInfoMock;
-  const [selectedGrade, setSelectedGrade] =
-    useState<keyof typeof data.carRatesByGrade>('1등급');
+  const [selectedGrade, setSelectedGrade] = useState<
+    keyof typeof data.carRatesByGrade
+  >(data.grade as keyof typeof data.carRatesByGrade);
   const [open, setOpen] = useState(false);
 
   const carRates = data.carRatesByGrade[selectedGrade];
