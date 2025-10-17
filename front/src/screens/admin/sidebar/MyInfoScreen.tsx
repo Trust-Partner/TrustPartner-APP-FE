@@ -109,16 +109,12 @@ export default function MyInfoScreen() {
           </View>
 
           {/* 금액표 */}
-          <FlatList
-            data={carRates}
-            keyExtractor={(_, i) => i.toString()}
-            renderItem={({ item }) => (
-              <View style={s.tableRow}>
-                <Text style={s.tableLeft}>{item.type}</Text>
-                <Text style={s.tableRight}>{item.amount}</Text>
-              </View>
-            )}
-          />
+          {carRates.map((item, i) => (
+            <View key={i} style={s.tableRow}>
+              <Text style={s.tableLeft}>{item.type}</Text>
+              <Text style={s.tableRight}>{item.amount}</Text>
+            </View>
+          ))}
         </View>
 
         {/* 등급별 지급비율표 */}
