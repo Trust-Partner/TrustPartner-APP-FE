@@ -38,10 +38,6 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
             style={s.close}
           />
         </TouchableOpacity>
-
-        {/* 타이틀 */}
-        <Text style={s.title}>공업사 정보</Text>
-
         {/* 회사명 */}
         <View style={s.box}>
           <View style={s.rowBetween}>
@@ -141,7 +137,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
     width: '100%',
     borderRadius: 8,
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 32,
     paddingHorizontal: 16,
     alignSelf: 'center',
@@ -152,13 +148,7 @@ const s = StyleSheet.create({
     height: 16,
     tintColor: colors.GRAY_60,
     resizeMode: 'contain',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.GRAY_90,
-    alignSelf: 'center',
-    marginBottom: 16,
+    marginRight: -8,
   },
   box: {
     marginTop: 8,
