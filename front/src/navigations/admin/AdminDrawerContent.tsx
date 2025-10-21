@@ -38,7 +38,7 @@ export default function AdminDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItem
         label="거래처 관리"
         labelStyle={s.label}
-        onPress={() => go('Partners')}
+        onPress={() => go('PartnerManage')}
       />
       <DrawerItem
         label="계약서 목록"
