@@ -19,11 +19,9 @@ export default function PartnerManageScreen() {
   const [selectedYear, setSelectedYear] = useState<number>(2025);
   const [openYear, setOpenYear] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [selectedPartners, setSelectedPartners] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [toastMsg, setToastMsg] = useState('');
 
-  // ✅ 각 거래처별 open 상태를 객체 형태로 관리
   const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
 
   const yearOptions = [2025, 2024, 2023, 2022];
@@ -374,9 +372,16 @@ const s = StyleSheet.create({
     elevation: 3,
     zIndex: 99,
   },
-  dropdownItem: { paddingVertical: 8, paddingHorizontal: 15 },
+  dropdownItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+  },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
-  dropdownText: { fontSize: 11, fontWeight: '400', color: colors.GRAY_60 },
+  dropdownText: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_60,
+  },
   dropdownTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
     fontSize: 11,
@@ -389,7 +394,10 @@ const s = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 8,
   },
-  tabGroup: { flexDirection: 'row', alignItems: 'center' },
+  tabGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   tab: {
     paddingVertical: 4,
     paddingHorizontal: 8,

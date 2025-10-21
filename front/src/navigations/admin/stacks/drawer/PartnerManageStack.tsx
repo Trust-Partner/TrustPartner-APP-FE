@@ -1,14 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { stackHeaderOptions } from '../../../common/headers';
-import PartnersScreen from '../../../../screens/admin/sidebar/PartnersScreen';
+import PartnerManageScreen from '../../../../screens/admin/sidebar/PartnerManageScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function PartnersStack() {
+export default function PartnerManageStack() {
   return (
     <Stack.Navigator screenOptions={stackHeaderOptions}>
-      <Stack.Screen name="PartnersMain" component={PartnersScreen} />
+      <Stack.Screen name="PartnerManageMain" component={PartnerManageScreen} />
     </Stack.Navigator>
   );
 }
