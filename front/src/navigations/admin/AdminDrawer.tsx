@@ -4,7 +4,7 @@ import { StatusBar } from 'react-native';
 import { colors } from '../../constants/colors';
 
 import CustomDrawerContent from './AdminDrawerContent';
-import PartnersStack from './stacks/drawer/PartnersStack';
+import PartnerManageStack from './stacks/drawer/PartnerManageStack';
 import PrepayStack from './stacks/drawer/PrepayStack';
 import ReservationsStack from './stacks/drawer/ReservationsStack';
 import AdminBottomTabs from './stacks/tabs/AdminBottomTabs';
@@ -37,7 +37,7 @@ export default function AdminDrawer() {
         options={{ drawerLabel: () => null, title: undefined }}
       />
       <Drawer.Screen name="MyInfo" component={MyInfoStack} />
-      <Drawer.Screen name="Partners" component={PartnersStack} />
+      <Drawer.Screen name="PartnerManage" component={PartnerManageStack} />
       <Drawer.Screen name="Contracts" component={ContractsStack} />
       <Drawer.Screen name="Prepay" component={PrepayStack} />
       <Drawer.Screen name="Reservations" component={ReservationsStack} />
