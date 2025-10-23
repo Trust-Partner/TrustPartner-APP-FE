@@ -19,7 +19,7 @@ import CommonModal from '../../../components/common/CommonModal';
 export default function ReservationDrawerScreen() {
   const today = dayjs().format('YYYY-MM-DD');
   const [selectedDate, setSelectedDate] = useState(today);
-  const [expanded, setExpanded] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -31,7 +31,10 @@ export default function ReservationDrawerScreen() {
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded(expanded === id ? null : id);
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id], // 클릭된 항목만 toggle
+    }));
   };
 
   const handlePressDelete = (id: number) => {
@@ -156,7 +159,7 @@ export default function ReservationDrawerScreen() {
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => {
-              const isOpen = expanded === item.id;
+              const isOpen = !!expanded[item.id];
               return (
                 <View style={s.card}>
                   <TouchableOpacity
@@ -177,9 +180,7 @@ export default function ReservationDrawerScreen() {
                         style={[
                           s.arrowIcon,
                           {
-                            transform: [
-                              { rotate: expanded ? '180deg' : '0deg' },
-                            ],
+                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
                           },
                         ]}
                       />
