@@ -22,11 +22,14 @@ export default function TodoReturnDetailScreen() {
     companyName: string;
   };
 
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
-  const toggleExpand = (id: number) => {
+  const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedId(prev => (prev === id ? null : id));
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const company = returnCompanyDetailMock.find(c => c.companyId === companyId);
@@ -66,7 +69,7 @@ export default function TodoReturnDetailScreen() {
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
-          const expanded = expandedId === item.id;
+          const isOpen = !!expanded[item.id];
           return (
             <View style={s.item}>
               {/* 좌측 상태바 */}
@@ -106,7 +109,7 @@ export default function TodoReturnDetailScreen() {
                       </View>
                     </View>
                     <Pressable
-                      onPress={() => toggleExpand(item.id)}
+                      onPress={() => handleExpand(item.id)}
                       style={s.arrowWrap}
                     >
                       <Image
@@ -114,9 +117,7 @@ export default function TodoReturnDetailScreen() {
                         style={[
                           s.arrowIcon,
                           {
-                            transform: [
-                              { rotate: expanded ? '180deg' : '0deg' },
-                            ],
+                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
                           },
                         ]}
                       />
@@ -125,7 +126,7 @@ export default function TodoReturnDetailScreen() {
                 </View>
 
                 {/* 하단 버튼 영역 */}
-                {expanded && (
+                {isOpen && (
                   <View style={s.buttonRow}>
                     <Pressable
                       style={[s.actionBtn, s.blueBtn]}

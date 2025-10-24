@@ -23,15 +23,18 @@ export default function TodoWashFuelDetailScreen() {
     companyName: string;
   };
 
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [modal, setModal] = useState<{
     visible: boolean;
     type: 'wash' | 'fuel' | null;
   }>({ visible: false, type: null });
 
-  const toggleExpand = (id: number) => {
+  const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedId(prev => (prev === id ? null : id));
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const openModal = (type: 'wash' | 'fuel') =>
@@ -73,7 +76,7 @@ export default function TodoWashFuelDetailScreen() {
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
-          const expanded = expandedId === item.id;
+          const isOpen = !!expanded[item.id];
           return (
             <View style={s.item}>
               {/* 좌측 상태바 */}
@@ -126,7 +129,7 @@ export default function TodoWashFuelDetailScreen() {
                       </View>
                     </View>
                     <Pressable
-                      onPress={() => toggleExpand(item.id)}
+                      onPress={() => handleExpand(item.id)}
                       style={s.arrowWrap}
                     >
                       <Image
@@ -134,9 +137,7 @@ export default function TodoWashFuelDetailScreen() {
                         style={[
                           s.arrowIcon,
                           {
-                            transform: [
-                              { rotate: expanded ? '180deg' : '0deg' },
-                            ],
+                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
                           },
                         ]}
                       />
@@ -145,7 +146,7 @@ export default function TodoWashFuelDetailScreen() {
                 </View>
 
                 {/* 하단 버튼 */}
-                {expanded && (
+                {isOpen && (
                   <View style={s.buttonRow}>
                     {item.hasWash && (
                       <Pressable
