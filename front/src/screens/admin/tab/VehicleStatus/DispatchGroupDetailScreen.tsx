@@ -15,9 +15,12 @@ import {
   dispatchDetailMock,
   DispatchDetail,
 } from '../../../../mock/vehicleStatus/vehicleDispatchDetailMock';
+import { useContractModalStore } from '../../../../stores/useContractModalStore';
+import ContractModalManager from '../../../../components/contract/ContractModalManager';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
+  const { openModal, setSelectedVehicle } = useContractModalStore();
   const { groupId, groupName, type } = route.params;
 
   const data: DispatchDetail[] = (
@@ -26,10 +29,51 @@ export default function DispatchGroupDetailScreen({ route }: any) {
 
   const totalCount = data.length;
 
+  const handleSelectVehicle = (item: DispatchDetail) => {
+    setSelectedVehicle(item);
+    openModal('main');
+  };
+
+  const renderItem = ({ item }: { item: DispatchDetail }) => {
+    // 상태 바 색상 구분
+    const sideBarColor =
+      item.isConfirmed || item.isBookmarked
+        ? colors.GREEN_50 // 찜 또는 배차확정 → 초록색
+        : colors.PRIMARY_50; // 기본 → 파란색
+
+    const rowBackground = item.isInWashArea ? colors.PRIMARY_00 : colors.WHITE;
+
+    return (
+      <TouchableOpacity onPress={() => handleSelectVehicle(item)}>
+        <View style={[s.row, { backgroundColor: rowBackground }]}>
+          <View style={[s.sideBar, { backgroundColor: sideBarColor }]} />
+          <View style={s.cellWrapper}>
+            <Text style={[s.td, { flex: 66 }]}>{item.model}</Text>
+            <Text style={[s.td, { flex: 44 }]}>{item.year}</Text>
+            <Text style={[s.td, { flex: 74 }]}>{item.number}</Text>
+            <Text style={[s.td, { flex: 60 }]}>{item.location}</Text>
+            <Text
+              style={[
+                s.td,
+                {
+                  flex: 44,
+                  color: item.washed ? colors.GREEN_50 : colors.RED_50,
+                },
+              ]}
+            >
+              {item.washed ? '○' : '✕'}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <AppHeader />
       <View style={s.container}>
+        {/* 상단 헤더 */}
         <View style={s.subHeader}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -48,6 +92,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
           </View>
         </View>
 
+        {/* 테이블 영역 */}
         <View style={s.tableWrapper}>
           <View style={s.tableHeader}>
             <Text style={[s.th, { flex: 66 }]}>차종</Text>
@@ -61,31 +106,12 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             data={data}
             keyExtractor={item => item.id.toString()}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={s.row}>
-                <View style={s.sideBar} />
-                <View style={s.cellWrapper}>
-                  <Text style={[s.td, { flex: 66 }]}>{item.model}</Text>
-                  <Text style={[s.td, { flex: 44 }]}>{item.year}</Text>
-                  <Text style={[s.td, { flex: 74 }]}>{item.number}</Text>
-                  <Text style={[s.td, { flex: 60 }]}>{item.location}</Text>
-                  <Text
-                    style={[
-                      s.td,
-                      {
-                        flex: 44,
-                        color: item.washed ? colors.GREEN_50 : colors.RED_50,
-                      },
-                    ]}
-                  >
-                    {item.washed ? '○' : '✕'}
-                  </Text>
-                </View>
-              </View>
-            )}
+            renderItem={renderItem}
           />
         </View>
       </View>
+
+      <ContractModalManager />
     </View>
   );
 }
@@ -123,6 +149,14 @@ const s = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 15.4,
   },
+  tableWrapper: {
+    flex: 1,
+    backgroundColor: colors.WHITE,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    overflow: 'hidden',
+  },
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: colors.GRAY_05,
@@ -135,17 +169,8 @@ const s = StyleSheet.create({
     textAlign: 'center',
     fontSize: 11,
   },
-  tableWrapper: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
-    overflow: 'hidden',
-  },
   row: {
     flexDirection: 'row',
-    backgroundColor: colors.WHITE,
     borderBottomWidth: 1,
     borderBottomColor: colors.GRAY_10,
   },
@@ -153,7 +178,7 @@ const s = StyleSheet.create({
     width: 2,
     marginLeft: 4,
     marginVertical: 4,
-    backgroundColor: colors.PRIMARY_50,
+    borderRadius: 1,
   },
   cellWrapper: {
     flex: 1,
