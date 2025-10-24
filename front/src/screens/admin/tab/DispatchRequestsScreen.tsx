@@ -1,5 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  LayoutAnimation,
+} from 'react-native';
 import {
   DispatchRequest,
   mockDispatchRequests,
@@ -10,7 +17,7 @@ import DispatchRejectModal from '../../../components/dispatch/DispatchRejectModa
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 export default function DispatchRequestScreen() {
-  const [expandedIds, setExpandedIds] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
   const [infoVisible, setInfoVisible] = useState(false);
   const [rejectVisible, setRejectVisible] = useState(false);
   const [selected, setSelected] = useState<DispatchRequest | null>(null);
@@ -20,10 +27,12 @@ export default function DispatchRequestScreen() {
     [],
   );
 
-  const toggleExpand = (id: string) => {
-    setExpandedIds(prev =>
-      prev.includes(id) ? prev.filter(v => v !== id) : [...prev, id],
-    );
+  const handleExpand = (id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const openInfo = (item: DispatchRequest) => {
@@ -51,7 +60,7 @@ export default function DispatchRequestScreen() {
         keyExtractor={item => item.id}
         renderItem={({ item }) => {
           const isActive = item.status === 'active';
-          const expanded = expandedIds.includes(item.id);
+          const isOpen = !!expanded[item.id];
 
           return (
             <TouchableOpacity
@@ -84,13 +93,13 @@ export default function DispatchRequestScreen() {
                   )}
                   <View style={{ flex: 1 }} />
                   <Text style={s.time}>{item.time}</Text>
-                  <TouchableOpacity onPress={() => toggleExpand(item.id)}>
+                  <TouchableOpacity onPress={() => handleExpand(item.id)}>
                     <Image
                       source={require('../../../assets/common/down_arrow.png')}
                       style={[
                         s.arrowIcon,
                         {
-                          transform: [{ rotate: expanded ? '180deg' : '0deg' }],
+                          transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
                         },
                       ]}
                     />
@@ -98,7 +107,7 @@ export default function DispatchRequestScreen() {
                 </View>
               </View>
 
-              {expanded && (
+              {isOpen && (
                 <View style={s.expandArea}>
                   <Text style={s.modelText}>{item.model}</Text>
                 </View>

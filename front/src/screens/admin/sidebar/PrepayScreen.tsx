@@ -5,8 +5,6 @@ import {
   StyleSheet,
   FlatList,
   LayoutAnimation,
-  Platform,
-  UIManager,
   Pressable,
   Image,
 } from 'react-native';
@@ -21,15 +19,18 @@ export default function PrepaymentScreen() {
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
     'waiting',
   );
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
   const data = prepaymentMock[activeTab];
 
-  const toggleExpand = (id: number) => {
+  const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpandedId(expandedId === id ? null : id);
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const renderRowLayout = (
@@ -70,7 +71,7 @@ export default function PrepaymentScreen() {
         {isHeader ? (
           <View />
         ) : (
-          <Pressable onPress={() => toggleExpand(item!.id)} style={s.arrowWrap}>
+          <Pressable onPress={() => handleExpand(item!.id)} style={s.arrowWrap}>
             <Image
               source={require('../../../assets/common/down_arrow.png')}
               style={[
@@ -85,14 +86,14 @@ export default function PrepaymentScreen() {
   );
 
   const renderItem = ({ item }: { item: PrepaymentItemType }) => {
-    const expanded = expandedId === item.id;
+    const isOpen = !!expanded[item.id];
     return (
       <View style={s.item}>
         <View style={s.statusBar} />
         <View style={s.itemBody}>
-          {renderRowLayout(false, item, expanded)}
+          {renderRowLayout(false, item, isOpen)}
 
-          {expanded && (
+          {isOpen && (
             <View style={s.buttonRow}>
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.GRAY_80 }]}
@@ -197,7 +198,6 @@ export default function PrepaymentScreen() {
   );
 }
 
-/* 기존 스타일 그대로 유지 */
 const s = StyleSheet.create({
   container: {
     flex: 1,

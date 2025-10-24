@@ -25,7 +25,7 @@ export default function VehicleCompanyDetailScreen() {
   };
 
   const [query, setQuery] = useState('');
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
   >('전체');
@@ -45,10 +45,12 @@ export default function VehicleCompanyDetailScreen() {
         );
       }) ?? [];
 
-  const toggleExpand = (id: number) => {
+  const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    const same = expandedId === id;
-    setExpandedId(same ? null : id);
+    setExpanded(prev => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   if (!company) {
@@ -162,7 +164,7 @@ export default function VehicleCompanyDetailScreen() {
           keyExtractor={item => item.id.toString()}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
-            const expanded = expandedId === item.id;
+            const isOpen = expanded[item.id];
             const isDispatched = item.status === '배차중';
 
             return (
@@ -212,7 +214,7 @@ export default function VehicleCompanyDetailScreen() {
                         </View>
                       </View>
                       <Pressable
-                        onPress={() => toggleExpand(item.id)}
+                        onPress={() => handleExpand(item.id)}
                         style={s.arrowWrap}
                       >
                         <Image
@@ -221,7 +223,7 @@ export default function VehicleCompanyDetailScreen() {
                             s.arrowIcon,
                             {
                               transform: [
-                                { rotate: expanded ? '180deg' : '0deg' },
+                                { rotate: isOpen ? '180deg' : '0deg' },
                               ],
                             },
                           ]}
@@ -231,7 +233,7 @@ export default function VehicleCompanyDetailScreen() {
                   </View>
 
                   {/* 교체/회수 버튼 */}
-                  {expanded && (
+                  {isOpen && (
                     <View style={s.buttonRow}>
                       {isDispatched && (
                         <Pressable style={[s.actionBtn, s.grayBtn]}>
