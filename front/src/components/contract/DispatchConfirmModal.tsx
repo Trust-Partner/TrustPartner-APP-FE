@@ -1,8 +1,10 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 
 interface Props {
   onBack: () => void;
+  vehicle: DispatchDetail;
 }
 
 export default function DispatchConfirmModal({ onBack }: Props) {

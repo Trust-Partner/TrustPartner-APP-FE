@@ -8,9 +8,11 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useContractForm } from '../../hooks/useContractForm';
+import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 
 interface Props {
   onBack: () => void;
+  vehicle: DispatchDetail;
 }
 
 export default function ReplacementContractModal({ onBack }: Props) {
