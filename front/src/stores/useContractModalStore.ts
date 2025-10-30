@@ -25,15 +25,19 @@ interface ContractModalState {
   };
   drafts: Record<string, DraftData>;
 
-  selectedVehicle?: DispatchDetail; // 선택된 차량 정보 저장
+  selectedVehicle?: DispatchDetail;
   setSelectedVehicle: (v: DispatchDetail) => void;
 
   openModal: (type: ModalType) => void;
   closeModal: () => void;
   goTo: (type: ModalType) => void;
 
-  saveDraft: (type: string, data: DraftData) => Promise<void>;
-  loadDraft: (type: string) => Promise<DraftData | null>;
+  saveDraft: (
+    type: string,
+    vehicleId: string,
+    data: DraftData,
+  ) => Promise<void>;
+  loadDraft: (type: string, vehicleId: string) => Promise<DraftData | null>;
 }
 
 export const useContractModalStore = create<ContractModalState>(set => ({
@@ -60,18 +64,18 @@ export const useContractModalStore = create<ContractModalState>(set => ({
 
   goTo: type => set({ modalType: type }),
 
-  saveDraft: async (type, data) => {
-    await saveDraft(type, data);
+  saveDraft: async (type: string, vehicleId: string, data: DraftData) => {
+    await saveDraft(type, vehicleId, data);
     set(state => ({
-      drafts: { ...state.drafts, [type]: data },
+      drafts: { ...state.drafts, [`${type}_${vehicleId}`]: data },
     }));
   },
 
-  loadDraft: async type => {
-    const draft = await loadDraft(type);
+  loadDraft: async (type: string, vehicleId: string) => {
+    const draft = await loadDraft(type, vehicleId);
     if (draft) {
       set(state => ({
-        drafts: { ...state.drafts, [type]: draft },
+        drafts: { ...state.drafts, [`${type}_${vehicleId}`]: draft },
       }));
       return draft;
     }
