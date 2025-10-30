@@ -26,14 +26,45 @@ export default function ContractModalManager() {
       );
 
     case 'general':
-      return <GeneralContractModal onBack={() => goTo('main')} />;
+      return (
+        selectedVehicle && (
+          <GeneralContractModal
+            onBack={() => goTo('main')}
+            vehicle={selectedVehicle}
+          />
+        )
+      );
 
     case 'insurance':
-      return <InsuranceContractModal onBack={() => goTo('main')} />;
+      return (
+        selectedVehicle && (
+          <InsuranceContractModal
+            onBack={() => goTo('main')}
+            vehicle={selectedVehicle}
+          />
+        )
+      );
+
     case 'replacement':
-      return <ReplacementContractModal onBack={() => goTo('main')} />;
+      return (
+        selectedVehicle && (
+          <ReplacementContractModal
+            onBack={() => goTo('main')}
+            vehicle={selectedVehicle}
+          />
+        )
+      );
+
     case 'dispatch':
-      return <DispatchConfirmModal onBack={() => goTo('main')} />;
+      return (
+        selectedVehicle && (
+          <DispatchConfirmModal
+            onBack={() => goTo('main')}
+            vehicle={selectedVehicle}
+          />
+        )
+      );
+
     default:
       return null;
   }

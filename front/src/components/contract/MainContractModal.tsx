@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 
@@ -48,7 +55,6 @@ export default function MainContractModal({
       onBackdropPress={onClose}
     >
       <View style={s.modal}>
-        {/* 닫기 버튼 */}
         <TouchableOpacity onPress={onClose}>
           <Image
             source={require('../../assets/common/close.png')}
@@ -56,8 +62,12 @@ export default function MainContractModal({
           />
         </TouchableOpacity>
 
-        {/* 차량 정보 */}
-        <Text style={s.title}>{model}</Text>
+        <View style={s.headerRow}>
+          <Text style={s.title}>{model}</Text>
+          {(isBookmarked || isConfirmed) && reserverName && (
+            <Text style={s.reserverLabel}>예약자 : {reserverName}</Text>
+          )}
+        </View>
         <Text style={s.subTitle}>{number}</Text>
 
         <View style={s.infoBox}>
@@ -77,31 +87,28 @@ export default function MainContractModal({
           </Text>
         </View>
 
-        {(isBookmarked || isConfirmed) && reserverName && (
-          <View style={s.reserverWrapper}>
-            <Text style={s.reserverLabel}>예약자 :</Text>
-            <Text style={s.reserverName}>{reserverName}</Text>
-          </View>
-        )}
-
         {/* 버튼 영역 */}
         <View style={s.btnBox}>
           <ContractButton
             label="일반계약서 작성"
+            icon={require('../../assets/common/file_icon.png')}
             disabled={isInsuranceOnly}
             onPress={() => onSelect('general')}
           />
           <ContractButton
             label="보험계약서 작성"
+            icon={require('../../assets/common/file_icon.png')}
             onPress={() => onSelect('insurance')}
           />
           <ContractButton
             label="교체계약서 작성"
+            icon={require('../../assets/common/replace.png')}
             disabled={isInsuranceOnly}
             onPress={() => onSelect('replacement')}
           />
           <ContractButton
             label="배차 확정"
+            icon={require('../../assets/common/check.png')}
             disabled={isInsuranceOnly}
             onPress={() => onSelect('dispatch')}
           />
@@ -113,10 +120,12 @@ export default function MainContractModal({
 
 const ContractButton = ({
   label,
+  icon,
   disabled,
   onPress,
 }: {
   label: string;
+  icon: any;
   disabled?: boolean;
   onPress: () => void;
 }) => (
@@ -126,7 +135,10 @@ const ContractButton = ({
     disabled={disabled}
     style={[s.btn, disabled && s.btnDisabled]}
   >
-    <Text style={[s.btnText, disabled && s.btnTextDisabled]}>{label}</Text>
+    <View style={s.btnInner}>
+      <Image source={icon} style={[s.btnIcon, disabled && s.btnIconDisabled]} />
+      <Text style={[s.btnText, disabled && s.btnTextDisabled]}>{label}</Text>
+    </View>
   </TouchableOpacity>
 );
 
@@ -148,66 +160,79 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: -8,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.GRAY_90,
-    textAlign: 'center',
-    marginBottom: 2,
+  },
+  reserverLabel: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: colors.PRIMARY_50,
   },
   subTitle: {
-    fontSize: 14,
-    color: colors.GRAY_60,
-    textAlign: 'center',
-    marginBottom: 14,
+    fontSize: 12,
+    fontWeight: '400',
+    color: colors.GRAY_90,
   },
   infoBox: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 12,
-    columnGap: 12,
+    paddingVertical: 12,
+    columnGap: 14,
+    borderRadius: 4,
+    backgroundColor: colors.GRAY_10,
+    marginVertical: 24,
   },
   infoText: {
-    fontSize: 13,
-    color: colors.GRAY_70,
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_80,
   },
   infoValue: {
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '400',
     color: colors.PRIMARY_50,
   },
-  reserverWrapper: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginBottom: 18,
-  },
-  reserverLabel: {
-    fontSize: 13,
-    color: colors.GRAY_70,
-  },
-  reserverName: {
-    fontSize: 13,
-    color: colors.PRIMARY_70,
-    marginLeft: 4,
-  },
   btnBox: {
-    marginTop: 4,
     width: '100%',
   },
   btn: {
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    borderRadius: 6,
-    paddingVertical: 12,
-    alignItems: 'center',
+    borderRadius: 4,
+    padding: 8,
     marginBottom: 10,
   },
   btnDisabled: {
-    backgroundColor: colors.GRAY_05,
+    // backgroundColor: colors.GRAY_05,
+  },
+  btnInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    columnGap: 6,
+  },
+  btnIcon: {
+    width: 16,
+    height: 16,
+    tintColor: colors.GRAY_90,
+    resizeMode: 'contain',
+  },
+  btnIconDisabled: {
+    tintColor: colors.GRAY_40,
   },
   btnText: {
-    fontSize: 14,
+    fontSize: 11,
     color: colors.GRAY_90,
     fontWeight: '400',
+    lineHeight: 15.4,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   btnTextDisabled: {
     color: colors.GRAY_40,
