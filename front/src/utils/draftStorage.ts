@@ -1,19 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const saveDraft = async (type: string, data: any) => {
-  try {
-    await AsyncStorage.setItem(`draft:${type}`, JSON.stringify(data));
-  } catch (e) {
-    console.error('임시저장 실패', e);
-  }
+export const saveDraft = async (type: string, vehicleId: string, data: any) => {
+  const key = `draft_${type}_${vehicleId}`;
+  await AsyncStorage.setItem(key, JSON.stringify(data));
 };
 
-export const loadDraft = async (type: string) => {
-  try {
-    const json = await AsyncStorage.getItem(`draft:${type}`);
-    return json ? JSON.parse(json) : null;
-  } catch (e) {
-    console.error('임시저장 불러오기 실패', e);
-    return null;
-  }
+export const loadDraft = async (type: string, vehicleId: string) => {
+  const key = `draft_${type}_${vehicleId}`;
+  const saved = await AsyncStorage.getItem(key);
+  return saved ? JSON.parse(saved) : null;
+};
+
+export const removeDraft = async (type: string, vehicleId: string) => {
+  const key = `draft_${type}_${vehicleId}`;
+  await AsyncStorage.removeItem(key);
 };
