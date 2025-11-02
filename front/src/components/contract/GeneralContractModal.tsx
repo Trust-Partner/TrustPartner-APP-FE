@@ -485,7 +485,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
   );
 }
 
-const s = StyleSheet.create({
+export const s = StyleSheet.create({
   modal: {
     backgroundColor: colors.WHITE,
     width: '100%',
