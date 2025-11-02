@@ -8,8 +8,9 @@ export interface DispatchDetail {
   washed: boolean; // 세차 여부
   isInWashArea: boolean; // 세차장 내 여부
   isConfirmed: boolean; // 배차 확정 여부
-  isBookmarked: boolean; // 찜 여부
+  isBookmarked?: boolean; // 찜 여부
   reserverName?: string; // 예약자
+  isBookedFuture?: boolean; // 예약(미래 시점 찜) 여부
 }
 
 export const dispatchDetailMock: Record<string, DispatchDetail[]> = {
