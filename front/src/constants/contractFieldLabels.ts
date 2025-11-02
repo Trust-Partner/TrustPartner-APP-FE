@@ -10,4 +10,6 @@ export const CONTRACT_FIELD_LABELS: Record<string, string> = {
   payment: '결제방법',
   amount: '금액',
   signature: '서명',
+  requestCompany: '요청업체',
+  garageCompany: '입고공업사',
 };
