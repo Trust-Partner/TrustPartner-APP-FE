@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import AppHeader from '../../../../components/common/AppHeader';
 import { colors } from '../../../../constants/colors';
 import {
@@ -17,29 +17,62 @@ import {
 } from '../../../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { useContractModalStore } from '../../../../stores/useContractModalStore';
 import ContractModalManager from '../../../../components/contract/ContractModalManager';
+import BookmarkModal from '../../../../components/vehicleStatus/BookmarkModal';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
   const { openModal, setSelectedVehicle } = useContractModalStore();
   const { groupId, groupName, type } = route.params;
 
-  const data: DispatchDetail[] = (
-    dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []
-  ).filter(item => item.groupId === groupId);
+  const [data, setData] = useState<DispatchDetail[]>(
+    (dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []).filter(
+      item => item.groupId === groupId,
+    ),
+  );
+
+  const [bookmarkVisible, setBookmarkVisible] = useState(false);
+  const [bookmarkTarget, setBookmarkTarget] = useState<DispatchDetail | null>(
+    null,
+  );
 
   const totalCount = data.length;
+
+  const handleBookmarkClose = (status?: 'bookmarked' | 'booked') => {
+    if (bookmarkTarget && status) {
+      setData(prev =>
+        prev.map(v =>
+          v.id === bookmarkTarget.id
+            ? {
+                ...v,
+                isBookmarked: status === 'bookmarked', // 찜(즉시)
+                isBookedFuture: status === 'booked', // 예약(미래)
+              }
+            : v,
+        ),
+      );
+    }
+    setBookmarkVisible(false);
+  };
 
   const handleSelectVehicle = (item: DispatchDetail) => {
     setSelectedVehicle(item);
     openModal('main');
   };
 
+  const handleSwipeOpen = (rowKey: string, rowMap: any) => {
+    const item = data.find(i => i.id.toString() === rowKey);
+    if (item) {
+      setBookmarkTarget(item);
+      setBookmarkVisible(true);
+      rowMap[rowKey]?.closeRow?.();
+    }
+  };
+
   const renderItem = ({ item }: { item: DispatchDetail }) => {
-    // 상태 바 색상 구분
     const sideBarColor =
       item.isConfirmed || item.isBookmarked
-        ? colors.GREEN_50 // 찜 또는 배차확정 → 초록색
-        : colors.PRIMARY_50; // 기본 → 파란색
+        ? colors.GREEN_50
+        : colors.PRIMARY_50;
 
     const rowBackground = item.isInWashArea ? colors.PRIMARY_00 : colors.WHITE;
 
@@ -92,7 +125,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
           </View>
         </View>
 
-        {/* 테이블 영역 */}
+        {/* 테이블 */}
         <View style={s.tableWrapper}>
           <View style={s.tableHeader}>
             <Text style={[s.th, { flex: 66 }]}>차종</Text>
@@ -102,16 +135,28 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             <Text style={[s.th, { flex: 44 }]}>세차</Text>
           </View>
 
-          <FlatList
+          <SwipeListView
             data={data}
             keyExtractor={item => item.id.toString()}
-            showsVerticalScrollIndicator={false}
             renderItem={renderItem}
+            renderHiddenItem={() => <View />}
+            rightOpenValue={-70}
+            disableRightSwipe
+            onRowOpen={handleSwipeOpen}
+            showsVerticalScrollIndicator={false}
           />
         </View>
       </View>
 
       <ContractModalManager />
+
+      {bookmarkVisible && bookmarkTarget && (
+        <BookmarkModal
+          visible={bookmarkVisible}
+          vehicle={bookmarkTarget}
+          onClose={handleBookmarkClose}
+        />
+      )}
     </View>
   );
 }
