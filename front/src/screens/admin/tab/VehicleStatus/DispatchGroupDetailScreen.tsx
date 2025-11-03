@@ -1,35 +1,112 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 import AppHeader from '../../../../components/common/AppHeader';
 import { colors } from '../../../../constants/colors';
 import {
   dispatchDetailMock,
   DispatchDetail,
 } from '../../../../mock/vehicleStatus/vehicleDispatchDetailMock';
+import { useContractModalStore } from '../../../../stores/useContractModalStore';
+import ContractModalManager from '../../../../components/contract/ContractModalManager';
+import BookmarkModal from '../../../../components/vehicleStatus/BookmarkModal';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
+  const { openModal, setSelectedVehicle } = useContractModalStore();
   const { groupId, groupName, type } = route.params;
 
-  const data: DispatchDetail[] = (
-    dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []
-  ).filter(item => item.groupId === groupId);
+  const [data, setData] = useState<DispatchDetail[]>(
+    (dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []).filter(
+      item => item.groupId === groupId,
+    ),
+  );
+
+  const [bookmarkVisible, setBookmarkVisible] = useState(false);
+  const [bookmarkTarget, setBookmarkTarget] = useState<DispatchDetail | null>(
+    null,
+  );
 
   const totalCount = data.length;
+
+  const handleBookmarkClose = (status?: 'bookmarked' | 'booked') => {
+    if (bookmarkTarget && status) {
+      setData(prev =>
+        prev.map(v =>
+          v.id === bookmarkTarget.id
+            ? {
+                ...v,
+                isBookmarked: status === 'bookmarked', // 찜(즉시)
+                isBookedFuture: status === 'booked', // 예약(미래)
+              }
+            : v,
+        ),
+      );
+    }
+    setBookmarkVisible(false);
+  };
+
+  const handleSelectVehicle = (item: DispatchDetail) => {
+    setSelectedVehicle(item);
+    openModal('main');
+  };
+
+  const handleSwipeOpen = (rowKey: string, rowMap: any) => {
+    const item = data.find(i => i.id.toString() === rowKey);
+    if (item) {
+      setBookmarkTarget(item);
+      setBookmarkVisible(true);
+      rowMap[rowKey]?.closeRow?.();
+    }
+  };
+
+  const renderItem = ({ item }: { item: DispatchDetail }) => {
+    const sideBarColor =
+      item.isConfirmed || item.isBookmarked
+        ? colors.GREEN_50
+        : colors.PRIMARY_50;
+
+    const rowBackground = item.isInWashArea ? colors.PRIMARY_00 : colors.WHITE;
+
+    return (
+      <TouchableOpacity onPress={() => handleSelectVehicle(item)}>
+        <View style={[s.row, { backgroundColor: rowBackground }]}>
+          <View style={[s.sideBar, { backgroundColor: sideBarColor }]} />
+          <View style={s.cellWrapper}>
+            <Text style={[s.td, { flex: 66 }]}>{item.model}</Text>
+            <Text style={[s.td, { flex: 44 }]}>{item.year}</Text>
+            <Text style={[s.td, { flex: 74 }]}>{item.number}</Text>
+            <Text style={[s.td, { flex: 60 }]}>{item.location}</Text>
+            <Text
+              style={[
+                s.td,
+                {
+                  flex: 44,
+                  color: item.washed ? colors.GREEN_50 : colors.RED_50,
+                },
+              ]}
+            >
+              {item.washed ? '○' : '✕'}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={{ flex: 1 }}>
       <AppHeader />
       <View style={s.container}>
+        {/* 상단 헤더 */}
         <View style={s.subHeader}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -48,6 +125,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
           </View>
         </View>
 
+        {/* 테이블 */}
         <View style={s.tableWrapper}>
           <View style={s.tableHeader}>
             <Text style={[s.th, { flex: 66 }]}>차종</Text>
@@ -57,35 +135,28 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             <Text style={[s.th, { flex: 44 }]}>세차</Text>
           </View>
 
-          <FlatList
+          <SwipeListView
             data={data}
             keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
+            renderHiddenItem={() => <View />}
+            rightOpenValue={-70}
+            disableRightSwipe
+            onRowOpen={handleSwipeOpen}
             showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={s.row}>
-                <View style={s.sideBar} />
-                <View style={s.cellWrapper}>
-                  <Text style={[s.td, { flex: 66 }]}>{item.model}</Text>
-                  <Text style={[s.td, { flex: 44 }]}>{item.year}</Text>
-                  <Text style={[s.td, { flex: 74 }]}>{item.number}</Text>
-                  <Text style={[s.td, { flex: 60 }]}>{item.location}</Text>
-                  <Text
-                    style={[
-                      s.td,
-                      {
-                        flex: 44,
-                        color: item.washed ? colors.GREEN_50 : colors.RED_50,
-                      },
-                    ]}
-                  >
-                    {item.washed ? '○' : '✕'}
-                  </Text>
-                </View>
-              </View>
-            )}
           />
         </View>
       </View>
+
+      <ContractModalManager />
+
+      {bookmarkVisible && bookmarkTarget && (
+        <BookmarkModal
+          visible={bookmarkVisible}
+          vehicle={bookmarkTarget}
+          onClose={handleBookmarkClose}
+        />
+      )}
     </View>
   );
 }
@@ -123,6 +194,14 @@ const s = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 15.4,
   },
+  tableWrapper: {
+    flex: 1,
+    backgroundColor: colors.WHITE,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    overflow: 'hidden',
+  },
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: colors.GRAY_05,
@@ -135,17 +214,8 @@ const s = StyleSheet.create({
     textAlign: 'center',
     fontSize: 11,
   },
-  tableWrapper: {
-    flex: 1,
-    backgroundColor: colors.WHITE,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
-    overflow: 'hidden',
-  },
   row: {
     flexDirection: 'row',
-    backgroundColor: colors.WHITE,
     borderBottomWidth: 1,
     borderBottomColor: colors.GRAY_10,
   },
@@ -153,7 +223,7 @@ const s = StyleSheet.create({
     width: 2,
     marginLeft: 4,
     marginVertical: 4,
-    backgroundColor: colors.PRIMARY_50,
+    borderRadius: 1,
   },
   cellWrapper: {
     flex: 1,
