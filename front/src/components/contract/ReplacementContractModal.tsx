@@ -148,7 +148,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               <View style={s.vehicleInfo}>
                 <Text style={s.vehicleTag}>{vehicle.model}</Text>
-                <Text style={s.vehicleTag}>{vehicle.year}</Text>
+                <Text style={s.vehicleTag}>{vehicle.year}연식</Text>
                 <Text style={s.vehicleTag}>{vehicle.number}</Text>
               </View>
 

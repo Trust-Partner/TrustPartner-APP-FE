@@ -34,7 +34,6 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
     req => req.label !== '교체건',
   );
 
-  /** ✅ 차량 변경 시마다 자동저장 상태 및 메세지 복원 */
   useEffect(() => {
     (async () => {
       try {
@@ -57,7 +56,6 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
     })();
   }, [vehicle.id]);
 
-  /** ✅ 배차확정 시 자동저장 상태에 따라 저장 or 삭제 */
   const handleConfirm = async () => {
     try {
       if (autoSave) {
@@ -102,7 +100,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
 
               <View style={s.vehicleInfo}>
                 <Text style={s.vehicleTag}>{vehicle.model}</Text>
-                <Text style={s.vehicleTag}>{vehicle.year}</Text>
+                <Text style={s.vehicleTag}>{vehicle.year}연식</Text>
                 <Text style={s.vehicleTag}>{vehicle.number}</Text>
               </View>
 
@@ -149,7 +147,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               {/* 전달받은 vehicle 정보 유지 */}
               <View style={s.vehicleInfo}>
                 <Text style={s.vehicleTag}>{vehicle.model}</Text>
-                <Text style={s.vehicleTag}>{vehicle.year}</Text>
+                <Text style={s.vehicleTag}>{vehicle.year}연식</Text>
                 <Text style={s.vehicleTag}>{vehicle.number}</Text>
               </View>
 
@@ -181,19 +179,6 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                 <TouchableOpacity style={s.sendBtn} onPress={handleConfirm}>
                   <Text style={s.sendBtnText}>배차 확정</Text>
                 </TouchableOpacity>
-
-                {/* <View style={s.footerRow}>
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
-                    onPress={() => setStep(1)}
-                  >
-                    <Image
-                      source={require('../../assets/common/left_arrow.png')}
-                      style={s.prevIcon}
-                    />
-                    <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                  </TouchableOpacity>
-                </View> */}
               </View>
             </>
           )}
@@ -367,30 +352,6 @@ const s = StyleSheet.create({
   footerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  footerBtn: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 4,
-  },
-  prevBtn: {
-    flexDirection: 'row',
-  },
-  prevText: {
-    color: colors.GRAY_90,
-  },
-  footerBtnText: {
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
-  },
-  prevIcon: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
-    tintColor: colors.GRAY_90,
-    marginRight: 4,
   },
   sendBtn: {
     backgroundColor: colors.PRIMARY_50,
