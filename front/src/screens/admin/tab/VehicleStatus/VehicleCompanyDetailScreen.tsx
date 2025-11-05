@@ -14,7 +14,12 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
-import { vehicleCompanyDetailMock } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
+import {
+  VehicleCompanyDetail,
+  vehicleCompanyDetailMock,
+} from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
+import VehicleReplaceModal from '../../../../components/vehicleStatus/VehicleReplaceModal';
+import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRetrieveModal';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation = useNavigation();
@@ -29,6 +34,13 @@ export default function VehicleCompanyDetailScreen() {
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
   >('전체');
+
+  const [replaceModalVisible, setReplaceModalVisible] = useState(false);
+  const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
+
+  const [selectedVehicle, setSelectedVehicle] = useState<
+    VehicleCompanyDetail['vehicles'][number] | null
+  >(null);
 
   const company = vehicleCompanyDetailMock.find(c => c.companyId === companyId);
   const filteredVehicles =
@@ -236,11 +248,23 @@ export default function VehicleCompanyDetailScreen() {
                   {isOpen && (
                     <View style={s.buttonRow}>
                       {isDispatched && (
-                        <Pressable style={[s.actionBtn, s.grayBtn]}>
+                        <Pressable
+                          style={[s.actionBtn, s.grayBtn]}
+                          onPress={() => {
+                            setSelectedVehicle(item);
+                            setReplaceModalVisible(true);
+                          }}
+                        >
                           <Text style={s.actionText}>교체하기</Text>
                         </Pressable>
                       )}
-                      <Pressable style={[s.actionBtn, s.blueBtn]}>
+                      <Pressable
+                        style={[s.actionBtn, s.blueBtn]}
+                        onPress={() => {
+                          setSelectedVehicle(item);
+                          setRetrieveModalVisible(true);
+                        }}
+                      >
                         <Text style={[s.actionText, { color: colors.WHITE }]}>
                           회수하기
                         </Text>
@@ -253,6 +277,22 @@ export default function VehicleCompanyDetailScreen() {
           }}
         />
       </View>
+
+      {selectedVehicle && (
+        <VehicleReplaceModal
+          visible={replaceModalVisible}
+          onClose={() => setReplaceModalVisible(false)}
+          vehicle={selectedVehicle}
+        />
+      )}
+
+      {selectedVehicle && (
+        <VehicleRetrieveModal
+          visible={retrieveModalVisible}
+          onClose={() => setRetrieveModalVisible(false)}
+          vehicle={selectedVehicle}
+        />
+      )}
     </View>
   );
 }
