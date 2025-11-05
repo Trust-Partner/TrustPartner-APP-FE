@@ -281,7 +281,10 @@ export default function VehicleCompanyDetailScreen() {
       {selectedVehicle && (
         <VehicleReplaceModal
           visible={replaceModalVisible}
-          onClose={() => setReplaceModalVisible(false)}
+          onClose={() => {
+            setReplaceModalVisible(false);
+            setSelectedVehicle(null);
+          }}
           vehicle={selectedVehicle}
         />
       )}
@@ -289,7 +292,10 @@ export default function VehicleCompanyDetailScreen() {
       {selectedVehicle && (
         <VehicleRetrieveModal
           visible={retrieveModalVisible}
-          onClose={() => setRetrieveModalVisible(false)}
+          onClose={() => {
+            setRetrieveModalVisible(false);
+            setSelectedVehicle(null);
+          }}
           vehicle={selectedVehicle}
         />
       )}
