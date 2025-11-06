@@ -114,9 +114,9 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
   const handleSendContract = () => setSendModalVisible(true);
 
-  /** 교체요청건 목록: 배차요청 중 label === '교체건' */
+  // 교체요청건 목록: 배차요청 중 교체건
   const replacementRequests = mockDispatchRequests.filter(
-    req => req.label === '교체건',
+    req => req.isReplacement,
   );
 
   // 선택된 교체요청건 저장용

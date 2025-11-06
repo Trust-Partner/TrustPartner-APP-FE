@@ -31,7 +31,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
 
   // 교체건이 아닌 배차요청건만
   const dispatchRequests = mockDispatchRequests.filter(
-    req => req.label !== '교체건',
+    req => !req.isReplacement,
   );
 
   useEffect(() => {
