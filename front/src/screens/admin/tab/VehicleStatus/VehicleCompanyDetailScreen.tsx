@@ -20,9 +20,12 @@ import {
 } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import VehicleReplaceModal from '../../../../components/vehicleStatus/VehicleReplaceModal';
 import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRetrieveModal';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../navigations/root/RootNavigator';
 
 export default function VehicleCompanyDetailScreen() {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
   const { companyId, companyName } = route.params as {
     companyId: number;
@@ -180,99 +183,107 @@ export default function VehicleCompanyDetailScreen() {
             const isDispatched = item.status === '배차중';
 
             return (
-              <View style={s.item}>
-                {/* 상태바 */}
-                <View
-                  style={[
-                    s.statusBar,
-                    item.status === '배차중' && {
-                      backgroundColor: colors.YELLOW_50,
-                    },
-                    item.status === '대기중' && {
-                      backgroundColor: colors.PRIMARY_50,
-                    },
-                    item.status === '반납신청' && {
-                      backgroundColor: colors.RED_50,
-                    },
-                  ]}
-                />
-                {/* 본문 */}
-                <View style={s.itemBody}>
-                  {/* 상단: 차량명 / 날짜·시간 / 화살표 */}
-                  <View style={s.itemTop}>
-                    <View style={s.carInfo}>
-                      <Text style={s.carName}>{item.name}</Text>
-                      <View style={s.plateBadge}>
-                        <Text style={s.plate}>{item.plateNumber}</Text>
-                      </View>
-                    </View>
-
-                    {/* 오른쪽: 날짜·시간 + 화살표 */}
-                    <View style={s.rightWrap}>
-                      <View style={{ alignItems: 'flex-end' }}>
-                        <View style={s.row}>
-                          <Image
-                            source={require('../../../../assets/common/calendar.png')}
-                            style={s.smallIcon}
-                          />
-                          <Text style={s.date}>{item.lastUpdate}</Text>
-                        </View>
-                        <View style={s.row}>
-                          <Image
-                            source={require('../../../../assets/common/clock.png')}
-                            style={s.smallIcon}
-                          />
-                          <Text style={s.time}>{item.duration}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('ContractIntegrated', {
+                    contractId: item.id,
+                  })
+                }
+              >
+                <View style={s.item}>
+                  {/* 상태바 */}
+                  <View
+                    style={[
+                      s.statusBar,
+                      item.status === '배차중' && {
+                        backgroundColor: colors.YELLOW_50,
+                      },
+                      item.status === '대기중' && {
+                        backgroundColor: colors.PRIMARY_50,
+                      },
+                      item.status === '반납신청' && {
+                        backgroundColor: colors.RED_50,
+                      },
+                    ]}
+                  />
+                  {/* 본문 */}
+                  <View style={s.itemBody}>
+                    {/* 상단: 차량명 / 날짜·시간 / 화살표 */}
+                    <View style={s.itemTop}>
+                      <View style={s.carInfo}>
+                        <Text style={s.carName}>{item.name}</Text>
+                        <View style={s.plateBadge}>
+                          <Text style={s.plate}>{item.plateNumber}</Text>
                         </View>
                       </View>
-                      <Pressable
-                        onPress={() => handleExpand(item.id)}
-                        style={s.arrowWrap}
-                      >
-                        <Image
-                          source={require('../../../../assets/common/down_arrow.png')}
-                          style={[
-                            s.arrowIcon,
-                            {
-                              transform: [
-                                { rotate: isOpen ? '180deg' : '0deg' },
-                              ],
-                            },
-                          ]}
-                        />
-                      </Pressable>
-                    </View>
-                  </View>
 
-                  {/* 교체/회수 버튼 */}
-                  {isOpen && (
-                    <View style={s.buttonRow}>
-                      {isDispatched && (
+                      {/* 오른쪽: 날짜·시간 + 화살표 */}
+                      <View style={s.rightWrap}>
+                        <View style={{ alignItems: 'flex-end' }}>
+                          <View style={s.row}>
+                            <Image
+                              source={require('../../../../assets/common/calendar.png')}
+                              style={s.smallIcon}
+                            />
+                            <Text style={s.date}>{item.lastUpdate}</Text>
+                          </View>
+                          <View style={s.row}>
+                            <Image
+                              source={require('../../../../assets/common/clock.png')}
+                              style={s.smallIcon}
+                            />
+                            <Text style={s.time}>{item.duration}</Text>
+                          </View>
+                        </View>
                         <Pressable
-                          style={[s.actionBtn, s.grayBtn]}
+                          onPress={() => handleExpand(item.id)}
+                          style={s.arrowWrap}
+                        >
+                          <Image
+                            source={require('../../../../assets/common/down_arrow.png')}
+                            style={[
+                              s.arrowIcon,
+                              {
+                                transform: [
+                                  { rotate: isOpen ? '180deg' : '0deg' },
+                                ],
+                              },
+                            ]}
+                          />
+                        </Pressable>
+                      </View>
+                    </View>
+
+                    {/* 교체/회수 버튼 */}
+                    {isOpen && (
+                      <View style={s.buttonRow}>
+                        {isDispatched && (
+                          <Pressable
+                            style={[s.actionBtn, s.grayBtn]}
+                            onPress={() => {
+                              setSelectedVehicle(item);
+                              setReplaceModalVisible(true);
+                            }}
+                          >
+                            <Text style={s.actionText}>교체하기</Text>
+                          </Pressable>
+                        )}
+                        <Pressable
+                          style={[s.actionBtn, s.blueBtn]}
                           onPress={() => {
                             setSelectedVehicle(item);
-                            setReplaceModalVisible(true);
+                            setRetrieveModalVisible(true);
                           }}
                         >
-                          <Text style={s.actionText}>교체하기</Text>
+                          <Text style={[s.actionText, { color: colors.WHITE }]}>
+                            회수하기
+                          </Text>
                         </Pressable>
-                      )}
-                      <Pressable
-                        style={[s.actionBtn, s.blueBtn]}
-                        onPress={() => {
-                          setSelectedVehicle(item);
-                          setRetrieveModalVisible(true);
-                        }}
-                      >
-                        <Text style={[s.actionText, { color: colors.WHITE }]}>
-                          회수하기
-                        </Text>
-                      </Pressable>
-                    </View>
-                  )}
+                      </View>
+                    )}
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           }}
         />

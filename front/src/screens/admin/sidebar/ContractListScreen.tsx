@@ -13,8 +13,15 @@ import { Calendar } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { colors } from '../../../constants/colors';
 import { contractListMock } from '../../../mock/contractListMock';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../navigations/root/RootNavigator';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function ContractListScreen() {
+  const navigation = useNavigation<NavigationProp>();
+
   const [search, setSearch] = useState('');
   const [openPicker, setOpenPicker] = useState<'start' | 'end' | null>(null);
   const [range, setRange] = useState<{
@@ -51,6 +58,10 @@ export default function ContractListScreen() {
 
     return matchSearch && matchDate;
   });
+
+  const handlePressContract = (contractId: number) => {
+    navigation.navigate('ContractIntegrated', { contractId });
+  };
 
   return (
     <View style={s.container}>
@@ -132,34 +143,36 @@ export default function ContractListScreen() {
           nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={s.card}>
-              <View style={s.cardRow}>
-                <Image
-                  source={require('../../../assets/admin-contract/person.png')}
-                  style={s.iconSmall}
-                />
-                <Text style={s.cardText}>{item.customerName}</Text>
-              </View>
+            <TouchableOpacity onPress={() => handlePressContract(item.id)}>
+              <View style={s.card}>
+                <View style={s.cardRow}>
+                  <Image
+                    source={require('../../../assets/admin-contract/person.png')}
+                    style={s.iconSmall}
+                  />
+                  <Text style={s.cardText}>{item.customerName}</Text>
+                </View>
 
-              <View style={s.cardRow}>
-                <Image
-                  source={require('../../../assets/admin-contract/calender.png')}
-                  style={s.iconSmall}
-                />
-                <Text style={s.cardDateText}>{item.startDate}</Text>
-              </View>
+                <View style={s.cardRow}>
+                  <Image
+                    source={require('../../../assets/admin-contract/calender.png')}
+                    style={s.iconSmall}
+                  />
+                  <Text style={s.cardDateText}>{item.startDate}</Text>
+                </View>
 
-              <View style={s.carBox}>
-                <Image
-                  source={require('../../../assets/common/file_icon.png')}
-                  style={s.iconCar}
-                />
-                <View style={s.textRow}>
-                  <Text style={s.carName}>{item.carName}</Text>
-                  <Text style={s.carNumber}>{item.carNumber}</Text>
+                <View style={s.carBox}>
+                  <Image
+                    source={require('../../../assets/common/file_icon.png')}
+                    style={s.iconCar}
+                  />
+                  <View style={s.textRow}>
+                    <Text style={s.carName}>{item.carName}</Text>
+                    <Text style={s.carNumber}>{item.carNumber}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       </View>

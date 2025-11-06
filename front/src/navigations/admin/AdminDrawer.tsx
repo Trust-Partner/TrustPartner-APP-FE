@@ -7,11 +7,23 @@ import CustomDrawerContent from './AdminDrawerContent';
 import PartnerManageStack from './stacks/drawer/PartnerManageStack';
 import PrepayStack from './stacks/drawer/PrepayStack';
 import ReservationsStack from './stacks/drawer/ReservationsStack';
-import AdminBottomTabs from './stacks/tabs/AdminBottomTabs';
+import AdminBottomTabs, {
+  AdminTabParamList,
+} from './stacks/tabs/AdminBottomTabs';
 import MyInfoStack from './stacks/drawer/MyInfoStack';
 import ContractsStack from './stacks/drawer/ContractsStack';
+import { NavigatorScreenParams } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
+
+export type AdminDrawerParamList = {
+  AdminTabsStack: NavigatorScreenParams<AdminTabParamList>;
+  MyInfo: undefined;
+  PartnerManage: undefined;
+  Contracts: undefined;
+  Prepay: undefined;
+  Reservations: undefined;
+};
 
 export default function AdminDrawer() {
   return (
