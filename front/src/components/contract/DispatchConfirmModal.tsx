@@ -95,7 +95,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
           {step === 1 && (
             <>
               <View style={s.headerRow}>
-                <Text style={s.title}>배차요청건 선택</Text>
+                <Text style={s.title}>배차 요청건 선택</Text>
               </View>
 
               <View style={s.vehicleInfo}>
@@ -106,7 +106,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
 
               <View style={{ marginTop: 16 }} />
               {dispatchRequests.length === 0 ? (
-                <Text style={s.emptyText}>배차요청건이 없습니다.</Text>
+                <Text style={s.emptyText}>배차 요청건이 없습니다.</Text>
               ) : (
                 dispatchRequests.map(req => (
                   <TouchableOpacity
@@ -122,14 +122,12 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                       <View style={s.leftLine} />
                       <View style={s.companyRow}>
                         <Text style={s.companyText}>{req.company}</Text>
-                        <View style={s.modelBadge}>
-                          <Text style={s.modelBadgeText}>{req.model}</Text>
+                        <View style={s.badge}>
+                          <Text style={s.badgeText}>{req.model}</Text>
+                          <Text style={s.badgeText}>{req.year}</Text>
+                          <Text style={s.badgeText}>{req.displacement}</Text>
                         </View>
                       </View>
-                    </View>
-
-                    <View style={s.labelBox}>
-                      <Text style={s.labelText}>배차건</Text>
                     </View>
                   </TouchableOpacity>
                 ))
@@ -288,31 +286,21 @@ const s = StyleSheet.create({
     lineHeight: 16.8,
     marginRight: 8,
   },
-  modelBadge: {
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    gap: 4,
+  },
+  badgeText: {
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    borderRadius: 50,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
-    marginTop: 2,
-  },
-  modelBadgeText: {
-    fontSize: 11,
-    color: colors.GRAY_60,
-    fontWeight: '400',
-    lineHeight: 15.4,
-  },
-  labelBox: {
-    backgroundColor: colors.YELLOW_00,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    marginTop: -2,
-  },
-  labelText: {
     fontSize: 11,
-    fontWeight: '400',
     color: colors.GRAY_60,
+    fontWeight: '400',
     lineHeight: 15.4,
   },
   subTitle: {
