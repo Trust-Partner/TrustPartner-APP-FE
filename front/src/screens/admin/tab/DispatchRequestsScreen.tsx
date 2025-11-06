@@ -86,9 +86,9 @@ export default function DispatchRequestScreen() {
                   <Text style={[s.company, !isActive && s.textGray]}>
                     {item.company}
                   </Text>
-                  {item.label && (
+                  {item.isReplacement && (
                     <View style={s.badge}>
-                      <Text style={s.badgeText}>{item.label}</Text>
+                      <Text style={s.badgeText}>교체건</Text>
                     </View>
                   )}
                   <View style={{ flex: 1 }} />
@@ -109,7 +109,27 @@ export default function DispatchRequestScreen() {
 
               {isOpen && (
                 <View style={s.expandArea}>
-                  <Text style={s.modelText}>{item.model}</Text>
+                  {item.isReplacement ? (
+                    <Text style={s.expandBadgeText}>{item.model}</Text>
+                  ) : (
+                    <>
+                      <Text
+                        style={[s.expandBadgeText, !isActive && s.textGray]}
+                      >
+                        {item.model}
+                      </Text>
+                      <Text
+                        style={[s.expandBadgeText, !isActive && s.textGray]}
+                      >
+                        {item.year}
+                      </Text>
+                      <Text
+                        style={[s.expandBadgeText, !isActive && s.textGray]}
+                      >
+                        {item.displacement}
+                      </Text>
+                    </>
+                  )}
                 </View>
               )}
             </TouchableOpacity>
@@ -231,19 +251,22 @@ const s = StyleSheet.create({
   expandArea: {
     marginTop: 8,
     alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 4,
+  },
+  expandBadgeText: {
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-  },
-  modelText: {
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15,
     color: colors.GRAY_60,
   },
   textGray: {
+    borderColor: colors.GRAY_10,
     color: colors.GRAY_40,
   },
 });
