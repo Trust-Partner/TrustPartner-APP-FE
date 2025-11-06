@@ -1,0 +1,65 @@
+export const contractMock = {
+  id: 1001,
+  car: { model: 'K5', number: '82하5973' },
+  memoList: [
+    {
+      id: 1,
+      writer: '서승동',
+      content: '정산금 반영완료',
+      createdAt: '2025-01-04 09:00',
+    },
+    {
+      id: 2,
+      writer: '서승동',
+      content: '정산금 반영완료',
+      createdAt: '2025-01-04 09:00',
+    },
+  ],
+  contractDate: {
+    start: '2025-01-01 09:00',
+    end: '2025-01-06 09:00',
+    period: '5일 0시간',
+  },
+  customer: {
+    name: '김기성',
+    phone: '010-2873-4467',
+    address: '서울시 강남구 테헤란로 123',
+  },
+  accident: {
+    status: '배차중',
+    carNumber: '10가 1234',
+    carModel: 'K5',
+    displacement: '2000cc',
+    garage: '경성 자동차',
+    requestCompany: '경성 자동차',
+  },
+  insurance: {
+    status: '지급대기',
+    company: '삼성화재',
+    claimNumber: '2024-001234',
+    manager: '김민영',
+    fax: '12-546-8454',
+    phone: '010-4229-0664',
+  },
+  exchangeContract: {
+    date: '2025-01-02 09:00',
+    returnDate: '2025-01-07 09:00',
+    period: '5일 0시간',
+    model: 'K5',
+    number: '84하1861',
+    insurance: {
+      status: '지급확정',
+      company: '삼성화재',
+      claimNumber: '2024-001234',
+      manager: '김민영',
+      fax: '12-546-8454',
+      phone: '010-4229-0664',
+    },
+  },
+  payment: {
+    method: '계좌이체',
+    time: '선불',
+    amount: '150,000원',
+    note: '일반 계약서 작성',
+  },
+};
