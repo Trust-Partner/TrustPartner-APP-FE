@@ -18,7 +18,7 @@ interface Props {
   onSearch: (query: string) => Promise<string[]>;
 }
 
-export default function ContractSearchDropdown({
+export default function CommonSearchDropdown({
   placeholder,
   selectedValue,
   onSelect,

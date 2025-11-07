@@ -10,7 +10,7 @@ import { colors } from '../../constants/colors';
 
 interface Props extends TextInputProps {}
 
-export default function ContractInput({ style, ...rest }: Props) {
+export default function CommonInput({ style, ...rest }: Props) {
   return (
     <View style={s.wrapper}>
       <TextInput

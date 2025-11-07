@@ -15,7 +15,7 @@ import CommonModal from '../common/CommonModal';
 import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
-import ContractAmountInput from '../contract/ContractAmountInput';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
@@ -217,7 +217,7 @@ export default function VehicleRetrieveModal({
                   })}
                 </>
 
-                <ContractAmountInput
+                <CommonAmountInput
                   placeholder="유류량 입력"
                   value={formData.fuel}
                   onChangeText={v => updateField('fuel', v)}
