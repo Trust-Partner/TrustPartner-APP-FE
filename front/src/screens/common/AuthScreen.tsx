@@ -69,6 +69,7 @@ export default function AuthScreen() {
               <>
                 <TextInput
                   placeholder="아이디를 입력하세요"
+                  placeholderTextColor={colors.GRAY_50}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -98,6 +99,7 @@ export default function AuthScreen() {
                 <View style={[s.inputContainer, error && s.inputError]}>
                   <TextInput
                     placeholder="비밀번호를 입력하세요"
+                    placeholderTextColor={colors.GRAY_50}
                     value={value}
                     secureTextEntry={secure}
                     onChangeText={onChange}
