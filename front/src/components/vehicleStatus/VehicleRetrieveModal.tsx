@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { s as baseStyles } from '../contract/GeneralContractModal';
 import CommonModal from '../common/CommonModal';
 import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
@@ -103,33 +102,30 @@ export default function VehicleRetrieveModal({
       onBackdropPress={onClose}
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={baseStyles.modal}>
+        <View style={ms.modal}>
           {/* 닫기 버튼 */}
           <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
-              style={baseStyles.close}
+              style={ms.close}
             />
           </Pressable>
 
           {/* 헤더 */}
-          <View style={baseStyles.headerRow}>
-            <Text style={baseStyles.title}>회수하기</Text>
+          <View style={ms.headerRow}>
+            <Text style={ms.title}>회수하기</Text>
           </View>
 
           {/* 차량 정보 */}
-          <View style={baseStyles.vehicleInfo}>
-            <Text style={baseStyles.vehicleTag}>{vehicle.name}</Text>
-            <Text style={baseStyles.vehicleTag}>{vehicle.plateNumber}</Text>
+          <View style={ms.vehicleInfo}>
+            <Text style={ms.vehicleTag}>{vehicle.name}</Text>
+            <Text style={ms.vehicleTag}>{vehicle.plateNumber}</Text>
           </View>
 
           {/* 단계 표시 (2단계만 필요) */}
-          <View style={baseStyles.stepDots}>
+          <View style={ms.stepDots}>
             {[1, 2].map(i => (
-              <View
-                key={i}
-                style={[baseStyles.dot, step === i && baseStyles.dotActive]}
-              />
+              <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
             ))}
           </View>
 
@@ -227,9 +223,9 @@ export default function VehicleRetrieveModal({
             )}
 
             {step === 2 && (
-              <View style={baseStyles.photoContainer}>
+              <View style={ms.photoContainer}>
                 <View
-                  style={baseStyles.photoGrid}
+                  style={ms.photoGrid}
                   onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
                 >
                   {[
@@ -240,104 +236,88 @@ export default function VehicleRetrieveModal({
                       <Pressable
                         key={`add-${i}`}
                         style={[
-                          baseStyles.photoAddBtn,
+                          ms.photoAddBtn,
                           { width: itemSize, height: itemSize },
                         ]}
                         onPress={handleAddPhoto}
                       >
-                        <View style={baseStyles.addIconCircle}>
+                        <View style={ms.addIconCircle}>
                           <Image
                             source={require('../../assets/common/plus.png')}
-                            style={baseStyles.addIcon}
+                            style={ms.addIcon}
                           />
                         </View>
-                        <Text style={baseStyles.addText}>사진추가</Text>
+                        <Text style={ms.addText}>사진추가</Text>
                       </Pressable>
                     ) : (
                       <Pressable
                         key={i}
                         onPress={() => handleReplacePhoto(i)}
                         style={[
-                          baseStyles.photoItem,
+                          ms.photoItem,
                           { width: itemSize, height: itemSize },
                         ]}
                       >
                         <Image
                           source={{ uri: item.uri }}
-                          style={baseStyles.photoThumb}
+                          style={ms.photoThumb}
                           resizeMode="cover"
                         />
                         <Pressable
-                          style={baseStyles.removeOverlay}
+                          style={ms.removeOverlay}
                           onPress={() => handleRemovePhoto(i)}
                           hitSlop={HIT_SLOP.COMPACT}
                         >
                           <Image
                             source={require('../../assets/common/close.png')}
-                            style={baseStyles.removeIcon}
+                            style={ms.removeIcon}
                           />
                         </Pressable>
                       </Pressable>
                     ),
                   )}
                 </View>
-                <Text style={baseStyles.subText}>
-                  {photos.length}/9장 업로드됨
-                </Text>
+                <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
               </View>
             )}
           </View>
 
           {/* 하단 버튼 */}
-          <View style={baseStyles.footer}>
+          <View style={ms.footer}>
             {step === 1 ? (
-              <View style={baseStyles.footerRow}>
+              <View style={ms.footerRow}>
                 <Pressable
-                  style={[
-                    baseStyles.footerBtn,
-                    baseStyles.nextBtn,
-                    { flex: 1 },
-                  ]}
+                  style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
                   onPress={() => setStep(2)}
                 >
-                  <Text style={[baseStyles.footerBtnText, baseStyles.nextText]}>
-                    다음
-                  </Text>
+                  <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                   <Image
                     source={require('../../assets/common/right_arrow.png')}
-                    style={baseStyles.nextIcon}
+                    style={ms.nextIcon}
                   />
                 </Pressable>
               </View>
             ) : (
-              <View style={baseStyles.footerRow}>
+              <View style={ms.footerRow}>
                 <Pressable
-                  style={[
-                    baseStyles.footerBtn,
-                    baseStyles.prevBtn,
-                    { flex: 1 },
-                  ]}
+                  style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                   onPress={() => setStep(1)}
                 >
                   <Image
                     source={require('../../assets/common/left_arrow.png')}
-                    style={baseStyles.prevIcon}
+                    style={ms.prevIcon}
                   />
-                  <Text style={[baseStyles.footerBtnText, baseStyles.prevText]}>
-                    이전
-                  </Text>
+                  <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
                 </Pressable>
                 <Pressable
                   style={[
-                    baseStyles.footerBtn,
+                    ms.footerBtn,
 
                     { flex: 2, backgroundColor: colors.PRIMARY_50 },
                   ]}
                   onPress={() => setSendModalVisible(true)}
                 >
-                  <Text
-                    style={[baseStyles.footerBtnText, { color: colors.WHITE }]}
-                  >
+                  <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                     완료
                   </Text>
                 </Pressable>
@@ -363,3 +343,5 @@ export default function VehicleRetrieveModal({
     </Modal>
   );
 }
+
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
