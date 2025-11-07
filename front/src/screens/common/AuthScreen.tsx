@@ -4,12 +4,12 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  TouchableOpacity,
   Alert,
   Image,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuthStore } from '../../states/useAuthStore';
@@ -32,14 +32,28 @@ export default function AuthScreen() {
   const password = watch('password');
   const [secure, setSecure] = useState(true);
   const [autoLogin, setAutoLogin] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'user' | null>(
+    null,
+  );
 
   const onSubmit = ({ username, password }: LoginForm) => {
+    if (!selectedRole) {
+      Alert.alert('로그인 실패', '사용자 구분을 선택해주세요.');
+      return;
+    }
+
     const found = mockUsers.find(
-      u => u.username === username && u.password === password,
+      u =>
+        u.username === username &&
+        u.password === password &&
+        u.role === selectedRole,
     );
 
     if (!found) {
-      Alert.alert('로그인 실패', '아이디/비밀번호를 확인하세요.');
+      Alert.alert(
+        '로그인 실패',
+        '아이디/비밀번호 또는 사용자 구분을 확인하세요.',
+      );
       return;
     }
 
@@ -55,6 +69,30 @@ export default function AuthScreen() {
       <View style={s.container}>
         <View style={s.card}>
           <Text style={s.logo}>Trust Solution</Text>
+
+          {/* 사용자 구분 */}
+          <Text style={s.label}>사용자 구분</Text>
+          <View style={s.roleRow}>
+            {[
+              { key: 'admin', label: '매니저' },
+              { key: 'user', label: 'USER' },
+            ].map(({ key, label }) => (
+              <Pressable
+                key={key}
+                style={s.roleItem}
+                onPress={() =>
+                  setSelectedRole(
+                    selectedRole === key ? null : (key as 'admin' | 'user'),
+                  )
+                }
+              >
+                <View style={s.checkbox}>
+                  {selectedRole === key && <Text style={s.checkmark}>✓</Text>}
+                </View>
+                <Text style={s.checkboxLabel}>{label}</Text>
+              </Pressable>
+            ))}
+          </View>
 
           {/* 아이디 */}
           <Text style={s.label}>아이디</Text>
@@ -112,7 +150,7 @@ export default function AuthScreen() {
                     onSubmitEditing={handleSubmit(onSubmit)}
                     style={s.inputField}
                   />
-                  <TouchableOpacity
+                  <Pressable
                     onPress={() => setSecure(!secure)}
                     style={s.eyeBtn}
                     accessibilityRole="button"
@@ -128,7 +166,7 @@ export default function AuthScreen() {
                       }
                       style={s.eyeImg}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
                 {error && <Text style={s.errorText}>{error.message}</Text>}
               </>
@@ -136,7 +174,7 @@ export default function AuthScreen() {
           />
 
           {/* 자동 로그인 */}
-          <TouchableOpacity
+          <Pressable
             style={s.checkboxRow}
             onPress={() => setAutoLogin(!autoLogin)}
           >
@@ -144,33 +182,38 @@ export default function AuthScreen() {
               {autoLogin && <Text style={s.checkmark}>✓</Text>}
             </View>
             <Text style={s.checkboxLabel}>자동 로그인</Text>
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 로그인 버튼 */}
-          <TouchableOpacity
-            style={[s.loginBtn, !(username && password) && s.loginBtnDisabled]}
+          <Pressable
+            style={[
+              s.loginBtn,
+              !(username && password && selectedRole) && s.loginBtnDisabled,
+            ]}
             onPress={handleSubmit(onSubmit)}
-            disabled={!(username && password)}
+            disabled={!(username && password && selectedRole)}
           >
             <Text
               style={[
                 s.loginText,
-                !(username && password) && { color: colors.WHITE },
+                !(username && password && selectedRole) && {
+                  color: colors.WHITE,
+                },
               ]}
             >
               로그인
             </Text>
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 하단 링크 */}
           <View style={s.bottomLinks}>
-            <TouchableOpacity>
+            <Pressable>
               <Text style={s.link}>아이디 찾기</Text>
-            </TouchableOpacity>
+            </Pressable>
             <Text style={s.divider}> | </Text>
-            <TouchableOpacity>
+            <Pressable>
               <Text style={s.link}>비밀번호 찾기</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>
@@ -202,6 +245,16 @@ const s = StyleSheet.create({
     textAlign: 'center',
     color: colors.PRIMARY_50,
     marginBottom: 24,
+  },
+  roleRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    justifyContent: 'space-between',
+  },
+  roleItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   label: {
     fontSize: 11,
@@ -270,6 +323,7 @@ const s = StyleSheet.create({
     fontSize: 11,
     color: colors.GRAY_80,
     lineHeight: 15.4,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   loginBtn: {
     backgroundColor: colors.PRIMARY_50,
