@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   StyleSheet,
   Platform,
@@ -84,12 +84,12 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={s.modal}>
           {/* 닫기 버튼 */}
-          <TouchableOpacity onPress={onBack}>
+          <Pressable onPress={onBack}>
             <Image
               source={require('../../assets/common/close.png')}
               style={s.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {/* STEP 1 */}
           {step === 1 && (
@@ -109,9 +109,8 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                 <Text style={s.emptyText}>배차 요청건이 없습니다.</Text>
               ) : (
                 dispatchRequests.map(req => (
-                  <TouchableOpacity
+                  <Pressable
                     key={req.id}
-                    activeOpacity={0.8}
                     onPress={() => {
                       setSelectedRequest(req);
                       setStep(2);
@@ -129,7 +128,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                         </View>
                       </View>
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))
               )}
             </>
@@ -157,10 +156,9 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                 heightScale={0.1}
               />
 
-              <TouchableOpacity
+              <Pressable
                 style={s.checkboxRow}
                 onPress={() => setAutoSave(!autoSave)}
-                activeOpacity={0.8}
               >
                 <View style={[s.checkbox, autoSave && s.checked]}>
                   {autoSave && (
@@ -171,12 +169,12 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
                   )}
                 </View>
                 <Text style={s.checkboxLabel}>자동 저장</Text>
-              </TouchableOpacity>
+              </Pressable>
 
               <View style={s.footer}>
-                <TouchableOpacity style={s.sendBtn} onPress={handleConfirm}>
+                <Pressable style={s.sendBtn} onPress={handleConfirm}>
                   <Text style={s.sendBtnText}>배차 확정</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </>
           )}

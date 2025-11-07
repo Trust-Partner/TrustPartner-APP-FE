@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   Alert,
   PermissionsAndroid,
@@ -17,6 +17,7 @@ import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDet
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import ContractAmountInput from '../contract/ContractAmountInput';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   visible: boolean;
@@ -105,12 +106,12 @@ export default function VehicleReplaceModal({
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={baseStyles.modal}>
           {/* 닫기 버튼 */}
-          <TouchableOpacity onPress={onClose}>
+          <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
               style={baseStyles.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 헤더 */}
           <View style={baseStyles.headerRow}>
@@ -170,7 +171,7 @@ export default function VehicleReplaceModal({
                   ].map(opt => {
                     const checked = formData[opt.key];
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={opt.key}
                         style={{
                           flexDirection: 'row',
@@ -182,7 +183,6 @@ export default function VehicleReplaceModal({
                           marginBottom: 8,
                         }}
                         onPress={() => updateField(opt.key, !formData[opt.key])}
-                        activeOpacity={0.8}
                       >
                         <View>
                           <Text
@@ -226,7 +226,7 @@ export default function VehicleReplaceModal({
                             />
                           )}
                         </View>
-                      </TouchableOpacity>
+                      </Pressable>
                     );
                   })}
                 </>
@@ -251,14 +251,13 @@ export default function VehicleReplaceModal({
                     ...(photos.length < 9 ? [{ isAddButton: true }] : []),
                   ].map((item: any, i) =>
                     item.isAddButton ? (
-                      <TouchableOpacity
+                      <Pressable
                         key={`add-${i}`}
                         style={[
                           baseStyles.photoAddBtn,
                           { width: itemSize, height: itemSize },
                         ]}
                         onPress={handleAddPhoto}
-                        activeOpacity={0.8}
                       >
                         <View style={baseStyles.addIconCircle}>
                           <Image
@@ -267,9 +266,9 @@ export default function VehicleReplaceModal({
                           />
                         </View>
                         <Text style={baseStyles.addText}>사진추가</Text>
-                      </TouchableOpacity>
+                      </Pressable>
                     ) : (
-                      <TouchableOpacity
+                      <Pressable
                         key={i}
                         onPress={() => handleReplacePhoto(i)}
                         style={[
@@ -282,17 +281,17 @@ export default function VehicleReplaceModal({
                           style={baseStyles.photoThumb}
                           resizeMode="cover"
                         />
-                        <TouchableOpacity
+                        <Pressable
                           style={baseStyles.removeOverlay}
                           onPress={() => handleRemovePhoto(i)}
-                          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                          hitSlop={HIT_SLOP.COMPACT}
                         >
                           <Image
                             source={require('../../assets/common/close.png')}
                             style={baseStyles.removeIcon}
                           />
-                        </TouchableOpacity>
-                      </TouchableOpacity>
+                        </Pressable>
+                      </Pressable>
                     ),
                   )}
                 </View>
@@ -307,7 +306,7 @@ export default function VehicleReplaceModal({
           <View style={baseStyles.footer}>
             {step === 1 ? (
               <View style={baseStyles.footerRow}>
-                <TouchableOpacity
+                <Pressable
                   style={[
                     baseStyles.footerBtn,
                     baseStyles.nextBtn,
@@ -322,11 +321,11 @@ export default function VehicleReplaceModal({
                     source={require('../../assets/common/right_arrow.png')}
                     style={baseStyles.nextIcon}
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ) : (
               <View style={baseStyles.footerRow}>
-                <TouchableOpacity
+                <Pressable
                   style={[
                     baseStyles.footerBtn,
                     baseStyles.prevBtn,
@@ -341,8 +340,8 @@ export default function VehicleReplaceModal({
                   <Text style={[baseStyles.footerBtnText, baseStyles.prevText]}>
                     이전
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   style={[
                     baseStyles.footerBtn,
 
@@ -355,7 +354,7 @@ export default function VehicleReplaceModal({
                   >
                     완료
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             )}
           </View>

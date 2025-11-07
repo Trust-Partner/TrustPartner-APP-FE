@@ -71,7 +71,7 @@ export default function PrepaymentScreen() {
         {isHeader ? (
           <View />
         ) : (
-          <Pressable onPress={() => handleExpand(item!.id)} style={s.arrowWrap}>
+          <View style={s.arrowWrap}>
             <Image
               source={require('../../../assets/common/down_arrow.png')}
               style={[
@@ -79,7 +79,7 @@ export default function PrepaymentScreen() {
                 { transform: [{ rotate: expanded ? '180deg' : '0deg' }] },
               ]}
             />
-          </Pressable>
+          </View>
         )}
       </View>
     </View>
@@ -88,7 +88,7 @@ export default function PrepaymentScreen() {
   const renderItem = ({ item }: { item: PrepaymentItemType }) => {
     const isOpen = !!expanded[item.id];
     return (
-      <View style={s.item}>
+      <Pressable onPress={() => handleExpand(item.id)} style={s.item}>
         <View style={s.statusBar} />
         <View style={s.itemBody}>
           {renderRowLayout(false, item, isOpen)}
@@ -117,7 +117,7 @@ export default function PrepaymentScreen() {
             </View>
           )}
         </View>
-      </View>
+      </Pressable>
     );
   };
 

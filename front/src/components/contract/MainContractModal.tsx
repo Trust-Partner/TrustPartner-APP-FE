@@ -2,13 +2,14 @@ import React from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   StyleSheet,
   Platform,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   visible: boolean;
@@ -55,12 +56,12 @@ export default function MainContractModal({
       onBackdropPress={onClose}
     >
       <View style={s.modal}>
-        <TouchableOpacity onPress={onClose}>
+        <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
           <Image
             source={require('../../assets/common/close.png')}
             style={s.close}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         <View style={s.headerRow}>
           <Text style={s.title}>{model}</Text>
@@ -129,9 +130,8 @@ const ContractButton = ({
   disabled?: boolean;
   onPress: () => void;
 }) => (
-  <TouchableOpacity
+  <Pressable
     onPress={onPress}
-    activeOpacity={0.8}
     disabled={disabled}
     style={[s.btn, disabled && s.btnDisabled]}
   >
@@ -139,7 +139,7 @@ const ContractButton = ({
       <Image source={icon} style={[s.btnIcon, disabled && s.btnIconDisabled]} />
       <Text style={[s.btnText, disabled && s.btnTextDisabled]}>{label}</Text>
     </View>
-  </TouchableOpacity>
+  </Pressable>
 );
 
 const s = StyleSheet.create({

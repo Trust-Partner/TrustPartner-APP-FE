@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   Alert,
   PermissionsAndroid,
   Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
@@ -21,7 +19,6 @@ import CommonModal from '../common/CommonModal';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
-import ContractDropdown from './ContractSearchDropdown';
 import ContractSearchDropdown from './ContractSearchDropdown';
 import { s } from './GeneralContractModal';
 
@@ -136,12 +133,12 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={s.modal}>
-          <TouchableOpacity onPress={onBack}>
+          <Pressable onPress={onBack} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
               style={s.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           <View style={s.headerRow}>
             <Text style={s.title}>보험계약서 작성</Text>
@@ -245,14 +242,13 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                       ...(photos.length < 9 ? [{ isAddButton: true }] : []),
                     ].map((item: any, i) =>
                       item.isAddButton ? (
-                        <TouchableOpacity
+                        <Pressable
                           key={`add-${i}`}
                           style={[
                             s.photoAddBtn,
                             { width: itemSize, height: itemSize },
                           ]}
                           onPress={handleAddPhoto}
-                          activeOpacity={0.8}
                         >
                           <View style={s.addIconCircle}>
                             <Image
@@ -261,9 +257,9 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                             />
                           </View>
                           <Text style={s.addText}>사진추가</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       ) : (
-                        <TouchableOpacity
+                        <Pressable
                           key={i}
                           onPress={() => handleReplacePhoto(i)}
                           style={[
@@ -276,22 +272,17 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                             style={s.photoThumb}
                             resizeMode="cover"
                           />
-                          <TouchableOpacity
+                          <Pressable
                             style={s.removeOverlay}
                             onPress={() => removePhoto(i)}
-                            hitSlop={{
-                              top: 6,
-                              bottom: 6,
-                              left: 6,
-                              right: 6,
-                            }}
+                            hitSlop={HIT_SLOP.COMPACT}
                           >
                             <Image
                               source={require('../../assets/common/close.png')}
                               style={s.removeIcon}
                             />
-                          </TouchableOpacity>
-                        </TouchableOpacity>
+                          </Pressable>
+                        </Pressable>
                       ),
                     )}
                   </View>
@@ -330,9 +321,9 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                       webStyle={signatureStyle}
                     />
                   </View>
-                  <TouchableOpacity style={s.clearBtn} onPress={handleClear}>
+                  <Pressable style={s.clearBtn} onPress={handleClear}>
                     <Text style={s.clearText}>지우기</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
 
                 {!isComplete && (
@@ -356,7 +347,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
           <View style={s.footer}>
             {step === 4 ? (
               <>
-                <TouchableOpacity
+                <Pressable
                   style={[s.sendBtn, !isComplete && s.sendBtnDisabled]}
                   disabled={!isComplete}
                   onPress={handleSendContract}
@@ -369,9 +360,9 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   >
                     보험계약서 카카오톡 전송하기
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
                 <View style={s.footerRow}>
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
                     onPress={prevStep}
                   >
@@ -380,28 +371,28 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                       style={s.prevIcon}
                     />
                     <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
+                  </Pressable>
+                  <Pressable
                     style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
                     onPress={saveDraftData}
                   >
                     <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               </>
             ) : (
               <View style={s.footerRow}>
                 {step === 1 ? (
                   <>
-                    <TouchableOpacity
+                    <Pressable
                       style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
                       onPress={saveDraftData}
                     >
                       <Text style={[s.footerBtnText, s.draftText]}>
                         임시저장
                       </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
                       style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
                       onPress={nextStep}
                     >
@@ -410,11 +401,11 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                         source={require('../../assets/common/right_arrow.png')}
                         style={s.nextIcon}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   </>
                 ) : (
                   <>
-                    <TouchableOpacity
+                    <Pressable
                       style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
                       onPress={prevStep}
                     >
@@ -423,16 +414,16 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                         style={s.prevIcon}
                       />
                       <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
                       style={[s.footerBtn, s.draftBtn, { flex: 2 }]}
                       onPress={saveDraftData}
                     >
                       <Text style={[s.footerBtnText, s.draftText]}>
                         임시저장
                       </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
+                    </Pressable>
+                    <Pressable
                       style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
                       onPress={nextStep}
                     >
@@ -441,7 +432,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                         source={require('../../assets/common/right_arrow.png')}
                         style={s.nextIcon}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   </>
                 )}
               </View>
@@ -467,4 +458,5 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
 }
 
 import { s as generalStyles } from './GeneralContractModal';
+import { HIT_SLOP } from '../../constants/touch';
 export { generalStyles };

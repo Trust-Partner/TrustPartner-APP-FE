@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   Image,
   Platform,
@@ -21,6 +21,7 @@ import SignatureScreen from 'react-native-signature-canvas';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   onBack: () => void;
@@ -140,12 +141,12 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
       onBackdropPress={onBack}
     >
       <View style={s.modal}>
-        <TouchableOpacity onPress={onBack}>
+        <Pressable onPress={onBack} hitSlop={HIT_SLOP.MEDIUM}>
           <Image
             source={require('../../assets/common/close.png')}
             style={s.close}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         <View style={s.headerRow}>
           <Text style={s.title}>일반계약서 작성</Text>
@@ -189,7 +190,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
               <View style={s.radioWrap}>
                 <View style={s.radioRow}>
                   {['계좌이체', '카드'].map(opt => (
-                    <TouchableOpacity
+                    <Pressable
                       key={opt}
                       style={s.radioBox}
                       onPress={() => updateField('payment', opt)}
@@ -201,13 +202,13 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                           formData.payment === opt && s.radioActive,
                         ]}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
 
                 <View style={s.radioRow}>
                   {['선불', '후불'].map(opt => (
-                    <TouchableOpacity
+                    <Pressable
                       key={opt}
                       style={s.radioBox}
                       onPress={() => updateField('payment', opt)}
@@ -219,7 +220,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                           formData.payment === opt && s.radioActive,
                         ]}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
               </View>
@@ -256,14 +257,13 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                   ].map((item: any, i) => {
                     if (item.isAddButton) {
                       return (
-                        <TouchableOpacity
+                        <Pressable
                           key={`add-${i}`}
                           style={[
                             s.photoAddBtn,
                             { width: itemSize, height: itemSize },
                           ]}
                           onPress={handleAddPhoto}
-                          activeOpacity={0.8}
                         >
                           <View style={s.addIconCircle}>
                             <Image
@@ -272,14 +272,13 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                             />
                           </View>
                           <Text style={s.addText}>사진추가</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       );
                     }
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={i}
                         onPress={() => handleReplacePhoto(i)}
-                        activeOpacity={0.8}
                         style={[
                           s.photoItem,
                           { width: itemSize, height: itemSize },
@@ -291,17 +290,17 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                           resizeMode="cover"
                         />
 
-                        <TouchableOpacity
+                        <Pressable
                           style={s.removeOverlay}
                           onPress={() => removePhoto(i)}
-                          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                          hitSlop={HIT_SLOP.COMPACT}
                         >
                           <Image
                             source={require('../../assets/common/close.png')}
                             style={s.removeIcon}
                           />
-                        </TouchableOpacity>
-                      </TouchableOpacity>
+                        </Pressable>
+                      </Pressable>
                     );
                   })}
                 </View>
@@ -349,9 +348,9 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                   />
                 </View>
 
-                <TouchableOpacity style={s.clearBtn} onPress={handleClear}>
+                <Pressable style={s.clearBtn} onPress={handleClear}>
                   <Text style={s.clearText}>지우기</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
               {!isComplete && (
                 <View style={s.missingBox}>
@@ -375,7 +374,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
         <View style={s.footer}>
           {step === 4 && (
             <>
-              <TouchableOpacity
+              <Pressable
                 style={[s.sendBtn, !isComplete && s.sendBtnDisabled]}
                 disabled={!isComplete}
                 onPress={handleSendContract}
@@ -388,9 +387,9 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                 >
                   계약서 카카오톡 전송하기
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
               <View style={s.footerRow}>
-                <TouchableOpacity
+                <Pressable
                   style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
                   onPress={prevStep}
                 >
@@ -399,13 +398,13 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                     style={s.prevIcon}
                   />
                   <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
                   onPress={saveDraftData}
                 >
                   <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </>
           )}
@@ -414,14 +413,14 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
             <View style={s.footerRow}>
               {step === 1 ? (
                 <>
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
                     onPress={saveDraftData}
                   >
                     <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                  </TouchableOpacity>
+                  </Pressable>
 
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
                     onPress={nextStep}
                   >
@@ -430,11 +429,11 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                       source={require('../../assets/common/right_arrow.png')}
                       style={s.nextIcon}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 </>
               ) : (
                 <>
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
                     onPress={prevStep}
                   >
@@ -443,16 +442,16 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                       style={s.prevIcon}
                     />
                     <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                  </TouchableOpacity>
+                  </Pressable>
 
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.draftBtn, { flex: 2 }]}
                     onPress={saveDraftData}
                   >
                     <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                  </TouchableOpacity>
+                  </Pressable>
 
-                  <TouchableOpacity
+                  <Pressable
                     style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
                     onPress={nextStep}
                   >
@@ -461,7 +460,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                       source={require('../../assets/common/right_arrow.png')}
                       style={s.nextIcon}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 </>
               )}
             </View>
