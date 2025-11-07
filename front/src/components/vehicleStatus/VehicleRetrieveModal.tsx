@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   Alert,
   PermissionsAndroid,
@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { s as baseStyles } from '../contract/GeneralContractModal';
 import CommonModal from '../common/CommonModal';
 import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
-import ContractAmountInput from '../contract/ContractAmountInput';
+import CommonAmountInput from '../common/CommonAmountInput';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   visible: boolean;
@@ -102,33 +102,30 @@ export default function VehicleRetrieveModal({
       onBackdropPress={onClose}
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={baseStyles.modal}>
+        <View style={ms.modal}>
           {/* 닫기 버튼 */}
-          <TouchableOpacity onPress={onClose}>
+          <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
-              style={baseStyles.close}
+              style={ms.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 헤더 */}
-          <View style={baseStyles.headerRow}>
-            <Text style={baseStyles.title}>회수하기</Text>
+          <View style={ms.headerRow}>
+            <Text style={ms.title}>회수하기</Text>
           </View>
 
           {/* 차량 정보 */}
-          <View style={baseStyles.vehicleInfo}>
-            <Text style={baseStyles.vehicleTag}>{vehicle.name}</Text>
-            <Text style={baseStyles.vehicleTag}>{vehicle.plateNumber}</Text>
+          <View style={ms.vehicleInfo}>
+            <Text style={ms.vehicleTag}>{vehicle.name}</Text>
+            <Text style={ms.vehicleTag}>{vehicle.plateNumber}</Text>
           </View>
 
           {/* 단계 표시 (2단계만 필요) */}
-          <View style={baseStyles.stepDots}>
+          <View style={ms.stepDots}>
             {[1, 2].map(i => (
-              <View
-                key={i}
-                style={[baseStyles.dot, step === i && baseStyles.dotActive]}
-              />
+              <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
             ))}
           </View>
 
@@ -156,7 +153,7 @@ export default function VehicleRetrieveModal({
                   ].map(opt => {
                     const checked = formData[opt.key];
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={opt.key}
                         style={{
                           flexDirection: 'row',
@@ -168,7 +165,6 @@ export default function VehicleRetrieveModal({
                           marginBottom: 8,
                         }}
                         onPress={() => updateField(opt.key, !formData[opt.key])}
-                        activeOpacity={0.8}
                       >
                         <View>
                           <Text
@@ -212,12 +208,12 @@ export default function VehicleRetrieveModal({
                             />
                           )}
                         </View>
-                      </TouchableOpacity>
+                      </Pressable>
                     );
                   })}
                 </>
 
-                <ContractAmountInput
+                <CommonAmountInput
                   placeholder="유류량 입력"
                   value={formData.fuel}
                   onChangeText={v => updateField('fuel', v)}
@@ -227,9 +223,9 @@ export default function VehicleRetrieveModal({
             )}
 
             {step === 2 && (
-              <View style={baseStyles.photoContainer}>
+              <View style={ms.photoContainer}>
                 <View
-                  style={baseStyles.photoGrid}
+                  style={ms.photoGrid}
                   onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
                 >
                   {[
@@ -237,111 +233,94 @@ export default function VehicleRetrieveModal({
                     ...(photos.length < 9 ? [{ isAddButton: true }] : []),
                   ].map((item: any, i) =>
                     item.isAddButton ? (
-                      <TouchableOpacity
+                      <Pressable
                         key={`add-${i}`}
                         style={[
-                          baseStyles.photoAddBtn,
+                          ms.photoAddBtn,
                           { width: itemSize, height: itemSize },
                         ]}
                         onPress={handleAddPhoto}
-                        activeOpacity={0.8}
                       >
-                        <View style={baseStyles.addIconCircle}>
+                        <View style={ms.addIconCircle}>
                           <Image
                             source={require('../../assets/common/plus.png')}
-                            style={baseStyles.addIcon}
+                            style={ms.addIcon}
                           />
                         </View>
-                        <Text style={baseStyles.addText}>사진추가</Text>
-                      </TouchableOpacity>
+                        <Text style={ms.addText}>사진추가</Text>
+                      </Pressable>
                     ) : (
-                      <TouchableOpacity
+                      <Pressable
                         key={i}
                         onPress={() => handleReplacePhoto(i)}
                         style={[
-                          baseStyles.photoItem,
+                          ms.photoItem,
                           { width: itemSize, height: itemSize },
                         ]}
                       >
                         <Image
                           source={{ uri: item.uri }}
-                          style={baseStyles.photoThumb}
+                          style={ms.photoThumb}
                           resizeMode="cover"
                         />
-                        <TouchableOpacity
-                          style={baseStyles.removeOverlay}
+                        <Pressable
+                          style={ms.removeOverlay}
                           onPress={() => handleRemovePhoto(i)}
-                          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                          hitSlop={HIT_SLOP.COMPACT}
                         >
                           <Image
                             source={require('../../assets/common/close.png')}
-                            style={baseStyles.removeIcon}
+                            style={ms.removeIcon}
                           />
-                        </TouchableOpacity>
-                      </TouchableOpacity>
+                        </Pressable>
+                      </Pressable>
                     ),
                   )}
                 </View>
-                <Text style={baseStyles.subText}>
-                  {photos.length}/9장 업로드됨
-                </Text>
+                <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
               </View>
             )}
           </View>
 
           {/* 하단 버튼 */}
-          <View style={baseStyles.footer}>
+          <View style={ms.footer}>
             {step === 1 ? (
-              <View style={baseStyles.footerRow}>
-                <TouchableOpacity
-                  style={[
-                    baseStyles.footerBtn,
-                    baseStyles.nextBtn,
-                    { flex: 1 },
-                  ]}
+              <View style={ms.footerRow}>
+                <Pressable
+                  style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
                   onPress={() => setStep(2)}
                 >
-                  <Text style={[baseStyles.footerBtnText, baseStyles.nextText]}>
-                    다음
-                  </Text>
+                  <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                   <Image
                     source={require('../../assets/common/right_arrow.png')}
-                    style={baseStyles.nextIcon}
+                    style={ms.nextIcon}
                   />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ) : (
-              <View style={baseStyles.footerRow}>
-                <TouchableOpacity
-                  style={[
-                    baseStyles.footerBtn,
-                    baseStyles.prevBtn,
-                    { flex: 1 },
-                  ]}
+              <View style={ms.footerRow}>
+                <Pressable
+                  style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                   onPress={() => setStep(1)}
                 >
                   <Image
                     source={require('../../assets/common/left_arrow.png')}
-                    style={baseStyles.prevIcon}
+                    style={ms.prevIcon}
                   />
-                  <Text style={[baseStyles.footerBtnText, baseStyles.prevText]}>
-                    이전
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                </Pressable>
+                <Pressable
                   style={[
-                    baseStyles.footerBtn,
+                    ms.footerBtn,
 
                     { flex: 2, backgroundColor: colors.PRIMARY_50 },
                   ]}
                   onPress={() => setSendModalVisible(true)}
                 >
-                  <Text
-                    style={[baseStyles.footerBtnText, { color: colors.WHITE }]}
-                  >
+                  <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                     완료
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             )}
           </View>
@@ -364,3 +343,5 @@ export default function VehicleRetrieveModal({
     </Modal>
   );
 }
+
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';

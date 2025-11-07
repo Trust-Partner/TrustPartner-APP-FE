@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../constants/colors';
 import { DispatchRequest } from '../../mock/mockDispatchRequests';
 import ToastMessage from '../common/ToastMessage';
+import { HIT_SLOP } from '../../constants/touch';
 
 type Props = {
   visible: boolean;
@@ -32,12 +33,12 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
     >
       <View style={s.modal}>
         {/* 닫기 버튼 */}
-        <TouchableOpacity onPress={onClose}>
+        <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
           <Image
             source={require('../../assets/common/close.png')}
             style={s.close}
           />
-        </TouchableOpacity>
+        </Pressable>
         {/* 회사명 */}
         <View style={s.box}>
           <View style={s.rowBetween}>
@@ -84,16 +85,16 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
               <Text style={[s.value, { marginLeft: 25 }]}>010-5486-5478</Text>
             </View>
 
-            <TouchableOpacity
+            <Pressable
               onPress={() => handleCopy('010-5486-5478', '연락처')}
               style={s.copyBtn}
-              hitSlop={10}
+              hitSlop={HIT_SLOP.MEDIUM}
             >
               <Image
                 source={require('../../assets/admin-dispatch/copy.png')}
                 style={s.copyIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -111,16 +112,16 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
               <Text style={[s.value, { marginLeft: 25 }]}>중계로 95길 33</Text>
             </View>
 
-            <TouchableOpacity
+            <Pressable
               onPress={() => handleCopy('중계로 95길 33', '주소')}
               style={s.copyBtn}
-              hitSlop={10}
+              hitSlop={HIT_SLOP.MEDIUM}
             >
               <Image
                 source={require('../../assets/admin-dispatch/copy.png')}
                 style={s.copyIcon}
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
       </View>

@@ -3,7 +3,7 @@ import {
   ScrollView,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   StyleSheet,
   Platform,
@@ -16,6 +16,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import ToastMessage from '../../../components/common/ToastMessage';
 import AppHeader from '../../../components/common/AppHeader';
 import { useAuthStore } from '../../../states/useAuthStore';
+import { HIT_SLOP } from '../../../constants/touch';
 
 const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
@@ -95,10 +96,10 @@ const ContractIntegratedScreen = () => {
         <View style={s.buttonRow}>
           {isEditMode ? (
             <>
-              <TouchableOpacity style={s.topBtn} onPress={handleCancel}>
+              <Pressable style={s.topBtn} onPress={handleCancel}>
                 <Text style={s.topBtnText}>취소하기</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={[s.topBtn, { backgroundColor: colors.PRIMARY_50 }]}
                 onPress={handleSave}
               >
@@ -109,18 +110,18 @@ const ContractIntegratedScreen = () => {
                 <Text style={[s.topBtnText, { color: colors.WHITE }]}>
                   저장하기
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             </>
           ) : (
             <>
-              <TouchableOpacity style={s.topBtn}>
+              <Pressable style={s.topBtn}>
                 <Image
                   source={require('../../../assets/common/download.png')}
                   style={[s.iconSmall, { tintColor: colors.PRIMARY_50 }]}
                 />
                 <Text style={s.topBtnText}>다운로드</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              </Pressable>
+              <Pressable
                 style={s.topBtn}
                 onPress={() => {
                   setBackup(form);
@@ -132,7 +133,7 @@ const ContractIntegratedScreen = () => {
                   style={[s.iconSmall, { tintColor: colors.PRIMARY_50 }]}
                 />
                 <Text style={s.topBtnText}>수정하기</Text>
-              </TouchableOpacity>
+              </Pressable>
             </>
           )}
         </View>
@@ -173,7 +174,7 @@ const ContractIntegratedScreen = () => {
               textAlignVertical="top"
               style={s.memoInput}
             />
-            <TouchableOpacity
+            <Pressable
               onPress={addMemo}
               disabled={!newMemo.trim()}
               style={[
@@ -186,7 +187,7 @@ const ContractIntegratedScreen = () => {
               ]}
             >
               <Text style={s.memoAddText}>＋</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -330,7 +331,7 @@ const ContractIntegratedScreen = () => {
                     status => {
                       const selected = form.insurance.status === status;
                       return (
-                        <TouchableOpacity
+                        <Pressable
                           key={status}
                           onPress={() =>
                             setForm(p => ({
@@ -359,7 +360,7 @@ const ContractIntegratedScreen = () => {
                           >
                             {status}
                           </Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       );
                     },
                   )}
@@ -422,8 +423,18 @@ const ContractIntegratedScreen = () => {
               <InfoRow label="보험사" value={form.insurance.company} />
               <InfoRow label="접수 번호" value={form.insurance.claimNumber} />
               <InfoRow label="담당자" value={form.insurance.manager} />
-              <InfoRow label="담당자 팩스" value={form.insurance.fax} />
-              <InfoRow label="담당자 연락처" value={form.insurance.phone} />
+              <InfoRow
+                label="담당자 팩스"
+                value={form.insurance.fax}
+                copyable
+                onCopy={handleCopy}
+              />
+              <InfoRow
+                label="담당자 연락처"
+                value={form.insurance.phone}
+                copyable
+                onCopy={handleCopy}
+              />
             </View>
           )}
         </View>
@@ -504,12 +515,15 @@ const InfoRow = ({
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
       <Text style={s.infoValue}>{value}</Text>
       {copyable && (
-        <TouchableOpacity onPress={() => onCopy?.(value, label)}>
+        <Pressable
+          onPress={() => onCopy?.(value, label)}
+          hitSlop={HIT_SLOP.SAFE_VERTICAL}
+        >
           <Image
             source={require('../../../assets/common/copy.png')}
             style={{ width: 14, height: 14, tintColor: colors.GRAY_80 }}
           />
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   </View>

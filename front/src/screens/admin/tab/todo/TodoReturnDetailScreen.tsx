@@ -4,15 +4,15 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
-  Image,
   Pressable,
+  Image,
   LayoutAnimation,
   Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import { returnCompanyDetailMock } from '../../../../mock/todo/todoReturnDetailMock';
+import { HIT_SLOP } from '../../../../constants/touch';
 
 export default function TodoReturnDetailScreen() {
   const navigation = useNavigation();
@@ -55,12 +55,12 @@ export default function TodoReturnDetailScreen() {
   return (
     <View style={s.container}>
       <View style={s.subHeader}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
+        <Pressable onPress={() => navigation.goBack()} style={s.backBtn}>
           <Image
             source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={s.backIcon}
           />
-        </TouchableOpacity>
+        </Pressable>
         <Text style={s.title}>{companyName} 반납신청 차량</Text>
       </View>
 
@@ -109,7 +109,11 @@ export default function TodoReturnDetailScreen() {
                       </View>
                     </View>
                     <Pressable
-                      onPress={() => handleExpand(item.id)}
+                      hitSlop={HIT_SLOP.MEDIUM}
+                      onPress={e => {
+                        e.stopPropagation();
+                        handleExpand(item.id);
+                      }}
                       style={s.arrowWrap}
                     >
                       <Image

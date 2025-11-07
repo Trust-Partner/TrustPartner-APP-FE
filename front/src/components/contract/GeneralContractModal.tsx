@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  StyleSheet,
+  Pressable,
   Image,
   Platform,
   Alert,
@@ -12,15 +11,16 @@ import {
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
-import ContractInput from '../../components/contract/ContractInput';
+import CommonInput from '../common/CommonInput';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
-import ContractTextarea from './ContractTextarea';
-import ContractAmountInput from './ContractAmountInput';
+import CommonTextarea from '../common/CommonTextarea';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   onBack: () => void;
@@ -139,43 +139,43 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
       statusBarTranslucent
       onBackdropPress={onBack}
     >
-      <View style={s.modal}>
-        <TouchableOpacity onPress={onBack}>
+      <View style={ms.modal}>
+        <Pressable onPress={onBack} hitSlop={HIT_SLOP.MEDIUM}>
           <Image
             source={require('../../assets/common/close.png')}
-            style={s.close}
+            style={ms.close}
           />
-        </TouchableOpacity>
+        </Pressable>
 
-        <View style={s.headerRow}>
-          <Text style={s.title}>일반계약서 작성</Text>
+        <View style={ms.headerRow}>
+          <Text style={ms.title}>일반계약서 작성</Text>
         </View>
 
-        <View style={s.vehicleInfo}>
-          <Text style={s.vehicleTag}>{vehicle.model}</Text>
-          <Text style={s.vehicleTag}>{vehicle.number}</Text>
+        <View style={ms.vehicleInfo}>
+          <Text style={ms.vehicleTag}>{vehicle.model}</Text>
+          <Text style={ms.vehicleTag}>{vehicle.number}</Text>
         </View>
 
-        <View style={s.stepDots}>
+        <View style={ms.stepDots}>
           {[1, 2, 3, 4].map(i => (
-            <View key={i} style={[s.dot, step === i && s.dotActive]} />
+            <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
           ))}
         </View>
 
         <View>
           {step === 1 && (
             <>
-              <ContractInput
+              <CommonInput
                 placeholder="고객 성함"
                 value={formData.customerName}
                 onChangeText={v => updateField('customerName', v)}
               />
-              <ContractInput
+              <CommonInput
                 placeholder="* 고객 연락처"
                 value={formData.phone}
                 onChangeText={v => updateField('phone', v)}
               />
-              <ContractInput
+              <CommonInput
                 placeholder="고객 주소"
                 value={formData.address}
                 onChangeText={v => updateField('address', v)}
@@ -186,53 +186,53 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
           {step === 2 && (
             <>
               {/* 결제방법 선택 */}
-              <View style={s.radioWrap}>
-                <View style={s.radioRow}>
+              <View style={ms.radioWrap}>
+                <View style={ms.radioRow}>
                   {['계좌이체', '카드'].map(opt => (
-                    <TouchableOpacity
+                    <Pressable
                       key={opt}
-                      style={s.radioBox}
+                      style={ms.radioBox}
                       onPress={() => updateField('payment', opt)}
                     >
-                      <Text style={s.radioLabel}>{opt}</Text>
+                      <Text style={ms.radioLabel}>{opt}</Text>
                       <View
                         style={[
-                          s.radioCircle,
-                          formData.payment === opt && s.radioActive,
+                          ms.radioCircle,
+                          formData.payment === opt && ms.radioActive,
                         ]}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
 
-                <View style={s.radioRow}>
+                <View style={ms.radioRow}>
                   {['선불', '후불'].map(opt => (
-                    <TouchableOpacity
+                    <Pressable
                       key={opt}
-                      style={s.radioBox}
+                      style={ms.radioBox}
                       onPress={() => updateField('payment', opt)}
                     >
-                      <Text style={s.radioLabel}>{opt}</Text>
+                      <Text style={ms.radioLabel}>{opt}</Text>
                       <View
                         style={[
-                          s.radioCircle,
-                          formData.payment === opt && s.radioActive,
+                          ms.radioCircle,
+                          formData.payment === opt && ms.radioActive,
                         ]}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
               </View>
 
               {/* 금액 입력 */}
-              <ContractAmountInput
+              <CommonAmountInput
                 placeholder="금액 입력"
                 value={formData.amount}
                 onChangeText={v => updateField('amount', v)}
               />
 
               {/* 기타 메모사항 */}
-              <ContractTextarea
+              <CommonTextarea
                 placeholder="기타 메모사항"
                 value={formData.memo}
                 onChangeText={v => updateField('memo', v)}
@@ -242,9 +242,9 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
 
           {step === 3 && (
             <>
-              <View style={s.photoContainer}>
+              <View style={ms.photoContainer}>
                 <View
-                  style={s.photoGrid}
+                  style={ms.photoGrid}
                   onLayout={e => {
                     const { width } = e.nativeEvent.layout;
                     setContainerWidth(width);
@@ -256,60 +256,58 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                   ].map((item: any, i) => {
                     if (item.isAddButton) {
                       return (
-                        <TouchableOpacity
+                        <Pressable
                           key={`add-${i}`}
                           style={[
-                            s.photoAddBtn,
+                            ms.photoAddBtn,
                             { width: itemSize, height: itemSize },
                           ]}
                           onPress={handleAddPhoto}
-                          activeOpacity={0.8}
                         >
-                          <View style={s.addIconCircle}>
+                          <View style={ms.addIconCircle}>
                             <Image
                               source={require('../../assets/common/plus.png')}
-                              style={s.addIcon}
+                              style={ms.addIcon}
                             />
                           </View>
-                          <Text style={s.addText}>사진추가</Text>
-                        </TouchableOpacity>
+                          <Text style={ms.addText}>사진추가</Text>
+                        </Pressable>
                       );
                     }
                     return (
-                      <TouchableOpacity
+                      <Pressable
                         key={i}
                         onPress={() => handleReplacePhoto(i)}
-                        activeOpacity={0.8}
                         style={[
-                          s.photoItem,
+                          ms.photoItem,
                           { width: itemSize, height: itemSize },
                         ]}
                       >
                         <Image
                           source={{ uri: item.uri }}
-                          style={s.photoThumb}
+                          style={ms.photoThumb}
                           resizeMode="cover"
                         />
 
-                        <TouchableOpacity
-                          style={s.removeOverlay}
+                        <Pressable
+                          style={ms.removeOverlay}
                           onPress={() => removePhoto(i)}
-                          hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                          hitSlop={HIT_SLOP.COMPACT}
                         >
                           <Image
                             source={require('../../assets/common/close.png')}
-                            style={s.removeIcon}
+                            style={ms.removeIcon}
                           />
-                        </TouchableOpacity>
-                      </TouchableOpacity>
+                        </Pressable>
+                      </Pressable>
                     );
                   })}
                 </View>
 
-                <Text style={s.subText}>{photos.length}/9장 업로드됨</Text>
+                <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
               </View>
 
-              <ContractAmountInput
+              <CommonAmountInput
                 placeholder="유류량 입력"
                 value={formData.fuel}
                 onChangeText={v => updateField('fuel', v)}
@@ -320,14 +318,14 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
 
           {step === 4 && (
             <>
-              <View style={s.signatureBox}>
-                <Text style={s.subTitle}>고객 서명란</Text>
+              <View style={ms.signatureBox}>
+                <Text style={ms.subTitle}>고객 서명란</Text>
 
-                <View style={s.signatureWrapper}>
+                <View style={ms.signatureWrapper}>
                   {!isSigning &&
                     (!formData.signature ||
                       formData.signature.length === 0) && (
-                      <Text style={s.signaturePlaceholder}>서명해주세요</Text>
+                      <Text style={ms.signaturePlaceholder}>서명해주세요</Text>
                     )}
                   <SignatureScreen
                     key={signatureKey}
@@ -349,17 +347,17 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                   />
                 </View>
 
-                <TouchableOpacity style={s.clearBtn} onPress={handleClear}>
-                  <Text style={s.clearText}>지우기</Text>
-                </TouchableOpacity>
+                <Pressable style={ms.clearBtn} onPress={handleClear}>
+                  <Text style={ms.clearText}>지우기</Text>
+                </Pressable>
               </View>
               {!isComplete && (
-                <View style={s.missingBox}>
-                  <Text style={s.missingTitle}>아래 내용을 입력해주세요</Text>
-                  <View style={s.missingList}>
+                <View style={ms.missingBox}>
+                  <Text style={ms.missingTitle}>아래 내용을 입력해주세요</Text>
+                  <View style={ms.missingList}>
                     {missingFields.map(field => (
-                      <View key={field} style={s.missingTag}>
-                        <Text style={s.missingTagText}>
+                      <View key={field} style={ms.missingTag}>
+                        <Text style={ms.missingTagText}>
                           {CONTRACT_FIELD_LABELS[field] || field}
                         </Text>
                       </View>
@@ -372,96 +370,100 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
         </View>
 
         {/* 하단 */}
-        <View style={s.footer}>
+        <View style={ms.footer}>
           {step === 4 && (
             <>
-              <TouchableOpacity
-                style={[s.sendBtn, !isComplete && s.sendBtnDisabled]}
+              <Pressable
+                style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
                 disabled={!isComplete}
                 onPress={handleSendContract}
               >
                 <Text
                   style={[
-                    s.sendBtnText,
+                    ms.sendBtnText,
                     !isComplete && { color: colors.GRAY_40 },
                   ]}
                 >
                   계약서 카카오톡 전송하기
                 </Text>
-              </TouchableOpacity>
-              <View style={s.footerRow}>
-                <TouchableOpacity
-                  style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
+              </Pressable>
+              <View style={ms.footerRow}>
+                <Pressable
+                  style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                   onPress={prevStep}
                 >
                   <Image
                     source={require('../../assets/common/left_arrow.png')}
-                    style={s.prevIcon}
+                    style={ms.prevIcon}
                   />
-                  <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
+                  <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                </Pressable>
+                <Pressable
+                  style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
                   onPress={saveDraftData}
                 >
-                  <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                </TouchableOpacity>
+                  <Text style={[ms.footerBtnText, ms.draftText]}>임시저장</Text>
+                </Pressable>
               </View>
             </>
           )}
 
           {step < 4 && (
-            <View style={s.footerRow}>
+            <View style={ms.footerRow}>
               {step === 1 ? (
                 <>
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.draftBtn, { flex: 3 }]}
+                  <Pressable
+                    style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
                     onPress={saveDraftData}
                   >
-                    <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                  </TouchableOpacity>
+                    <Text style={[ms.footerBtnText, ms.draftText]}>
+                      임시저장
+                    </Text>
+                  </Pressable>
 
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
+                  <Pressable
+                    style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
                     onPress={nextStep}
                   >
-                    <Text style={[s.footerBtnText, s.nextText]}>다음</Text>
+                    <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                     <Image
                       source={require('../../assets/common/right_arrow.png')}
-                      style={s.nextIcon}
+                      style={ms.nextIcon}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 </>
               ) : (
                 <>
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
+                  <Pressable
+                    style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                     onPress={prevStep}
                   >
                     <Image
                       source={require('../../assets/common/left_arrow.png')}
-                      style={s.prevIcon}
+                      style={ms.prevIcon}
                     />
-                    <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                  </TouchableOpacity>
+                    <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                  </Pressable>
 
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.draftBtn, { flex: 2 }]}
+                  <Pressable
+                    style={[ms.footerBtn, ms.draftBtn, { flex: 2 }]}
                     onPress={saveDraftData}
                   >
-                    <Text style={[s.footerBtnText, s.draftText]}>임시저장</Text>
-                  </TouchableOpacity>
+                    <Text style={[ms.footerBtnText, ms.draftText]}>
+                      임시저장
+                    </Text>
+                  </Pressable>
 
-                  <TouchableOpacity
-                    style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
+                  <Pressable
+                    style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
                     onPress={nextStep}
                   >
-                    <Text style={[s.footerBtnText, s.nextText]}>다음</Text>
+                    <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                     <Image
                       source={require('../../assets/common/right_arrow.png')}
-                      style={s.nextIcon}
+                      style={ms.nextIcon}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
                 </>
               )}
             </View>
@@ -485,320 +487,4 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
   );
 }
 
-export const s = StyleSheet.create({
-  modal: {
-    backgroundColor: colors.WHITE,
-    width: '100%',
-    borderRadius: 8,
-    paddingTop: 8,
-    paddingBottom: 32,
-    paddingHorizontal: 16,
-    alignSelf: 'center',
-  },
-  close: {
-    alignSelf: 'flex-end',
-    width: 16,
-    height: 16,
-    tintColor: colors.GRAY_60,
-  },
-  headerRow: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.GRAY_90,
-  },
-  vehicleInfo: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    columnGap: 8,
-  },
-  vehicleTag: {
-    backgroundColor: colors.PRIMARY_10,
-    color: colors.PRIMARY_50,
-    fontSize: 12,
-    fontWeight: '400',
-    lineHeight: 16.8,
-    borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  stepDots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    columnGap: 10,
-    marginVertical: 24,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: colors.GRAY_15,
-  },
-  dotActive: { backgroundColor: colors.GRAY_80 },
-  radioBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioWrap: {},
-  radioRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  radioBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
-    borderRadius: 4,
-    padding: 8,
-    width: '49%',
-    backgroundColor: colors.GRAY_05,
-  },
-  radioLabel: {
-    fontSize: 11,
-    color: colors.GRAY_80,
-  },
-  radioCircle: {
-    width: 12,
-    height: 12,
-    borderRadius: 100,
-    borderWidth: 1,
-    borderColor: colors.GRAY_50,
-  },
-  radioActive: {
-    backgroundColor: colors.PRIMARY_50,
-    borderColor: colors.PRIMARY_50,
-  },
-  amountInputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  amountUnit: {
-    fontSize: 14,
-    color: colors.GRAY_60,
-    marginLeft: 6,
-    marginTop: Platform.OS === 'android' ? 2 : 0,
-  },
-  radioText: { fontSize: 14, color: colors.GRAY_90 },
-  photoContainer: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
-    borderRadius: 4,
-    backgroundColor: colors.GRAY_05,
-    padding: 12,
-    marginBottom: 8,
-  },
-  photoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-    alignContent: 'flex-start',
-    gap: 8,
-  },
-  photoItem: {
-    borderRadius: 4,
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  photoThumb: {
-    width: '100%',
-    height: '100%',
-  },
-  photoAddBtn: {
-    borderWidth: 1,
-    borderColor: colors.GRAY_20,
-    borderRadius: 4,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addIconCircle: {
-    padding: 4,
-    borderRadius: 18,
-    backgroundColor: colors.PRIMARY_50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 4,
-  },
-  addIcon: {
-    width: 16,
-    height: 16,
-  },
-  addText: {
-    fontSize: 11,
-    fontWeight: '400',
-    color: colors.GRAY_50,
-  },
-  removeOverlay: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: colors.TRANSLUCENT,
-    borderRadius: 10,
-    padding: 2,
-  },
-  removeIcon: {
-    width: 12,
-    height: 12,
-    tintColor: colors.WHITE,
-  },
-  subText: {
-    color: colors.GRAY_50,
-    fontSize: 11,
-    fontWeight: '400',
-    marginTop: 12,
-    textAlign: 'center',
-  },
-  signatureBox: {
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: colors.GRAY_05,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
-  },
-  subTitle: {
-    fontSize: 11,
-    color: colors.GRAY_50,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  clearBtn: {
-    alignSelf: 'center',
-    marginTop: 12,
-  },
-  clearText: {
-    fontSize: 11,
-    color: colors.GRAY_50,
-    fontWeight: '400',
-  },
-  signatureWrapper: {
-    borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: colors.GRAY_15,
-    borderRadius: 8,
-    overflow: 'hidden',
-    width: '100%',
-    aspectRatio: 2,
-    backgroundColor: colors.WHITE,
-    position: 'relative',
-  },
-  signaturePlaceholder: {
-    position: 'absolute',
-    top: '45%',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    color: colors.GRAY_50,
-    fontSize: 11,
-    fontWeight: '400',
-    zIndex: 1,
-  },
-  missingBox: {
-    marginTop: 24,
-    backgroundColor: colors.PRIMARY_00,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: colors.PRIMARY_10,
-    padding: 12,
-    width: '100%',
-  },
-  missingTitle: {
-    fontSize: 11,
-    color: colors.GRAY_50,
-    fontWeight: '400',
-    marginBottom: 12,
-  },
-  missingList: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-  },
-  missingTag: {
-    backgroundColor: colors.PRIMARY_10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  missingTagText: {
-    fontSize: 11,
-    color: colors.PRIMARY_50,
-    fontWeight: '400',
-    lineHeight: 15.4,
-  },
-  footer: {
-    marginTop: 24,
-  },
-  footerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  footerBtn: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 8,
-    borderRadius: 4,
-  },
-  draftBtn: {
-    borderWidth: 1,
-    borderColor: colors.PRIMARY_50,
-  },
-  prevBtn: {
-    flexDirection: 'row',
-  },
-  nextBtn: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  footerBtnText: {
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
-    marginTop: Platform.OS === 'android' ? -1 : 0,
-  },
-  draftText: {
-    color: colors.PRIMARY_50,
-  },
-  prevText: {
-    color: colors.GRAY_90,
-  },
-  nextText: {
-    color: colors.PRIMARY_50,
-  },
-  prevIcon: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
-    tintColor: colors.GRAY_90,
-    marginRight: 4,
-  },
-  nextIcon: {
-    width: 16,
-    height: 16,
-    resizeMode: 'contain',
-    tintColor: colors.PRIMARY_50,
-    marginLeft: 4,
-  },
-  sendBtn: {
-    backgroundColor: colors.PRIMARY_50,
-    borderRadius: 4,
-    padding: 8,
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  sendBtnDisabled: { backgroundColor: colors.GRAY_15 },
-  sendBtnText: {
-    fontSize: 11,
-    fontWeight: '400',
-    color: colors.WHITE,
-  },
-});
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';

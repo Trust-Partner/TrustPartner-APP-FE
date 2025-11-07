@@ -4,8 +4,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  FlatList,
+  Pressable,
   Image,
   Platform,
 } from 'react-native';
@@ -63,24 +62,23 @@ export default function MyInfoScreen() {
 
             {/* 등급 드롭다운 */}
             <View style={{ position: 'relative' }}>
-              <TouchableOpacity
+              <Pressable
                 style={s.selectBox}
                 onPress={e => {
                   setOpen(!open);
                 }}
-                activeOpacity={0.8}
               >
                 <Text style={s.selectText}>{selectedGrade}</Text>
                 <Image
                   source={require('../../../assets/common/down_arrow.png')}
                   style={s.arrow}
                 />
-              </TouchableOpacity>
+              </Pressable>
 
               {open && (
                 <View style={s.dropdown}>
                   {Object.keys(data.carRatesByGrade).map(grade => (
-                    <TouchableOpacity
+                    <Pressable
                       key={grade}
                       style={[
                         s.dropdownItem,
@@ -101,7 +99,7 @@ export default function MyInfoScreen() {
                       >
                         {grade}
                       </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                   ))}
                 </View>
               )}

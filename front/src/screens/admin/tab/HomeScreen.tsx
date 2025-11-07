@@ -20,13 +20,44 @@ import ReturnIcon from '../../../assets/admin-home/return.png';
 
 export default function AdminHomeScreen() {
   const { summary, alerts: initialAlerts } = mockAdminDashboard;
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const topIcons = [RotationIcon, CalendarIcon];
   const middleIcons = [CarIcon, WarningIcon, ReturnIcon];
 
   const handleCardPress = (label: string) => {
-    console.log(`${label} 카드 클릭됨`);
+    switch (label) {
+      case '배차요청건':
+        navigation.navigate('AdminTabsStack', {
+          screen: 'DispatchRequests',
+        });
+        break;
+
+      case '반납신청':
+        navigation.navigate('AdminTabsStack', {
+          screen: 'Todo',
+          params: { screen: 'TodoMain', params: { initialTab: 'return' } },
+        });
+        break;
+
+      case '세차/주유':
+        navigation.navigate('AdminTabsStack', {
+          screen: 'Todo',
+          params: { screen: 'TodoMain', params: { initialTab: 'wash' } },
+        });
+        break;
+
+      case '지급확정':
+        navigation.navigate('Prepay');
+        break;
+
+      case '예약관리':
+        navigation.navigate('Reservations');
+        break;
+
+      default:
+        console.log(`${label} 연결되지 않은 항목`);
+    }
   };
 
   const [alerts, setAlerts] = useState(initialAlerts);
