@@ -4,7 +4,6 @@ import {
   TextInput,
   StyleSheet,
   TextInputProps,
-  Platform,
   Dimensions,
 } from 'react-native';
 import { colors } from '../../constants/colors';

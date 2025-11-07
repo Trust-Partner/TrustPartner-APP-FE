@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   FlatList,
   Image,
   StyleSheet,
@@ -82,7 +82,7 @@ export default function ContractListScreen() {
 
       {/* 날짜 버튼 */}
       <View style={s.dateRow}>
-        <TouchableOpacity
+        <Pressable
           style={s.dateBtn}
           onPress={() => setOpenPicker(openPicker === 'start' ? null : 'start')}
         >
@@ -93,9 +93,9 @@ export default function ContractListScreen() {
           <Text style={s.dateText}>
             {range.startDate ? range.startDate : '시작일'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={s.dateBtn}
           onPress={() => setOpenPicker(openPicker === 'end' ? null : 'end')}
         >
@@ -106,7 +106,7 @@ export default function ContractListScreen() {
           <Text style={s.dateText}>
             {range.endDate ? range.endDate : '종료일'}
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       {/* 드롭다운 캘린더 (Input 아래 작게 표시) */}
@@ -143,7 +143,7 @@ export default function ContractListScreen() {
           nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handlePressContract(item.id)}>
+            <Pressable onPress={() => handlePressContract(item.id)}>
               <View style={s.card}>
                 <View style={s.cardRow}>
                   <Image
@@ -172,7 +172,7 @@ export default function ContractListScreen() {
                   </View>
                 </View>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           )}
         />
       </View>

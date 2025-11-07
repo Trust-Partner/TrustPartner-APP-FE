@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   Text,
   StyleSheet,
   FlatList,
@@ -120,21 +120,18 @@ export default function ContractSearchDropdown({
             keyExtractor={(item, idx) => item + idx}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
-              <TouchableOpacity
-                style={s.option}
-                onPress={() => handleSelect(item)}
-              >
+              <Pressable style={s.option} onPress={() => handleSelect(item)}>
                 <Text style={s.optionText}>{item}</Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
           />
         </View>
       )}
 
       {focused && query.trim().length > 0 && results.length === 0 && (
-        <TouchableOpacity style={s.optionCustom} onPress={handleBlur}>
+        <Pressable style={s.optionCustom} onPress={handleBlur}>
           <Text style={s.optionText}>'{query.trim()}' 직접입력 (기타)</Text>
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   );

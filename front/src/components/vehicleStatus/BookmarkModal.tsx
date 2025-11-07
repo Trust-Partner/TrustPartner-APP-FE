@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   Image,
   Platform,
@@ -11,6 +11,7 @@ import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonModal from '../common/CommonModal';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   visible: boolean;
@@ -47,12 +48,12 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
   const renderStep1 = () => (
     <>
       {/* 닫기 버튼 */}
-      <TouchableOpacity onPress={() => onClose()}>
+      <Pressable onPress={() => onClose()} hitSlop={HIT_SLOP.MEDIUM}>
         <Image
           source={require('../../assets/common/close.png')}
           style={s.close}
         />
-      </TouchableOpacity>
+      </Pressable>
 
       <Text style={s.title}>해당 차량을 찜해둘까요?</Text>
 
@@ -62,11 +63,7 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
       </View>
 
       {/* 예약일정 체크 */}
-      <TouchableOpacity
-        style={s.checkboxRow}
-        onPress={() => setIsBooking(!isBooking)}
-        activeOpacity={0.8}
-      >
+      <Pressable style={s.checkboxRow} onPress={() => setIsBooking(!isBooking)}>
         <View style={[s.checkbox, isBooking && s.checked]}>
           {isBooking && (
             <Image
@@ -76,7 +73,7 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
           )}
         </View>
         <Text style={s.label}>예약일정을 등록할게요</Text>
-      </TouchableOpacity>
+      </Pressable>
 
       {/* 예약일정 폼 영역 */}
       {isBooking && (
@@ -91,27 +88,24 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
           {/* 날짜 및 시각 영역 */}
           <View style={{ marginTop: 8 }}>
             <Text style={s.labelSmall}>배차 날짜 및 시각</Text>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={[s.bookingBox, { flexDirection: 'row' }]}
-            >
+            <Pressable style={[s.bookingBox, { flexDirection: 'row' }]}>
               <Image
                 source={require('../../assets/common/calendar.png')}
                 style={s.dateIcon}
               />
               <Text style={s.dateText}>{date}</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </>
       )}
 
       <View style={s.btnRow}>
-        <TouchableOpacity style={s.cancelBtn} onPress={() => onClose()}>
+        <Pressable style={s.cancelBtn} onPress={() => onClose()}>
           <Text style={s.cancelText}>취소</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={s.confirmBtn} onPress={handleConfirm}>
+        </Pressable>
+        <Pressable style={s.confirmBtn} onPress={handleConfirm}>
           <Text style={s.confirmText}>확인</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </>
   );

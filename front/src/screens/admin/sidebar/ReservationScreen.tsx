@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   FlatList,
   LayoutAnimation,
   StyleSheet,
@@ -107,9 +106,8 @@ export default function ReservationDrawerScreen() {
             : colors.PRIMARY_50;
 
           return (
-            <TouchableOpacity
+            <Pressable
               onPress={() => setSelectedDate(date.dateString)}
-              activeOpacity={0.8}
               style={{
                 width: 32,
                 height: 32,
@@ -133,7 +131,7 @@ export default function ReservationDrawerScreen() {
                   }}
                 />
               )}
-            </TouchableOpacity>
+            </Pressable>
           );
         }}
       />
@@ -162,10 +160,9 @@ export default function ReservationDrawerScreen() {
               const isOpen = !!expanded[item.id];
               return (
                 <View style={s.card}>
-                  <TouchableOpacity
+                  <Pressable
                     style={s.cardHeader}
                     onPress={() => handleExpand(item.id)}
-                    activeOpacity={0.8}
                   >
                     <View style={s.cardRow}>
                       <Text style={s.carName}>{item.carName}</Text>
@@ -185,7 +182,7 @@ export default function ReservationDrawerScreen() {
                         ]}
                       />
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
 
                   {isOpen && (
                     <View style={s.detailBox}>

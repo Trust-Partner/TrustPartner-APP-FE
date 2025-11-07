@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, Pressable, Image } from 'react-native';
 import Modal from 'react-native-modal';
 import { s as baseStyles } from '../contract/GeneralContractModal';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonModal from '../common/CommonModal';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   visible: boolean;
@@ -37,12 +38,12 @@ export default function VehicleReturnModal({
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={baseStyles.modal}>
           {/* 닫기 버튼 */}
-          <TouchableOpacity onPress={() => onClose?.()}>
+          <Pressable onPress={() => onClose?.()} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
               style={baseStyles.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 헤더 */}
           <View style={baseStyles.headerRow}>
@@ -79,7 +80,7 @@ export default function VehicleReturnModal({
           ].map(opt => {
             const checked = formData[opt.key];
             return (
-              <TouchableOpacity
+              <Pressable
                 key={opt.key}
                 style={{
                   flexDirection: 'row',
@@ -91,7 +92,6 @@ export default function VehicleReturnModal({
                   marginBottom: 8,
                 }}
                 onPress={() => updateField(opt.key, !formData[opt.key])}
-                activeOpacity={0.8}
               >
                 <View>
                   <Text style={{ fontSize: 11, color: colors.GRAY_80 }}>
@@ -120,13 +120,13 @@ export default function VehicleReturnModal({
                     />
                   )}
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             );
           })}
 
           {/* 푸터 버튼 */}
           <View style={[baseStyles.footerRow, { marginTop: 16 }]}>
-            <TouchableOpacity
+            <Pressable
               style={[
                 baseStyles.footerBtn,
                 baseStyles.draftBtn,
@@ -137,9 +137,9 @@ export default function VehicleReturnModal({
               <Text style={[baseStyles.footerBtnText, baseStyles.draftText]}>
                 취소
               </Text>
-            </TouchableOpacity>
+            </Pressable>
 
-            <TouchableOpacity
+            <Pressable
               style={[
                 baseStyles.footerBtn,
                 { backgroundColor: colors.PRIMARY_50 },
@@ -149,7 +149,7 @@ export default function VehicleReturnModal({
               <Text style={[baseStyles.footerBtnText, { color: colors.WHITE }]}>
                 확인
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 

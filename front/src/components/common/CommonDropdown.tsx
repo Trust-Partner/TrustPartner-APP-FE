@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   FlatList,
   StyleSheet,
-  Platform,
 } from 'react-native';
 import { colors } from '../../constants/colors';
 
@@ -17,11 +16,6 @@ interface Props {
   onSelect: (value: string) => void;
 }
 
-/**
- * CommonDropdown
- * - 단순 선택형 드롭다운
- * - ContractSearchDropdown 스타일을 기준으로 통일
- */
 export default function CommonDropdown({
   placeholder,
   options,
@@ -32,11 +26,7 @@ export default function CommonDropdown({
 
   return (
     <View style={s.container}>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        style={s.selectBox}
-        onPress={() => setOpen(prev => !prev)}
-      >
+      <Pressable style={s.selectBox} onPress={() => setOpen(prev => !prev)}>
         <Text
           style={[s.selectText, !selectedValue && { color: colors.GRAY_50 }]}
         >
@@ -49,7 +39,7 @@ export default function CommonDropdown({
             { transform: [{ rotate: open ? '180deg' : '0deg' }] },
           ]}
         />
-      </TouchableOpacity>
+      </Pressable>
 
       {open && (
         <View style={s.dropdown}>
@@ -57,7 +47,7 @@ export default function CommonDropdown({
             data={options}
             keyExtractor={(item, idx) => item + idx}
             renderItem={({ item }) => (
-              <TouchableOpacity
+              <Pressable
                 style={[s.option, selectedValue === item && s.optionActive]}
                 onPress={() => {
                   onSelect(item);
@@ -72,7 +62,7 @@ export default function CommonDropdown({
                 >
                   {item}
                 </Text>
-              </TouchableOpacity>
+              </Pressable>
             )}
           />
         </View>

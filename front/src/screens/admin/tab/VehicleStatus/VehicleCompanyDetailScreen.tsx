@@ -22,6 +22,7 @@ import VehicleReplaceModal from '../../../../components/vehicleStatus/VehicleRep
 import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRetrieveModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigations/root/RootNavigator';
+import { HIT_SLOP } from '../../../../constants/touch';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation =
@@ -236,7 +237,11 @@ export default function VehicleCompanyDetailScreen() {
                           </View>
                         </View>
                         <Pressable
-                          onPress={() => handleExpand(item.id)}
+                          hitSlop={HIT_SLOP.MEDIUM}
+                          onPress={e => {
+                            e.stopPropagation();
+                            handleExpand(item.id);
+                          }}
                           style={s.arrowWrap}
                         >
                           <Image
