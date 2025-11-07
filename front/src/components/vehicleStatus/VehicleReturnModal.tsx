@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, Image } from 'react-native';
 import Modal from 'react-native-modal';
-import { s as baseStyles } from '../contract/GeneralContractModal';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonModal from '../common/CommonModal';
@@ -36,29 +35,29 @@ export default function VehicleReturnModal({
       onBackdropPress={() => onClose?.()}
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={baseStyles.modal}>
+        <View style={ms.modal}>
           {/* 닫기 버튼 */}
           <Pressable onPress={() => onClose?.()} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
-              style={baseStyles.close}
+              style={ms.close}
             />
           </Pressable>
 
           {/* 헤더 */}
-          <View style={baseStyles.headerRow}>
-            <Text style={baseStyles.title}>반납하기</Text>
+          <View style={ms.headerRow}>
+            <Text style={ms.title}>반납하기</Text>
           </View>
 
           {/* 차량 정보 */}
-          <View style={baseStyles.vehicleInfo}>
-            <Text style={baseStyles.vehicleTag}>{vehicle.model}</Text>
-            <Text style={baseStyles.vehicleTag}>{vehicle.number}</Text>
+          <View style={ms.vehicleInfo}>
+            <Text style={ms.vehicleTag}>{vehicle.model}</Text>
+            <Text style={ms.vehicleTag}>{vehicle.number}</Text>
           </View>
 
           {/* 단계표시 점 1개만 */}
-          <View style={baseStyles.stepDots}>
-            <View style={[baseStyles.dot, baseStyles.dotActive]} />
+          <View style={ms.stepDots}>
+            <View style={[ms.dot, ms.dotActive]} />
           </View>
 
           {/* 위치 드롭다운 */}
@@ -125,28 +124,19 @@ export default function VehicleReturnModal({
           })}
 
           {/* 푸터 버튼 */}
-          <View style={[baseStyles.footerRow, { marginTop: 16 }]}>
+          <View style={[ms.footerRow, { marginTop: 16 }]}>
             <Pressable
-              style={[
-                baseStyles.footerBtn,
-                baseStyles.draftBtn,
-                { marginRight: 8 },
-              ]}
+              style={[ms.footerBtn, ms.draftBtn, { marginRight: 8 }]}
               onPress={() => onClose?.()}
             >
-              <Text style={[baseStyles.footerBtnText, baseStyles.draftText]}>
-                취소
-              </Text>
+              <Text style={[ms.footerBtnText, ms.draftText]}>취소</Text>
             </Pressable>
 
             <Pressable
-              style={[
-                baseStyles.footerBtn,
-                { backgroundColor: colors.PRIMARY_50 },
-              ]}
+              style={[ms.footerBtn, { backgroundColor: colors.PRIMARY_50 }]}
               onPress={() => setConfirmVisible(true)}
             >
-              <Text style={[baseStyles.footerBtnText, { color: colors.WHITE }]}>
+              <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                 확인
               </Text>
             </Pressable>
@@ -170,3 +160,5 @@ export default function VehicleReturnModal({
     </Modal>
   );
 }
+
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
