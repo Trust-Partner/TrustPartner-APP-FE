@@ -68,7 +68,7 @@ export default function DispatchRequestScreen() {
               activeOpacity={0.9}
               style={s.item}
             >
-              <View style={s.innerRow}>
+              <View style={s.rowWrap}>
                 {/* 상태바 */}
                 <View
                   style={[
@@ -82,36 +82,48 @@ export default function DispatchRequestScreen() {
                 />
 
                 {/* 본문 */}
-                <View style={s.contentRow}>
-                  <Text style={[s.company, !isActive && s.textGray]}>
-                    {item.company}
-                  </Text>
-                  {item.label && (
-                    <View style={s.badge}>
-                      <Text style={s.badgeText}>{item.label}</Text>
+                <View style={{ flex: 1 }}>
+                  <View style={s.contentRow}>
+                    <Text style={[s.company, !isActive && s.textGray]}>
+                      {item.company}
+                    </Text>
+                    {item.isReplacement && (
+                      <View style={s.badge}>
+                        <Text style={s.badgeText}>교체건</Text>
+                      </View>
+                    )}
+                    <View style={{ flex: 1 }} />
+                    <Text style={s.time}>{item.time}</Text>
+                    <TouchableOpacity onPress={() => handleExpand(item.id)}>
+                      <Image
+                        source={require('../../../assets/common/down_arrow.png')}
+                        style={[
+                          s.arrowIcon,
+                          {
+                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
+                          },
+                        ]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+
+                  {isOpen && (
+                    <View style={s.expandArea}>
+                      {item.isReplacement ? (
+                        <Text style={s.expandBadgeText}>{item.model}</Text>
+                      ) : (
+                        <>
+                          <Text style={s.expandBadgeText}>{item.model}</Text>
+                          <Text style={s.expandBadgeText}>{item.year}</Text>
+                          <Text style={s.expandBadgeText}>
+                            {item.displacement}
+                          </Text>
+                        </>
+                      )}
                     </View>
                   )}
-                  <View style={{ flex: 1 }} />
-                  <Text style={s.time}>{item.time}</Text>
-                  <TouchableOpacity onPress={() => handleExpand(item.id)}>
-                    <Image
-                      source={require('../../../assets/common/down_arrow.png')}
-                      style={[
-                        s.arrowIcon,
-                        {
-                          transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
-                        },
-                      ]}
-                    />
-                  </TouchableOpacity>
                 </View>
               </View>
-
-              {isOpen && (
-                <View style={s.expandArea}>
-                  <Text style={s.modelText}>{item.model}</Text>
-                </View>
-              )}
             </TouchableOpacity>
           );
         }}
@@ -180,16 +192,14 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 8,
   },
-  innerRow: {
+  rowWrap: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
   statusBar: {
     width: 2,
-    height: '100%',
     borderRadius: 1,
     marginRight: 8,
-    alignSelf: 'center',
     marginLeft: -8,
   },
   contentRow: {
@@ -231,19 +241,22 @@ const s = StyleSheet.create({
   expandArea: {
     marginTop: 8,
     alignSelf: 'flex-start',
+    flexDirection: 'row',
+    gap: 4,
+  },
+  expandBadgeText: {
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-  },
-  modelText: {
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15,
     color: colors.GRAY_60,
   },
   textGray: {
+    borderColor: colors.GRAY_10,
     color: colors.GRAY_40,
   },
 });

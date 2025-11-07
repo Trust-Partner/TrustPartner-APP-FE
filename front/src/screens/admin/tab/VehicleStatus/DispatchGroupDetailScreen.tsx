@@ -18,6 +18,7 @@ import {
 import { useContractModalStore } from '../../../../stores/useContractModalStore';
 import ContractModalManager from '../../../../components/contract/ContractModalManager';
 import BookmarkModal from '../../../../components/vehicleStatus/BookmarkModal';
+import VehicleReturnModal from '../../../../components/vehicleStatus/VehicleReturnModal';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
@@ -34,6 +35,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
   const [bookmarkTarget, setBookmarkTarget] = useState<DispatchDetail | null>(
     null,
   );
+  const [returnVisible, setReturnVisible] = useState(false);
 
   const totalCount = data.length;
 
@@ -61,11 +63,24 @@ export default function DispatchGroupDetailScreen({ route }: any) {
 
   const handleSwipeOpen = (rowKey: string, rowMap: any) => {
     const item = data.find(i => i.id.toString() === rowKey);
-    if (item) {
+    if (!item) return;
+
+    const sideBarColor =
+      item.isConfirmed || item.isBookmarked
+        ? colors.GREEN_50
+        : colors.PRIMARY_50;
+
+    if (sideBarColor === colors.PRIMARY_50) {
+      // 파란색: 찜/예약 모달
       setBookmarkTarget(item);
       setBookmarkVisible(true);
-      rowMap[rowKey]?.closeRow?.();
+    } else {
+      // 초록색: 반납 모달
+      setBookmarkTarget(item);
+      setReturnVisible(true);
     }
+
+    rowMap[rowKey]?.closeRow?.();
   };
 
   const renderItem = ({ item }: { item: DispatchDetail }) => {
@@ -155,6 +170,14 @@ export default function DispatchGroupDetailScreen({ route }: any) {
           visible={bookmarkVisible}
           vehicle={bookmarkTarget}
           onClose={handleBookmarkClose}
+        />
+      )}
+
+      {returnVisible && bookmarkTarget && (
+        <VehicleReturnModal
+          visible={returnVisible}
+          vehicle={bookmarkTarget}
+          onClose={() => setReturnVisible(false)}
         />
       )}
     </View>
