@@ -422,8 +422,18 @@ const ContractIntegratedScreen = () => {
               <InfoRow label="보험사" value={form.insurance.company} />
               <InfoRow label="접수 번호" value={form.insurance.claimNumber} />
               <InfoRow label="담당자" value={form.insurance.manager} />
-              <InfoRow label="담당자 팩스" value={form.insurance.fax} />
-              <InfoRow label="담당자 연락처" value={form.insurance.phone} />
+              <InfoRow
+                label="담당자 팩스"
+                value={form.insurance.fax}
+                copyable
+                onCopy={handleCopy}
+              />
+              <InfoRow
+                label="담당자 연락처"
+                value={form.insurance.phone}
+                copyable
+                onCopy={handleCopy}
+              />
             </View>
           )}
         </View>
