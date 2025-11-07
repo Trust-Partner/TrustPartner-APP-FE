@@ -4,9 +4,8 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
-  Image,
   Pressable,
+  Image,
   LayoutAnimation,
   Platform,
 } from 'react-native';
@@ -14,6 +13,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import { washFuelCompanyDetailMock } from '../../../../mock/todo/todoWashFuelDetailMock';
 import CommonModal from '../../../../components/common/CommonModal';
+import { HIT_SLOP } from '../../../../constants/touch';
 
 export default function TodoWashFuelDetailScreen() {
   const navigation = useNavigation();
@@ -61,12 +61,12 @@ export default function TodoWashFuelDetailScreen() {
     <View style={s.container}>
       {/* 상단 헤더 */}
       <View style={s.subHeader}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={s.backBtn}>
+        <Pressable onPress={() => navigation.goBack()} style={s.backBtn}>
           <Image
             source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={s.backIcon}
           />
-        </TouchableOpacity>
+        </Pressable>
         <Text style={s.title}>{companyName} 세차/주유 차량</Text>
       </View>
 
@@ -129,7 +129,11 @@ export default function TodoWashFuelDetailScreen() {
                       </View>
                     </View>
                     <Pressable
-                      onPress={() => handleExpand(item.id)}
+                      hitSlop={HIT_SLOP.MEDIUM}
+                      onPress={e => {
+                        e.stopPropagation();
+                        handleExpand(item.id);
+                      }}
                       style={s.arrowWrap}
                     >
                       <Image

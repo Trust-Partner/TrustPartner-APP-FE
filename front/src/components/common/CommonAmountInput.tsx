@@ -14,7 +14,7 @@ interface Props extends TextInputProps {
   onValueChange?: (raw: string) => void; // 콤마 없는 실제 값 전달용
 }
 
-export default function ContractAmountInput({
+export default function CommonAmountInput({
   style,
   unit = '원',
   value,

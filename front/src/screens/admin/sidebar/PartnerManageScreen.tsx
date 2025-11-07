@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   Image,
   ScrollView,
@@ -13,6 +13,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../../constants/colors';
 import { partnerList, partnerStats } from '../../../mock/partnerMock';
 import ToastMessage from '../../../components/common/ToastMessage';
+import { HIT_SLOP } from '../../../constants/touch';
 
 export default function PartnerManageScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
@@ -61,42 +62,40 @@ export default function PartnerManageScreen() {
               <View
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
               >
-                <TouchableOpacity
+                <Pressable
                   style={s.iconBtn}
                   onPress={() => {
                     setOpenFilter(!openFilter);
                     setOpenYear(false);
                   }}
-                  activeOpacity={0.8}
                 >
                   <Image
                     source={require('../../../assets/admin-partner/filter.png')}
                     style={{ width: 12, height: 12, tintColor: colors.GRAY_50 }}
                   />
-                </TouchableOpacity>
+                </Pressable>
 
                 <View style={{ position: 'relative' }}>
-                  <TouchableOpacity
+                  <Pressable
                     style={s.selectBox}
                     onPress={() => {
                       setOpenYear(!openYear);
                       setOpenFilter(false);
                     }}
-                    activeOpacity={0.8}
                   >
                     <Text style={s.selectText}>{selectedYear}</Text>
                     <Image
                       source={require('../../../assets/common/down_arrow.png')}
                       style={s.arrow}
                     />
-                  </TouchableOpacity>
+                  </Pressable>
 
                   {openYear && (
                     <View
                       style={[s.dropdown, { top: 30, right: 0, width: 80 }]}
                     >
                       {yearOptions.map(y => (
-                        <TouchableOpacity
+                        <Pressable
                           key={y}
                           style={[
                             s.dropdownItem,
@@ -115,7 +114,7 @@ export default function PartnerManageScreen() {
                           >
                             {y}
                           </Text>
-                        </TouchableOpacity>
+                        </Pressable>
                       ))}
                     </View>
                   )}
@@ -126,22 +125,22 @@ export default function PartnerManageScreen() {
             <View style={s.tabRow}>
               <Text style={s.unitLabel}>월</Text>
               <View style={s.tabGroup}>
-                <TouchableOpacity
+                <Pressable
                   style={[s.tab, tab === 'count' && s.tabActive]}
                   onPress={() => setTab('count')}
                 >
                   <Text style={[s.tabText, tab === 'count' && s.tabTextActive]}>
                     건수
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Pressable>
+                <Pressable
                   style={[s.tab, tab === 'sales' && s.tabActive]}
                   onPress={() => setTab('sales')}
                 >
                   <Text style={[s.tabText, tab === 'sales' && s.tabTextActive]}>
                     매출
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
             <View style={s.topDivider} />
@@ -196,10 +195,9 @@ export default function PartnerManageScreen() {
               >
                 {filteredPartners.map(item => (
                   <View key={item.id} style={s.partnerBox}>
-                    <TouchableOpacity
+                    <Pressable
                       style={s.partnerTop}
                       onPress={() => toggleOpen(item.id)}
-                      activeOpacity={0.8}
                     >
                       <View
                         style={{ flexDirection: 'row', alignItems: 'center' }}
@@ -238,7 +236,7 @@ export default function PartnerManageScreen() {
                           ]}
                         />
                       </View>
-                    </TouchableOpacity>
+                    </Pressable>
 
                     {openStates[item.id] && (
                       <View style={s.detailBox}>
@@ -249,15 +247,15 @@ export default function PartnerManageScreen() {
                             style={s.detailIcon}
                           />
                           <Text style={s.detailText}>연락처: {item.phone}</Text>
-                          <TouchableOpacity
+                          <Pressable
                             onPress={() => handleCopy(item.phone, '연락처')}
-                            hitSlop={10}
+                            hitSlop={HIT_SLOP.SAFE_VERTICAL}
                           >
                             <Image
                               source={require('../../../assets/common/copy.png')}
                               style={s.copyIcon}
                             />
-                          </TouchableOpacity>
+                          </Pressable>
                         </View>
 
                         {/* 주소 */}
@@ -267,15 +265,15 @@ export default function PartnerManageScreen() {
                             style={s.detailIcon}
                           />
                           <Text style={s.detailText}>주소: {item.address}</Text>
-                          <TouchableOpacity
+                          <Pressable
                             onPress={() => handleCopy(item.address, '주소')}
-                            hitSlop={10}
+                            hitSlop={HIT_SLOP.SAFE_VERTICAL}
                           >
                             <Image
                               source={require('../../../assets/common/copy.png')}
                               style={s.copyIcon}
                             />
-                          </TouchableOpacity>
+                          </Pressable>
                         </View>
 
                         {/* 담당자 */}

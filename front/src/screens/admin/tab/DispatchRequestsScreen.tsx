@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   Image,
   LayoutAnimation,
 } from 'react-native';
@@ -15,6 +15,7 @@ import { colors } from '../../../constants/colors';
 import DispatchInfoModal from '../../../components/dispatch/DispatchInfoModal';
 import DispatchRejectModal from '../../../components/dispatch/DispatchRejectModal';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { HIT_SLOP } from '../../../constants/touch';
 
 export default function DispatchRequestScreen() {
   const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
@@ -63,11 +64,7 @@ export default function DispatchRequestScreen() {
           const isOpen = !!expanded[item.id];
 
           return (
-            <TouchableOpacity
-              onPress={() => openInfo(item)}
-              activeOpacity={0.9}
-              style={s.item}
-            >
+            <Pressable onPress={() => openInfo(item)} style={s.item}>
               <View style={s.rowWrap}>
                 {/* 상태바 */}
                 <View
@@ -94,7 +91,13 @@ export default function DispatchRequestScreen() {
                     )}
                     <View style={{ flex: 1 }} />
                     <Text style={s.time}>{item.time}</Text>
-                    <TouchableOpacity onPress={() => handleExpand(item.id)}>
+                    <Pressable
+                      hitSlop={HIT_SLOP.MEDIUM}
+                      onPress={e => {
+                        e.stopPropagation();
+                        handleExpand(item.id);
+                      }}
+                    >
                       <Image
                         source={require('../../../assets/common/down_arrow.png')}
                         style={[
@@ -104,7 +107,7 @@ export default function DispatchRequestScreen() {
                           },
                         ]}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
 
                   {isOpen && (
@@ -124,7 +127,7 @@ export default function DispatchRequestScreen() {
                   )}
                 </View>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           );
         }}
         renderHiddenItem={() => <View />}

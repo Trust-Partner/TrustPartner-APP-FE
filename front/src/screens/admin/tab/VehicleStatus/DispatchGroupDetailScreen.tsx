@@ -3,7 +3,7 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   Platform,
 } from 'react-native';
@@ -92,7 +92,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
     const rowBackground = item.isInWashArea ? colors.PRIMARY_00 : colors.WHITE;
 
     return (
-      <TouchableOpacity onPress={() => handleSelectVehicle(item)}>
+      <Pressable onPress={() => handleSelectVehicle(item)}>
         <View style={[s.row, { backgroundColor: rowBackground }]}>
           <View style={[s.sideBar, { backgroundColor: sideBarColor }]} />
           <View style={s.cellWrapper}>
@@ -113,7 +113,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             </Text>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
@@ -123,15 +123,12 @@ export default function DispatchGroupDetailScreen({ route }: any) {
       <View style={s.container}>
         {/* 상단 헤더 */}
         <View style={s.subHeader}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={s.backButton}
-          >
+          <Pressable onPress={() => navigation.goBack()} style={s.backButton}>
             <Image
               source={require('../../../../assets/admin-vehicle/left_arrow.png')}
               style={{ width: 20, height: 20 }}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           <Text style={s.title}>{groupName}</Text>
 

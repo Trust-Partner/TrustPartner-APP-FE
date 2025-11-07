@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,29 @@ import {
   returnRequestList,
   washFuelList,
 } from '../../../../mock/todo/todoMock';
-import { useNavigation } from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { TodoStackParamList } from '../../../../navigations/admin/stacks/tabs/TodoStack';
 
 export default function TodoScreen() {
-  const [tab, setTab] = useState<'return' | 'wash'>('return');
+  const route = useRoute<any>();
   const navigation =
     useNavigation<NativeStackNavigationProp<TodoStackParamList>>();
+
+  const initialTab = route?.params?.initialTab ?? 'return';
+  const [tab, setTab] = useState<'return' | 'wash'>(initialTab);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (route?.params?.initialTab) {
+        setTab(route.params.initialTab);
+      }
+    }, [route?.params?.initialTab]),
+  );
 
   const data = tab === 'return' ? returnRequestList : washFuelList;
 

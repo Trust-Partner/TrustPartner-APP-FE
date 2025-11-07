@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Image,
   Alert,
   PermissionsAndroid,
@@ -11,16 +11,16 @@ import {
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
-import ContractInput from './ContractInput';
-import ContractAmountInput from './ContractAmountInput';
+import CommonInput from '../common/CommonInput';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
-import ContractSearchDropdown from './ContractSearchDropdown';
+import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
-import { s } from './GeneralContractModal';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   onBack: () => void;
@@ -132,24 +132,24 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
       onBackdropPress={onBack}
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={s.modal}>
-          <TouchableOpacity onPress={onBack}>
+        <View style={ms.modal}>
+          <Pressable onPress={onBack} hitSlop={HIT_SLOP.MEDIUM}>
             <Image
               source={require('../../assets/common/close.png')}
-              style={s.close}
+              style={ms.close}
             />
-          </TouchableOpacity>
+          </Pressable>
 
           {step === 1 && !selectedRequest && (
             <>
-              <View style={s.headerRow}>
-                <Text style={s.title}>교체계약서 요청건 선택</Text>
+              <View style={ms.headerRow}>
+                <Text style={ms.title}>교체계약서 요청건 선택</Text>
               </View>
 
-              <View style={s.vehicleInfo}>
-                <Text style={s.vehicleTag}>{vehicle.model}</Text>
-                <Text style={s.vehicleTag}>{vehicle.year}연식</Text>
-                <Text style={s.vehicleTag}>{vehicle.number}</Text>
+              <View style={ms.vehicleInfo}>
+                <Text style={ms.vehicleTag}>{vehicle.model}</Text>
+                <Text style={ms.vehicleTag}>{vehicle.year}연식</Text>
+                <Text style={ms.vehicleTag}>{vehicle.number}</Text>
               </View>
 
               <View style={{ marginTop: 16 }} />
@@ -166,9 +166,8 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 </Text>
               ) : (
                 replacementRequests.map(req => (
-                  <TouchableOpacity
+                  <Pressable
                     key={req.id}
-                    activeOpacity={0.8}
                     onPress={() => {
                       setSelectedRequest(req);
                       updateField('selectedDispatch', req);
@@ -267,7 +266,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                         교체건
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </Pressable>
                 ))
               )}
             </>
@@ -275,34 +274,34 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
           {step > 1 && (
             <>
-              <View style={s.headerRow}>
-                <Text style={s.title}>교체계약서 작성</Text>
+              <View style={ms.headerRow}>
+                <Text style={ms.title}>교체계약서 작성</Text>
               </View>
 
-              <View style={s.vehicleInfo}>
-                <Text style={s.vehicleTag}>{vehicle.model}</Text>
-                <Text style={s.vehicleTag}>{vehicle.number}</Text>
+              <View style={ms.vehicleInfo}>
+                <Text style={ms.vehicleTag}>{vehicle.model}</Text>
+                <Text style={ms.vehicleTag}>{vehicle.number}</Text>
               </View>
 
-              <View style={s.stepDots}>
+              <View style={ms.stepDots}>
                 {[2, 3, 4, 5].map(i => (
-                  <View key={i} style={[s.dot, step === i && s.dotActive]} />
+                  <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
                 ))}
               </View>
 
               {step === 2 && (
                 <>
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 성함"
                     value={formData.customerName}
                     onChangeText={v => updateField('customerName', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="* 고객 연락처"
                     value={formData.phone}
                     onChangeText={v => updateField('phone', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 주소"
                     value={formData.address}
                     onChangeText={v => updateField('address', v)}
@@ -312,32 +311,32 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               {step === 3 && (
                 <>
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 차종"
                     value={formData.customerCarModel}
                     onChangeText={v => updateField('customerCarModel', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 차량번호"
                     value={formData.customerCarNumber}
                     onChangeText={v => updateField('customerCarNumber', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 배기량"
                     value={formData.customerDisplacement}
                     onChangeText={v => updateField('customerDisplacement', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="보험사"
                     value={formData.insuranceCompany}
                     onChangeText={v => updateField('insuranceCompany', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="접수번호"
                     value={formData.reportNumber}
                     onChangeText={v => updateField('reportNumber', v)}
                   />
-                  <ContractSearchDropdown
+                  <CommonSearchDropdown
                     placeholder="(요청업체)"
                     selectedValue={formData.requestCompany}
                     onSelect={(v, isCustom) =>
@@ -352,7 +351,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                       )
                     }
                   />
-                  <ContractSearchDropdown
+                  <CommonSearchDropdown
                     placeholder="(입고공업사)"
                     selectedValue={formData.garageCompany}
                     onSelect={(v, isCustom) =>
@@ -369,9 +368,9 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               {step === 4 && (
                 <>
-                  <View style={s.photoContainer}>
+                  <View style={ms.photoContainer}>
                     <View
-                      style={s.photoGrid}
+                      style={ms.photoGrid}
                       onLayout={e =>
                         setContainerWidth(e.nativeEvent.layout.width)
                       }
@@ -381,53 +380,53 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                         ...(photos.length < 9 ? [{ isAddButton: true }] : []),
                       ].map((item: any, i) =>
                         item.isAddButton ? (
-                          <TouchableOpacity
+                          <Pressable
                             key={`add-${i}`}
                             style={[
-                              s.photoAddBtn,
+                              ms.photoAddBtn,
                               { width: itemSize, height: itemSize },
                             ]}
                             onPress={handleAddPhoto}
-                            activeOpacity={0.8}
                           >
-                            <View style={s.addIconCircle}>
+                            <View style={ms.addIconCircle}>
                               <Image
                                 source={require('../../assets/common/plus.png')}
-                                style={s.addIcon}
+                                style={ms.addIcon}
                               />
                             </View>
-                            <Text style={s.addText}>사진추가</Text>
-                          </TouchableOpacity>
+                            <Text style={ms.addText}>사진추가</Text>
+                          </Pressable>
                         ) : (
-                          <TouchableOpacity
+                          <Pressable
                             key={i}
                             onPress={() => handleReplacePhoto(i)}
                             style={[
-                              s.photoItem,
+                              ms.photoItem,
                               { width: itemSize, height: itemSize },
                             ]}
+                            hitSlop={HIT_SLOP.COMPACT}
                           >
                             <Image
                               source={{ uri: item.uri }}
-                              style={s.photoThumb}
+                              style={ms.photoThumb}
                               resizeMode="cover"
                             />
-                            <TouchableOpacity
-                              style={s.removeOverlay}
+                            <Pressable
+                              style={ms.removeOverlay}
                               onPress={() => removePhoto(i)}
                             >
                               <Image
                                 source={require('../../assets/common/close.png')}
-                                style={s.removeIcon}
+                                style={ms.removeIcon}
                               />
-                            </TouchableOpacity>
-                          </TouchableOpacity>
+                            </Pressable>
+                          </Pressable>
                         ),
                       )}
                     </View>
-                    <Text style={s.subText}>{photos.length}/9장 업로드됨</Text>
+                    <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
                   </View>
-                  <ContractAmountInput
+                  <CommonAmountInput
                     placeholder="유류량 입력"
                     value={formData.fuel}
                     onChangeText={v => updateField('fuel', v)}
@@ -438,13 +437,13 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               {step === 5 && (
                 <>
-                  <View style={s.signatureBox}>
-                    <Text style={s.subTitle}>고객 서명란</Text>
-                    <View style={s.signatureWrapper}>
+                  <View style={ms.signatureBox}>
+                    <Text style={ms.subTitle}>고객 서명란</Text>
+                    <View style={ms.signatureWrapper}>
                       {!isSigning &&
                         (!formData.signature ||
                           formData.signature.length === 0) && (
-                          <Text style={s.signaturePlaceholder}>
+                          <Text style={ms.signaturePlaceholder}>
                             서명해주세요
                           </Text>
                         )}
@@ -462,67 +461,71 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                         webStyle={signatureStyle}
                       />
                     </View>
-                    <TouchableOpacity style={s.clearBtn} onPress={handleClear}>
-                      <Text style={s.clearText}>지우기</Text>
-                    </TouchableOpacity>
+                    <Pressable style={ms.clearBtn} onPress={handleClear}>
+                      <Text style={ms.clearText}>지우기</Text>
+                    </Pressable>
                   </View>
                 </>
               )}
 
-              <View style={s.footer}>
+              <View style={ms.footer}>
                 {step === 5 ? (
                   <>
-                    <TouchableOpacity
-                      style={[s.sendBtn, !isComplete && s.sendBtnDisabled]}
+                    <Pressable
+                      style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
                       disabled={!isComplete}
                       onPress={handleSendContract}
                     >
                       <Text
                         style={[
-                          s.sendBtnText,
+                          ms.sendBtnText,
                           !isComplete && { color: colors.GRAY_40 },
                         ]}
                       >
                         교체계약서 카카오톡 전송하기
                       </Text>
-                    </TouchableOpacity>
-                    <View style={s.footerRow}>
-                      <TouchableOpacity
-                        style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
+                    </Pressable>
+                    <View style={ms.footerRow}>
+                      <Pressable
+                        style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                         onPress={prevStep}
                       >
                         <Image
                           source={require('../../assets/common/left_arrow.png')}
-                          style={s.prevIcon}
+                          style={ms.prevIcon}
                         />
-                        <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                      </TouchableOpacity>
+                        <Text style={[ms.footerBtnText, ms.prevText]}>
+                          이전
+                        </Text>
+                      </Pressable>
                     </View>
                   </>
                 ) : (
-                  <View style={s.footerRow}>
+                  <View style={ms.footerRow}>
                     {step > 2 && (
-                      <TouchableOpacity
-                        style={[s.footerBtn, s.prevBtn, { flex: 1 }]}
+                      <Pressable
+                        style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
                         onPress={prevStep}
                       >
                         <Image
                           source={require('../../assets/common/left_arrow.png')}
-                          style={s.prevIcon}
+                          style={ms.prevIcon}
                         />
-                        <Text style={[s.footerBtnText, s.prevText]}>이전</Text>
-                      </TouchableOpacity>
+                        <Text style={[ms.footerBtnText, ms.prevText]}>
+                          이전
+                        </Text>
+                      </Pressable>
                     )}
-                    <TouchableOpacity
-                      style={[s.footerBtn, s.nextBtn, { flex: 1 }]}
+                    <Pressable
+                      style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
                       onPress={nextStep}
                     >
-                      <Text style={[s.footerBtnText, s.nextText]}>다음</Text>
+                      <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                       <Image
                         source={require('../../assets/common/right_arrow.png')}
-                        style={s.nextIcon}
+                        style={ms.nextIcon}
                       />
-                    </TouchableOpacity>
+                    </Pressable>
                   </View>
                 )}
               </View>
@@ -546,3 +549,5 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     </Modal>
   );
 }
+
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';

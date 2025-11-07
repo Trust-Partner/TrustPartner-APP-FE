@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 
@@ -43,14 +43,14 @@ export default function CommonModal({
         {/* 버튼 영역 */}
         <View style={[s.btnRow, hideCancel && { justifyContent: 'center' }]}>
           {!hideCancel && (
-            <TouchableOpacity style={[s.btn, s.cancel]} onPress={onCancel}>
+            <Pressable style={[s.btn, s.cancel]} onPress={onCancel}>
               <Text style={s.cancelText}>{cancelText}</Text>
-            </TouchableOpacity>
+            </Pressable>
           )}
 
-          <TouchableOpacity style={[s.btn, s.confirm]} onPress={onConfirm}>
+          <Pressable style={[s.btn, s.confirm]} onPress={onConfirm}>
             <Text style={s.confirmText}>{confirmText}</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </Modal>

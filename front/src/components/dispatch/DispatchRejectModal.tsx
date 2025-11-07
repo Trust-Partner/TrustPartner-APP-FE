@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -30,12 +30,12 @@ export default function DispatchRejectModal({
         <Text style={s.title}>배차 요청을 거부할까요?</Text>
 
         <View style={s.btnRow}>
-          <TouchableOpacity style={[s.btn, s.cancel]} onPress={onClose}>
+          <Pressable style={[s.btn, s.cancel]} onPress={onClose}>
             <Text style={s.cancelText}>취소</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[s.btn, s.reject]} onPress={onReject}>
+          </Pressable>
+          <Pressable style={[s.btn, s.reject]} onPress={onReject}>
             <Text style={s.rejectText}>거부</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
     </Modal>
