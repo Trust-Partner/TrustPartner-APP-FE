@@ -11,12 +11,12 @@ import {
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
-import ContractInput from './ContractInput';
-import ContractAmountInput from './ContractAmountInput';
+import CommonInput from '../common/CommonInput';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
-import ContractSearchDropdown from './ContractSearchDropdown';
+import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
@@ -292,17 +292,17 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               {step === 2 && (
                 <>
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 성함"
                     value={formData.customerName}
                     onChangeText={v => updateField('customerName', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="* 고객 연락처"
                     value={formData.phone}
                     onChangeText={v => updateField('phone', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 주소"
                     value={formData.address}
                     onChangeText={v => updateField('address', v)}
@@ -312,32 +312,32 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
               {step === 3 && (
                 <>
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 차종"
                     value={formData.customerCarModel}
                     onChangeText={v => updateField('customerCarModel', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 차량번호"
                     value={formData.customerCarNumber}
                     onChangeText={v => updateField('customerCarNumber', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="고객 배기량"
                     value={formData.customerDisplacement}
                     onChangeText={v => updateField('customerDisplacement', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="보험사"
                     value={formData.insuranceCompany}
                     onChangeText={v => updateField('insuranceCompany', v)}
                   />
-                  <ContractInput
+                  <CommonInput
                     placeholder="접수번호"
                     value={formData.reportNumber}
                     onChangeText={v => updateField('reportNumber', v)}
                   />
-                  <ContractSearchDropdown
+                  <CommonSearchDropdown
                     placeholder="(요청업체)"
                     selectedValue={formData.requestCompany}
                     onSelect={(v, isCustom) =>
@@ -352,7 +352,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                       )
                     }
                   />
-                  <ContractSearchDropdown
+                  <CommonSearchDropdown
                     placeholder="(입고공업사)"
                     selectedValue={formData.garageCompany}
                     onSelect={(v, isCustom) =>
@@ -427,7 +427,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                     </View>
                     <Text style={s.subText}>{photos.length}/9장 업로드됨</Text>
                   </View>
-                  <ContractAmountInput
+                  <CommonAmountInput
                     placeholder="유류량 입력"
                     value={formData.fuel}
                     onChangeText={v => updateField('fuel', v)}

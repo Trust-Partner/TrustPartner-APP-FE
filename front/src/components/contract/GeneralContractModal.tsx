@@ -12,10 +12,10 @@ import {
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
-import ContractInput from '../../components/contract/ContractInput';
+import CommonInput from '../common/CommonInput';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
-import ContractTextarea from './ContractTextarea';
-import ContractAmountInput from './ContractAmountInput';
+import CommonTextarea from '../common/CommonTextarea';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
@@ -166,17 +166,17 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
         <View>
           {step === 1 && (
             <>
-              <ContractInput
+              <CommonInput
                 placeholder="고객 성함"
                 value={formData.customerName}
                 onChangeText={v => updateField('customerName', v)}
               />
-              <ContractInput
+              <CommonInput
                 placeholder="* 고객 연락처"
                 value={formData.phone}
                 onChangeText={v => updateField('phone', v)}
               />
-              <ContractInput
+              <CommonInput
                 placeholder="고객 주소"
                 value={formData.address}
                 onChangeText={v => updateField('address', v)}
@@ -226,14 +226,14 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
               </View>
 
               {/* 금액 입력 */}
-              <ContractAmountInput
+              <CommonAmountInput
                 placeholder="금액 입력"
                 value={formData.amount}
                 onChangeText={v => updateField('amount', v)}
               />
 
               {/* 기타 메모사항 */}
-              <ContractTextarea
+              <CommonTextarea
                 placeholder="기타 메모사항"
                 value={formData.memo}
                 onChangeText={v => updateField('memo', v)}
@@ -308,7 +308,7 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                 <Text style={s.subText}>{photos.length}/9장 업로드됨</Text>
               </View>
 
-              <ContractAmountInput
+              <CommonAmountInput
                 placeholder="유류량 입력"
                 value={formData.fuel}
                 onChangeText={v => updateField('fuel', v)}

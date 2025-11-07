@@ -14,7 +14,7 @@ import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
-import ContractTextarea from '../contract/ContractTextarea';
+import CommonTextarea from '../common/CommonTextarea';
 
 interface Props {
   onBack: () => void;
@@ -149,7 +149,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               </View>
 
               <Text style={s.subTitle}>요청업체에 전송할 메세지</Text>
-              <ContractTextarea
+              <CommonTextarea
                 value={message}
                 onChangeText={setMessage}
                 placeholder="메세지를 입력해주세요"

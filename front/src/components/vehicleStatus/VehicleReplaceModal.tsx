@@ -11,12 +11,12 @@ import {
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { s as baseStyles } from '../contract/GeneralContractModal';
-import ContractSearchDropdown from '../contract/ContractSearchDropdown';
+import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import CommonModal from '../common/CommonModal';
 import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
-import ContractAmountInput from '../contract/ContractAmountInput';
+import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
@@ -147,7 +147,7 @@ export default function VehicleReplaceModal({
                 />
 
                 {/* 요청업체 선택 - 검색형 */}
-                <ContractSearchDropdown
+                <CommonSearchDropdown
                   placeholder="요청업체를 선택하세요"
                   selectedValue={formData.requestCompany}
                   onSelect={(v, isCustom) =>
@@ -231,7 +231,7 @@ export default function VehicleReplaceModal({
                   })}
                 </>
 
-                <ContractAmountInput
+                <CommonAmountInput
                   placeholder="유류량 입력"
                   value={formData.fuel}
                   onChangeText={v => updateField('fuel', v)}
