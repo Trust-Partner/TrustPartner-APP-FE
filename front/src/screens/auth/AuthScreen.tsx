@@ -10,11 +10,15 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Pressable,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuthStore } from '../../states/useAuthStore';
 import { mockUsers } from '../../mock/users';
 import { colors } from '../../constants/colors';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '../../navigations/auth/AuthStack';
 
 type LoginForm = {
   username: string;
@@ -22,6 +26,9 @@ type LoginForm = {
 };
 
 export default function AuthScreen() {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+
   const login = useAuthStore(s => s.login);
   const { control, handleSubmit, watch } = useForm<LoginForm>({
     mode: 'onBlur',
@@ -66,7 +73,10 @@ export default function AuthScreen() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={s.container}>
+      <KeyboardAvoidingView
+        style={s.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <View style={s.card}>
           <Text style={s.logo}>Trust Solution</Text>
 
@@ -207,7 +217,7 @@ export default function AuthScreen() {
 
           {/* 하단 링크 */}
           <View style={s.bottomLinks}>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate('FindId')}>
               <Text style={s.link}>아이디 찾기</Text>
             </Pressable>
             <Text style={s.divider}> | </Text>
@@ -216,7 +226,7 @@ export default function AuthScreen() {
             </Pressable>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 }
@@ -229,7 +239,7 @@ const s = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.WHITE,
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     borderRadius: 8,
     paddingHorizontal: 16,
     paddingVertical: 32,
@@ -266,9 +276,11 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    paddingHorizontal: 8,
+    paddingVertical: Platform.OS === 'android' ? 4 : 8,
     marginBottom: 12,
-    fontSize: 14,
+    fontSize: 11,
+    fontWeight: '400',
     backgroundColor: colors.GRAY_05,
   },
   inputContainer: {
@@ -282,8 +294,10 @@ const s = StyleSheet.create({
   },
   inputField: {
     flex: 1,
-    padding: 8,
-    fontSize: 14,
+    paddingHorizontal: 8,
+    paddingVertical: Platform.OS === 'android' ? 4 : 8,
+    fontSize: 11,
+    fontWeight: '400',
   },
   inputError: {
     borderColor: colors.RED_50,
@@ -343,11 +357,13 @@ const s = StyleSheet.create({
   bottomLinks: {
     flexDirection: 'row',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   link: {
     color: colors.GRAY_80,
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '400',
+    lineHeight: 15.4,
   },
   divider: {
     color: colors.BLACK,
