@@ -207,7 +207,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_20,
     borderRadius: 4,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: Platform.OS === 'android' ? 0 : 8,
     marginBottom: 8,
   },
   searchIcon: {
@@ -223,7 +223,6 @@ const s = StyleSheet.create({
     lineHeight: 15.4,
     marginTop: -1.5,
     paddingVertical: 0,
-    paddingHorizontal: 0,
     includeFontPadding: false,
   },
   dateRow: {
