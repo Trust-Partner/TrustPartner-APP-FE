@@ -7,6 +7,8 @@ import {
   Pressable,
   StyleSheet,
   Image,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { vehicleGroupList } from '../../../../mock/vehicleStatus/vehicleStatusMock';
 import {
@@ -30,47 +32,53 @@ export default function VehicleStatusScreen() {
   const [query, setQuery] = useState('');
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* 헤더 */}
-      <AppHeader
-        centerContent={
-          tab === 'status' ? (
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="차량번호를 검색하세요"
-              placeholderTextColor={colors.GRAY_40}
-              style={s.headerSearchInput}
-            />
-          ) : undefined
-        }
-      />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={{ flex: 1 }}>
+        {/* 헤더 */}
+        <AppHeader
+          centerContent={
+            tab === 'status' ? (
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder="차량번호를 검색하세요"
+                placeholderTextColor={colors.GRAY_40}
+                style={s.headerSearchInput}
+              />
+            ) : undefined
+          }
+        />
 
-      <View style={s.container}>
-        {/* 상단 버튼 */}
-        <View style={s.buttonRow}>
-          <Pressable
-            style={[s.btn, tab === 'dispatch' && s.activeBtn]}
-            onPress={() => setTab('dispatch')}
-          >
-            <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
-              배차하기
-            </Text>
-          </Pressable>
+        <View style={s.container}>
+          {/* 상단 버튼 */}
+          <View style={s.buttonRow}>
+            <Pressable
+              style={[s.btn, tab === 'dispatch' && s.activeBtn]}
+              onPress={() => setTab('dispatch')}
+            >
+              <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
+                배차하기
+              </Text>
+            </Pressable>
 
-          <Pressable
-            style={[s.btn, tab === 'status' && s.activeBtn]}
-            onPress={() => setTab('status')}
-          >
-            <Text style={[s.btnText, tab === 'status' && s.activeText]}>
-              차량현황 확인
-            </Text>
-          </Pressable>
+            <Pressable
+              style={[s.btn, tab === 'status' && s.activeBtn]}
+              onPress={() => setTab('status')}
+            >
+              <Text style={[s.btnText, tab === 'status' && s.activeText]}>
+                차량현황 확인
+              </Text>
+            </Pressable>
+          </View>
+
+          {tab === 'dispatch' ? (
+            <DispatchSection />
+          ) : (
+            <StatusSection query={query} />
+          )}
         </View>
-
-        {tab === 'dispatch' ? <DispatchSection /> : <StatusSection />}
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -157,10 +165,16 @@ function DispatchSection() {
 }
 
 /* 차량현황 탭 */
-function StatusSection() {
+function StatusSection({ query }: { query: string }) {
   const navigation = useNavigation<NavProp>();
   const data = vehicleGroupList;
 
+  // 검색 필터
+  const filteredData = data.filter(item =>
+    item.name.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  // 상단 통계
   const totals = data.reduce(
     (acc, cur) => {
       acc.assigned += cur.assigned;
@@ -178,6 +192,37 @@ function StatusSection() {
     { label: '반납신청', value: totals.returning, color: colors.RED_50 },
     { label: '전체', value: totals.total, color: colors.GRAY_90 },
   ];
+
+  // 배경색 로직
+  const getCardStyle = (item: any) => {
+    const total = item.assigned + item.waiting + item.returning;
+    if (total === 0) return s.cardGray;
+    if (
+      item.type === 'normal' ||
+      item.type === 'etc' ||
+      item.type === 'parking'
+    )
+      return s.cardBlue;
+    return s.cardWhite;
+  };
+
+  // 배지 노출 로직
+  const renderBadges = (item: any) => {
+    switch (item.type) {
+      case 'normal': // 일반배차
+        return <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>;
+      case 'parking': // 주차장(렉시온, ESA)
+        return <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>;
+      default: // 나머지 공업사 / 기타
+        return (
+          <>
+            <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
+            <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
+            <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
+          </>
+        );
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -198,36 +243,48 @@ function StatusSection() {
 
       {/* 리스트 */}
       <FlatList
-        data={data}
+        data={filteredData}
         numColumns={2}
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <Pressable
-            style={s.card}
-            onPress={() =>
-              navigation.navigate('VehicleCompanyDetail', {
-                companyId: item.id,
-                companyName: item.name,
-              })
-            }
-          >
-            <View style={s.cardHeader}>
-              <Text style={s.cardTitle}>{item.name}</Text>
-            </View>
-            <View style={s.badgeRow}>
-              <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
-              <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
-              <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
-              <Image
-                source={require('../../../../assets/common/right_arrow.png')}
-                style={s.arrowIcon}
-              />
-            </View>
-          </Pressable>
-        )}
+        renderItem={({ item }) => {
+          const total = item.assigned + item.waiting + item.returning;
+          const disabled = total === 0;
+
+          return (
+            <Pressable
+              style={[s.card, getCardStyle(item)]}
+              disabled={disabled}
+              onPress={() =>
+                !disabled &&
+                navigation.navigate('VehicleCompanyDetail', {
+                  companyId: item.id,
+                  companyName: item.name,
+                })
+              }
+            >
+              <View style={s.cardHeader}>
+                <Text
+                  style={[s.cardTitle, disabled && { color: colors.GRAY_50 }]}
+                >
+                  {item.name}
+                </Text>
+              </View>
+
+              <View style={s.badgeRow}>
+                {!disabled && renderBadges(item)}
+                {!disabled && (
+                  <Image
+                    source={require('../../../../assets/common/right_arrow.png')}
+                    style={s.arrowIcon}
+                  />
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
     </View>
   );
@@ -281,6 +338,19 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     marginBottom: 8,
+  },
+  cardBlue: {
+    backgroundColor: colors.PRIMARY_00,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_15,
+  },
+  cardWhite: {
+    backgroundColor: colors.WHITE,
+  },
+  cardGray: {
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_20,
   },
   cardHeader: {
     flexDirection: 'row',
