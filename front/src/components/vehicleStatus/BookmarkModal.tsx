@@ -6,8 +6,11 @@ import {
   StyleSheet,
   Image,
   Platform,
+  ScrollView,
+  TextInput,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { Calendar } from 'react-native-calendars';
 import { colors } from '../../constants/colors';
 import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonModal from '../common/CommonModal';
@@ -21,7 +24,14 @@ interface Props {
 
 export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
   const [isBooking, setIsBooking] = useState(false);
-  const [date, setDate] = useState('2025-09-10 22:00');
+  const [date, setDate] = useState<string | null>(null);
+  const [time, setTime] = useState<string | null>(null);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  // 입력 필드 상태
+  const [company, setCompany] = useState('');
+  const [carModel, setCarModel] = useState('');
+  const [location, setLocation] = useState('');
 
   const [resultModal, setResultModal] = useState({
     visible: false,
@@ -29,84 +39,162 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
     message: '',
   });
 
+  const times = [
+    '09:00',
+    '09:30',
+    '10:00',
+    '10:30',
+    '11:00',
+    '11:30',
+    '12:00',
+    '12:30',
+    '13:00',
+    '13:30',
+    '14:00',
+    '14:30',
+    '15:00',
+    '15:30',
+    '16:00',
+    '16:30',
+  ];
+
   const handleConfirm = () => {
-    if (!isBooking) {
-      setResultModal({
-        visible: true,
-        title: '찜 완료',
-        message: '차량 찜이 완료되었습니다',
-      });
-    } else {
+    if (isBooking) {
+      if (!company || !carModel || !location) {
+        setResultModal({
+          visible: true,
+          title: '입력 필요',
+          message: '요청업체, 렌트차종, 배차장소를 모두 입력해주세요',
+        });
+        return;
+      }
+
+      if (!date || !time) {
+        setResultModal({
+          visible: true,
+          title: '입력 필요',
+          message: '배차 날짜와 시간을 모두 선택해주세요',
+        });
+        return;
+      }
+
+      const payload = { company, carModel, location, date, time };
+      console.log('예약 요청 데이터:', payload);
+
       setResultModal({
         visible: true,
         title: '예약 완료',
-        message: '차량 예약이 완료되었습니다',
+        message: `예약이 완료되었습니다\n(${date} ${time})`,
       });
+      return;
     }
+
+    setResultModal({
+      visible: true,
+      title: '찜 완료',
+      message: '차량 찜이 완료되었습니다',
+    });
   };
 
-  const renderStep1 = () => (
+  const handleSelectDate = (d: any) => {
+    setDate(d.dateString);
+    setTime(null); // 날짜 변경 시 시간 초기화
+  };
+
+  const handleSelectTime = (t: string) => {
+    setTime(t);
+    setShowCalendar(false); // 시간까지 선택하면 달력 닫기
+  };
+
+  const renderBookingForm = () => (
     <>
-      {/* 닫기 버튼 */}
-      <Pressable onPress={() => onClose()} hitSlop={HIT_SLOP.MEDIUM}>
-        <Image
-          source={require('../../assets/common/close.png')}
-          style={s.close}
+      {/* 요청업체 / 렌트차종 / 배차장소 입력 */}
+      <View style={s.inputGroup}>
+        <Text style={s.labelSmall}>요청업체</Text>
+        <TextInput
+          value={company}
+          onChangeText={setCompany}
+          placeholder="요청업체명을 입력해주세요"
+          placeholderTextColor={colors.GRAY_50}
+          style={s.input}
         />
-      </Pressable>
 
-      <Text style={s.title}>해당 차량을 찜해둘까요?</Text>
+        <Text style={[s.labelSmall, { marginTop: 8 }]}>렌트차종</Text>
+        <TextInput
+          value={carModel}
+          onChangeText={setCarModel}
+          placeholder="렌트차종을 입력해주세요"
+          placeholderTextColor={colors.GRAY_50}
+          style={s.input}
+        />
 
-      <View style={s.badgeRow}>
-        <Text style={s.badge}>{vehicle.model}</Text>
-        <Text style={s.badge}>{vehicle.number}</Text>
+        <Text style={[s.labelSmall, { marginTop: 8 }]}>배차장소</Text>
+        <TextInput
+          value={location}
+          onChangeText={setLocation}
+          placeholder="배차장소를 입력해주세요"
+          placeholderTextColor={colors.GRAY_50}
+          style={s.input}
+        />
       </View>
 
-      {/* 예약일정 체크 */}
-      <Pressable style={s.checkboxRow} onPress={() => setIsBooking(!isBooking)}>
-        <View style={[s.checkbox, isBooking && s.checked]}>
-          {isBooking && (
-            <Image
-              source={require('../../assets/common/check_white.png')}
-              style={{ width: 8, height: 6 }}
-            />
+      {/* 날짜 및 시각 */}
+      <View style={{ marginTop: 16 }}>
+        <Text style={s.labelSmall}>배차 날짜 및 시각</Text>
+        <Pressable
+          style={[s.bookingBox, { flexDirection: 'row' }]}
+          onPress={() => setShowCalendar(!showCalendar)}
+        >
+          <Image
+            source={require('../../assets/common/calendar.png')}
+            style={s.dateIcon}
+          />
+          <Text style={s.dateText}>
+            {date && time ? `${date} ${time}` : '날짜 및 시간을 선택해주세요'}
+          </Text>
+        </Pressable>
+      </View>
+
+      {/* 달력 + 시간 선택 */}
+      {showCalendar && (
+        <View style={s.calendarContainer}>
+          <Calendar
+            onDayPress={handleSelectDate}
+            markedDates={{
+              [date ?? '']: {
+                selected: true,
+                selectedColor: colors.PRIMARY_50,
+              },
+            }}
+            theme={{
+              arrowColor: colors.PRIMARY_50,
+              todayTextColor: colors.PRIMARY_60,
+              textDayFontSize: 13,
+            }}
+          />
+
+          {date && (
+            <View style={s.timeList}>
+              {times.map(t => (
+                <Pressable
+                  key={t}
+                  style={[
+                    s.timeBtn,
+                    t === time && { backgroundColor: colors.PRIMARY_50 },
+                  ]}
+                  onPress={() => handleSelectTime(t)}
+                >
+                  <Text
+                    style={[s.timeText, t === time && { color: colors.WHITE }]}
+                  >
+                    {t}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
           )}
         </View>
-        <Text style={s.label}>예약일정을 등록할게요</Text>
-      </Pressable>
-
-      {/* 예약일정 폼 영역 */}
-      {isBooking && (
-        <>
-          {/* 요청업체/차종/장소 박스 */}
-          <View style={s.bookingBox}>
-            <Text style={s.textLine}>요청업체 :</Text>
-            <Text style={s.textLine}>렌트차종 :</Text>
-            <Text style={s.textLine}>배차장소 :</Text>
-          </View>
-
-          {/* 날짜 및 시각 영역 */}
-          <View style={{ marginTop: 8 }}>
-            <Text style={s.labelSmall}>배차 날짜 및 시각</Text>
-            <Pressable style={[s.bookingBox, { flexDirection: 'row' }]}>
-              <Image
-                source={require('../../assets/common/calendar.png')}
-                style={s.dateIcon}
-              />
-              <Text style={s.dateText}>{date}</Text>
-            </Pressable>
-          </View>
-        </>
       )}
-
-      <View style={s.btnRow}>
-        <Pressable style={s.cancelBtn} onPress={() => onClose()}>
-          <Text style={s.cancelText}>취소</Text>
-        </Pressable>
-        <Pressable style={s.confirmBtn} onPress={handleConfirm}>
-          <Text style={s.confirmText}>확인</Text>
-        </Pressable>
-      </View>
     </>
   );
 
@@ -119,7 +207,50 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
       statusBarTranslucent
       onBackdropPress={() => onClose()}
     >
-      <View style={s.modal}>{renderStep1()}</View>
+      <View style={s.modal}>
+        {/* 닫기 버튼 */}
+        <Pressable onPress={() => onClose()} hitSlop={HIT_SLOP.MEDIUM}>
+          <Image
+            source={require('../../assets/common/close.png')}
+            style={s.close}
+          />
+        </Pressable>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text style={s.title}>해당 차량을 찜해둘까요?</Text>
+
+          <View style={s.badgeRow}>
+            <Text style={s.badge}>{vehicle.model}</Text>
+            <Text style={s.badge}>{vehicle.number}</Text>
+          </View>
+
+          {/* 예약일정 체크 */}
+          <Pressable
+            style={s.checkboxRow}
+            onPress={() => setIsBooking(!isBooking)}
+          >
+            <View style={[s.checkbox, isBooking && s.checked]}>
+              {isBooking && (
+                <Image
+                  source={require('../../assets/common/check_white.png')}
+                  style={{ width: 8, height: 6 }}
+                />
+              )}
+            </View>
+            <Text style={s.label}>예약일정을 등록할게요</Text>
+          </Pressable>
+
+          {isBooking && renderBookingForm()}
+        </ScrollView>
+
+        <View style={s.btnRow}>
+          <Pressable style={s.cancelBtn} onPress={() => onClose()}>
+            <Text style={s.cancelText}>취소</Text>
+          </Pressable>
+          <Pressable style={s.confirmBtn} onPress={handleConfirm}>
+            <Text style={s.confirmText}>확인</Text>
+          </Pressable>
+        </View>
+      </View>
 
       <CommonModal
         visible={resultModal.visible}
@@ -128,6 +259,11 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
         confirmText="확인"
         hideCancel
         onConfirm={() => {
+          if (resultModal.title.includes('입력 필요')) {
+            setResultModal({ visible: false, title: '', message: '' });
+            return;
+          }
+
           setResultModal({ visible: false, title: '', message: '' });
           onClose(isBooking ? 'booked' : 'bookmarked');
         }}
@@ -148,6 +284,7 @@ const s = StyleSheet.create({
     paddingBottom: 32,
     paddingHorizontal: 16,
     alignSelf: 'center',
+    maxHeight: '90%',
   },
   close: {
     alignSelf: 'flex-end',
@@ -210,7 +347,7 @@ const s = StyleSheet.create({
     fontSize: 11,
     color: colors.GRAY_80,
   },
-  bookingBox: {
+  inputGroup: {
     backgroundColor: colors.GRAY_05,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
@@ -218,11 +355,25 @@ const s = StyleSheet.create({
     padding: 8,
     marginTop: 8,
   },
-  textLine: {
+  input: {
+    backgroundColor: colors.WHITE,
+    borderWidth: 1,
+    borderColor: colors.GRAY_20,
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: Platform.OS === 'ios' ? 6 : 2,
     fontSize: 11,
-    fontWeight: '400',
-    color: colors.GRAY_50,
-    marginBottom: 2,
+    color: colors.GRAY_80,
+    marginTop: 4,
+  },
+  bookingBox: {
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    padding: 8,
+    marginTop: 8,
+    alignItems: 'center',
   },
   dateIcon: {
     width: 12,
@@ -236,7 +387,32 @@ const s = StyleSheet.create({
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
-    marginTop: Platform.OS === 'android' ? -1 : 0,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
+  },
+  calendarContainer: {
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    marginTop: 8,
+    overflow: 'hidden',
+  },
+  timeList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 8,
+    gap: 6,
+  },
+  timeBtn: {
+    borderWidth: 1,
+    borderColor: colors.GRAY_20,
+    borderRadius: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: colors.WHITE,
+  },
+  timeText: {
+    fontSize: 11,
+    color: colors.GRAY_70,
   },
   btnRow: {
     flexDirection: 'row',
@@ -265,30 +441,10 @@ const s = StyleSheet.create({
     alignItems: 'center',
     marginLeft: 8,
   },
-  confirmBtnFull: {
-    marginTop: 20,
-    backgroundColor: colors.PRIMARY_50,
-    borderRadius: 6,
-    paddingVertical: 10,
-    alignItems: 'center',
-  },
   confirmText: {
     color: colors.WHITE,
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15.4,
-  },
-  resultTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.GRAY_90,
-    textAlign: 'center',
-    marginTop: 4,
-  },
-  resultSub: {
-    fontSize: 13,
-    color: colors.GRAY_60,
-    textAlign: 'center',
-    marginTop: 8,
   },
 });
