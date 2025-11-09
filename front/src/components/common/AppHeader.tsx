@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GreetingPill from '../header/GreetingPill';
 import { colors } from '../../constants/colors';
+import { useAuthStore } from '../../states/useAuthStore';
 
 export default function AppHeader({
   canGoBack = false,
@@ -16,6 +17,9 @@ export default function AppHeader({
 }) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const user = useAuthStore(state => state.user);
+
+  const userName = user?.name || '사용자';
 
   return (
     <View
@@ -41,7 +45,9 @@ export default function AppHeader({
 
       {/* 가운데: 기본은 GreetingPill, 아니면 centerContent */}
       <View style={s.center}>
-        {centerContent ?? <GreetingPill text="서승동님 오늘도 화이팅하세요" />}
+        {centerContent ?? (
+          <GreetingPill text={`${userName}님 오늘도 화이팅하세요`} />
+        )}
       </View>
 
       <View style={s.right} />
