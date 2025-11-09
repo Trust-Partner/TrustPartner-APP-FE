@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRe
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigations/root/RootNavigator';
 import { HIT_SLOP } from '../../../../constants/touch';
+import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation =
@@ -33,7 +34,13 @@ export default function VehicleCompanyDetailScreen() {
     companyName: string;
   };
 
-  const [query, setQuery] = useState('');
+  const { query, setQuery, clearQuery } = useVehicleSearchStore();
+  useEffect(() => {
+    return () => {
+      clearQuery();
+    };
+  }, []);
+
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
@@ -41,7 +48,6 @@ export default function VehicleCompanyDetailScreen() {
 
   const [replaceModalVisible, setReplaceModalVisible] = useState(false);
   const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
-
   const [selectedVehicle, setSelectedVehicle] = useState<
     VehicleCompanyDetail['vehicles'][number] | null
   >(null);
@@ -74,13 +80,19 @@ export default function VehicleCompanyDetailScreen() {
       <View style={{ flex: 1 }}>
         <AppHeader
           centerContent={
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="차량번호를 검색하세요"
-              placeholderTextColor={colors.GRAY_40}
-              style={s.headerSearchInput}
-            />
+            <View style={s.searchBox}>
+              <Image
+                source={require('../../../../assets/common/search.png')}
+                style={s.searchIcon}
+              />
+              <TextInput
+                value={query}
+                onChangeText={setQuery}
+                placeholder="차량번호를 검색하세요"
+                placeholderTextColor={colors.GRAY_50}
+                style={s.headerSearchInput}
+              />
+            </View>
           }
         />
         <View style={s.subHeader}>
@@ -335,14 +347,27 @@ const s = StyleSheet.create({
     fontSize: 15,
     color: colors.GRAY_40,
   },
-  headerSearchInput: {
-    width: 220,
-    height: 36,
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.WHITE,
     borderWidth: 1,
-    borderColor: colors.GRAY_10,
+    borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+  },
+  searchIcon: {
+    width: 14,
+    height: 14,
+    resizeMode: 'contain',
+    tintColor: colors.GRAY_60,
+    marginRight: 6,
+  },
+  headerSearchInput: {
+    minWidth: 158,
+    minHeight: 36,
+    paddingVertical: 0,
+    marginTop: -1.5,
     fontSize: 13,
   },
   subHeader: {
