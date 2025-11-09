@@ -319,7 +319,7 @@ const s = StyleSheet.create({
   badgeGreen: { backgroundColor: colors.GREEN_10 },
   badgeYellow: { backgroundColor: colors.YELLOW_00 },
   badgeBlue: { backgroundColor: colors.PRIMARY_10 },
-  badgeRed: { backgroundColor: colors.RED_00 },
+  badgeRed: { backgroundColor: colors.RED_05 },
   arrowIcon: {
     width: 16,
     height: 16,
