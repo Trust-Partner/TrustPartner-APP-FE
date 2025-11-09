@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRe
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigations/root/RootNavigator';
 import { HIT_SLOP } from '../../../../constants/touch';
+import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation =
@@ -33,7 +34,13 @@ export default function VehicleCompanyDetailScreen() {
     companyName: string;
   };
 
-  const [query, setQuery] = useState('');
+  const { query, setQuery, clearQuery } = useVehicleSearchStore();
+  useEffect(() => {
+    return () => {
+      clearQuery();
+    };
+  }, []);
+
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [activeStatus, setActiveStatus] = useState<
     '전체' | '배차중' | '대기중' | '반납신청'
@@ -41,7 +48,6 @@ export default function VehicleCompanyDetailScreen() {
 
   const [replaceModalVisible, setReplaceModalVisible] = useState(false);
   const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
-
   const [selectedVehicle, setSelectedVehicle] = useState<
     VehicleCompanyDetail['vehicles'][number] | null
   >(null);

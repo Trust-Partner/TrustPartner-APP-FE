@@ -21,6 +21,8 @@ import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { VehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/VehicleStatusStack';
+import { vehicleCompanyDetailMock } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
+import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 
 type NavProp = NativeStackNavigationProp<
   VehicleStatusStackParamList,
@@ -29,7 +31,7 @@ type NavProp = NativeStackNavigationProp<
 
 export default function VehicleStatusScreen() {
   const [tab, setTab] = useState<'dispatch' | 'status'>('dispatch');
-  const [query, setQuery] = useState('');
+  const { query, setQuery } = useVehicleSearchStore();
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -71,18 +73,14 @@ export default function VehicleStatusScreen() {
             </Pressable>
           </View>
 
-          {tab === 'dispatch' ? (
-            <DispatchSection />
-          ) : (
-            <StatusSection query={query} />
-          )}
+          {tab === 'dispatch' ? <DispatchSection /> : <StatusSection />}
         </View>
       </View>
     </TouchableWithoutFeedback>
   );
 }
 
-/* 배차하기 섹션 */
+// 배차하기
 function DispatchSection() {
   const navigation = useNavigation<NavProp>();
 
@@ -164,17 +162,31 @@ function DispatchSection() {
   );
 }
 
-/* 차량현황 탭 */
-function StatusSection({ query }: { query: string }) {
+// 차량현황
+function StatusSection() {
   const navigation = useNavigation<NavProp>();
+  const { query } = useVehicleSearchStore(); // 공유 검색어 사용
   const data = vehicleGroupList;
 
   // 검색 필터
-  const filteredData = data.filter(item =>
-    item.name.toLowerCase().includes(query.toLowerCase()),
-  );
+  const filteredData = data.filter(company => {
+    if (!query.trim()) return true;
 
-  // 상단 통계
+    // 회사명 검색
+    const lowerQuery = query.toLowerCase();
+    if (company.name.toLowerCase().includes(lowerQuery)) return true;
+
+    const companyDetail = vehicleCompanyDetailMock.find(
+      detail => detail.companyId === company.id,
+    );
+    if (!companyDetail) return false;
+
+    return companyDetail.vehicles.some(v =>
+      v.plateNumber.replace(/\s+/g, '').includes(query.replace(/\s+/g, '')),
+    );
+  });
+
+  // 통계
   const totals = data.reduce(
     (acc, cur) => {
       acc.assigned += cur.assigned;
@@ -193,7 +205,7 @@ function StatusSection({ query }: { query: string }) {
     { label: '전체', value: totals.total, color: colors.GRAY_90 },
   ];
 
-  // 배경색 로직
+  // 배경색
   const getCardStyle = (item: any) => {
     const total = item.assigned + item.waiting + item.returning;
     if (total === 0) return s.cardGray;
@@ -206,14 +218,14 @@ function StatusSection({ query }: { query: string }) {
     return s.cardWhite;
   };
 
-  // 배지 노출 로직
+  // 태그 노출
   const renderBadges = (item: any) => {
     switch (item.type) {
-      case 'normal': // 일반배차
+      case 'normal':
         return <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>;
-      case 'parking': // 주차장(렉시온, ESA)
+      case 'parking':
         return <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>;
-      default: // 나머지 공업사 / 기타
+      default:
         return (
           <>
             <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
@@ -248,7 +260,6 @@ function StatusSection({ query }: { query: string }) {
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item }) => {
           const total = item.assigned + item.waiting + item.returning;
           const disabled = total === 0;
