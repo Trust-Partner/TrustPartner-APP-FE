@@ -14,6 +14,7 @@ import {
   PrepaymentItemType,
 } from '../../../mock/prepaymentMock';
 import CommonModal from '../../../components/common/CommonModal';
+import AppHeader from '../../../components/common/AppHeader';
 
 export default function PrepaymentScreen() {
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
@@ -122,78 +123,84 @@ export default function PrepaymentScreen() {
   };
 
   return (
-    <View style={s.container}>
-      {/* 상단 요약형 탭 */}
-      <View style={s.summaryContainer}>
-        {(
-          [
-            {
-              key: 'waiting',
-              label: '지급대기',
-              value: prepaymentMock.waiting.length,
-            },
-            {
-              key: 'current',
-              label: '당월배차내역',
-              value: prepaymentMock.current.length,
-            },
-            {
-              key: 'past',
-              label: '지난배차내역',
-              value: prepaymentMock.past.length,
-            },
-          ] as const
-        ).map((tab, idx) => {
-          const isActive = activeTab === tab.key;
-          return (
-            <Pressable
-              key={tab.key}
-              style={[s.summaryCell, idx !== 2 && s.rightDivider]}
-              onPress={() => setActiveTab(tab.key)}
-            >
-              <Text style={s.value}>{tab.value}</Text>
-              <Text style={s.label}>{tab.label}</Text>
-              {isActive && <View style={s.activeBorder} />}
-            </Pressable>
-          );
-        })}
-      </View>
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>사전지급 관리</Text>}
+      />
+      <View style={s.container}>
+        {/* 상단 요약형 탭 */}
+        <View style={s.summaryContainer}>
+          {(
+            [
+              {
+                key: 'waiting',
+                label: '지급대기',
+                value: prepaymentMock.waiting.length,
+              },
+              {
+                key: 'current',
+                label: '당월배차내역',
+                value: prepaymentMock.current.length,
+              },
+              {
+                key: 'past',
+                label: '지난배차내역',
+                value: prepaymentMock.past.length,
+              },
+            ] as const
+          ).map((tab, idx) => {
+            const isActive = activeTab === tab.key;
+            return (
+              <Pressable
+                key={tab.key}
+                style={[s.summaryCell, idx !== 2 && s.rightDivider]}
+                onPress={() => setActiveTab(tab.key)}
+              >
+                <Text style={s.value}>{tab.value}</Text>
+                <Text style={s.label}>{tab.label}</Text>
+                {isActive && <View style={s.activeBorder} />}
+              </Pressable>
+            );
+          })}
+        </View>
 
-      {/* 리스트 영역 */}
-      <View style={s.listBox}>
-        {renderRowLayout(true)}
+        {/* 리스트 영역 */}
+        <View style={s.listBox}>
+          {renderRowLayout(true)}
 
-        <FlatList
-          data={data}
-          keyExtractor={item => item.id.toString()}
-          renderItem={renderItem}
+          <FlatList
+            data={data}
+            keyExtractor={item => item.id.toString()}
+            renderItem={renderItem}
+          />
+        </View>
+        <CommonModal
+          visible={confirmModalVisible}
+          title="지급확정"
+          message="지급 확정할까요?"
+          confirmText="지급확정"
+          cancelText="취소"
+          onCancel={() => setConfirmModalVisible(false)}
+          onConfirm={() => {
+            setConfirmModalVisible(false);
+            console.log('지급 확정 처리');
+          }}
+        />
+
+        <CommonModal
+          visible={cancelModalVisible}
+          title="취소신청"
+          message="취소 신청할까요?"
+          confirmText="취소신청"
+          cancelText="취소"
+          onCancel={() => setCancelModalVisible(false)}
+          onConfirm={() => {
+            setCancelModalVisible(false);
+            console.log('취소 신청 처리');
+          }}
         />
       </View>
-      <CommonModal
-        visible={confirmModalVisible}
-        title="지급확정"
-        message="지급 확정할까요?"
-        confirmText="지급확정"
-        cancelText="취소"
-        onCancel={() => setConfirmModalVisible(false)}
-        onConfirm={() => {
-          setConfirmModalVisible(false);
-          console.log('지급 확정 처리');
-        }}
-      />
-
-      <CommonModal
-        visible={cancelModalVisible}
-        title="취소신청"
-        message="취소 신청할까요?"
-        confirmText="취소신청"
-        cancelText="취소"
-        onCancel={() => setCancelModalVisible(false)}
-        onConfirm={() => {
-          setCancelModalVisible(false);
-          console.log('취소 신청 처리');
-        }}
-      />
     </View>
   );
 }
@@ -203,6 +210,10 @@ const s = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: colors.GRAY_00,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
   },
   summaryContainer: {
     flexDirection: 'row',

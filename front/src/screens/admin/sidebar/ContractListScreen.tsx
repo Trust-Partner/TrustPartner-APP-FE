@@ -16,6 +16,7 @@ import { contractListMock } from '../../../mock/contractListMock';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigations/root/RootNavigator';
+import AppHeader from '../../../components/common/AppHeader';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -64,117 +65,125 @@ export default function ContractListScreen() {
   };
 
   return (
-    <View style={s.container}>
-      {/* 검색 */}
-      <View style={s.searchBox}>
-        <Image
-          source={require('../../../assets/common/search.png')}
-          style={s.searchIcon}
-        />
-        <TextInput
-          placeholder="차종, 차량번호, 고객명으로 검색"
-          style={s.input}
-          value={search}
-          onChangeText={setSearch}
-          placeholderTextColor={colors.GRAY_50}
-        />
-      </View>
-
-      {/* 날짜 버튼 */}
-      <View style={s.dateRow}>
-        <Pressable
-          style={s.dateBtn}
-          onPress={() => setOpenPicker(openPicker === 'start' ? null : 'start')}
-        >
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>계약서 목록</Text>}
+      />
+      <View style={s.container}>
+        {/* 검색 */}
+        <View style={s.searchBox}>
           <Image
-            source={require('../../../assets/common/calendar.png')}
-            style={s.icon}
+            source={require('../../../assets/common/search.png')}
+            style={s.searchIcon}
           />
-          <Text style={s.dateText}>
-            {range.startDate ? range.startDate : '시작일'}
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={s.dateBtn}
-          onPress={() => setOpenPicker(openPicker === 'end' ? null : 'end')}
-        >
-          <Image
-            source={require('../../../assets/common/calendar.png')}
-            style={s.icon}
-          />
-          <Text style={s.dateText}>
-            {range.endDate ? range.endDate : '종료일'}
-          </Text>
-        </Pressable>
-      </View>
-
-      {/* 드롭다운 캘린더 (Input 아래 작게 표시) */}
-      {openPicker && (
-        <View style={s.dropdownCalendar}>
-          <Calendar
-            onDayPress={handleDaySelect}
-            markedDates={{
-              [openPicker === 'start'
-                ? range.startDate || ''
-                : range.endDate || '']: {
-                selected: true,
-                selectedColor: colors.PRIMARY_50,
-              },
-            }}
-            theme={{
-              arrowColor: colors.PRIMARY_50,
-              todayTextColor: colors.PRIMARY_60,
-              selectedDayBackgroundColor: colors.PRIMARY_50,
-              selectedDayTextColor: '#fff',
-              textDayFontSize: 14,
-              textMonthFontSize: 16,
-              textDayHeaderFontSize: 12,
-            }}
+          <TextInput
+            placeholder="차종, 차량번호, 고객명으로 검색"
+            style={s.input}
+            value={search}
+            onChangeText={setSearch}
+            placeholderTextColor={colors.GRAY_50}
           />
         </View>
-      )}
 
-      {/* 계약서 리스트 */}
-      <View style={s.cardContainer}>
-        <FlatList
-          data={filteredList}
-          keyExtractor={item => item.id.toString()}
-          nestedScrollEnabled
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Pressable onPress={() => handlePressContract(item.id)}>
-              <View style={s.card}>
-                <View style={s.cardRow}>
-                  <Image
-                    source={require('../../../assets/admin-contract/person.png')}
-                    style={s.iconSmall}
-                  />
-                  <Text style={s.cardText}>{item.customerName}</Text>
-                </View>
+        {/* 날짜 버튼 */}
+        <View style={s.dateRow}>
+          <Pressable
+            style={s.dateBtn}
+            onPress={() =>
+              setOpenPicker(openPicker === 'start' ? null : 'start')
+            }
+          >
+            <Image
+              source={require('../../../assets/common/calendar.png')}
+              style={s.icon}
+            />
+            <Text style={s.dateText}>
+              {range.startDate ? range.startDate : '시작일'}
+            </Text>
+          </Pressable>
 
-                <View style={s.cardRow}>
-                  <Image
-                    source={require('../../../assets/admin-contract/calender.png')}
-                    style={s.iconSmall}
-                  />
-                  <Text style={s.cardDateText}>{item.startDate}</Text>
-                </View>
+          <Pressable
+            style={s.dateBtn}
+            onPress={() => setOpenPicker(openPicker === 'end' ? null : 'end')}
+          >
+            <Image
+              source={require('../../../assets/common/calendar.png')}
+              style={s.icon}
+            />
+            <Text style={s.dateText}>
+              {range.endDate ? range.endDate : '종료일'}
+            </Text>
+          </Pressable>
+        </View>
 
-                <View style={s.carBox}>
-                  <Image
-                    source={require('../../../assets/common/file_icon.png')}
-                    style={s.iconCar}
-                  />
-                  <View style={s.textRow}>
-                    <Text style={s.carName}>{item.carName}</Text>
-                    <Text style={s.carNumber}>{item.carNumber}</Text>
+        {/* 드롭다운 캘린더 (Input 아래 작게 표시) */}
+        {openPicker && (
+          <View style={s.dropdownCalendar}>
+            <Calendar
+              onDayPress={handleDaySelect}
+              markedDates={{
+                [openPicker === 'start'
+                  ? range.startDate || ''
+                  : range.endDate || '']: {
+                  selected: true,
+                  selectedColor: colors.PRIMARY_50,
+                },
+              }}
+              theme={{
+                arrowColor: colors.PRIMARY_50,
+                todayTextColor: colors.PRIMARY_60,
+                selectedDayBackgroundColor: colors.PRIMARY_50,
+                selectedDayTextColor: '#fff',
+                textDayFontSize: 14,
+                textMonthFontSize: 16,
+                textDayHeaderFontSize: 12,
+              }}
+            />
+          </View>
+        )}
+
+        {/* 계약서 리스트 */}
+        <View style={s.cardContainer}>
+          <FlatList
+            data={filteredList}
+            keyExtractor={item => item.id.toString()}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Pressable onPress={() => handlePressContract(item.id)}>
+                <View style={s.card}>
+                  <View style={s.cardRow}>
+                    <Image
+                      source={require('../../../assets/admin-contract/person.png')}
+                      style={s.iconSmall}
+                    />
+                    <Text style={s.cardText}>{item.customerName}</Text>
+                  </View>
+
+                  <View style={s.cardRow}>
+                    <Image
+                      source={require('../../../assets/admin-contract/calender.png')}
+                      style={s.iconSmall}
+                    />
+                    <Text style={s.cardDateText}>{item.startDate}</Text>
+                  </View>
+
+                  <View style={s.carBox}>
+                    <Image
+                      source={require('../../../assets/common/file_icon.png')}
+                      style={s.iconCar}
+                    />
+                    <View style={s.textRow}>
+                      <Text style={s.carName}>{item.carName}</Text>
+                      <Text style={s.carNumber}>{item.carNumber}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            </Pressable>
-          )}
-        />
+              </Pressable>
+            )}
+          />
+        </View>
       </View>
     </View>
   );
@@ -186,6 +195,10 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
     padding: 16,
   },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
+  },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -194,7 +207,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_20,
     borderRadius: 4,
     paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingVertical: Platform.OS === 'android' ? 0 : 8,
     marginBottom: 8,
   },
   searchIcon: {
@@ -210,7 +223,6 @@ const s = StyleSheet.create({
     lineHeight: 15.4,
     marginTop: -1.5,
     paddingVertical: 0,
-    paddingHorizontal: 0,
     includeFontPadding: false,
   },
   dateRow: {

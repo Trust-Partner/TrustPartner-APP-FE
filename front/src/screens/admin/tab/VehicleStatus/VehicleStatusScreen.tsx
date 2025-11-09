@@ -7,6 +7,9 @@ import {
   Pressable,
   StyleSheet,
   Image,
+  Keyboard,
+  TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import { vehicleGroupList } from '../../../../mock/vehicleStatus/vehicleStatusMock';
 import {
@@ -19,6 +22,8 @@ import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { VehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/VehicleStatusStack';
+import { vehicleCompanyDetailMock } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
+import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 
 type NavProp = NativeStackNavigationProp<
   VehicleStatusStackParamList,
@@ -27,54 +32,62 @@ type NavProp = NativeStackNavigationProp<
 
 export default function VehicleStatusScreen() {
   const [tab, setTab] = useState<'dispatch' | 'status'>('dispatch');
-  const [query, setQuery] = useState('');
+  const { query, setQuery } = useVehicleSearchStore();
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* 헤더 */}
-      <AppHeader
-        centerContent={
-          tab === 'status' ? (
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="차량번호를 검색하세요"
-              placeholderTextColor={colors.GRAY_40}
-              style={s.headerSearchInput}
-            />
-          ) : undefined
-        }
-      />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={{ flex: 1 }}>
+        {/* 헤더 */}
+        <AppHeader
+          centerContent={
+            tab === 'status' ? (
+              <View style={s.searchBox}>
+                <Image
+                  source={require('../../../../assets/common/search.png')}
+                  style={s.searchIcon}
+                />
+                <TextInput
+                  value={query}
+                  onChangeText={setQuery}
+                  placeholder="차량번호를 검색하세요"
+                  placeholderTextColor={colors.GRAY_50}
+                  style={s.headerSearchInput}
+                />
+              </View>
+            ) : undefined
+          }
+        />
 
-      <View style={s.container}>
-        {/* 상단 버튼 */}
-        <View style={s.buttonRow}>
-          <Pressable
-            style={[s.btn, tab === 'dispatch' && s.activeBtn]}
-            onPress={() => setTab('dispatch')}
-          >
-            <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
-              배차하기
-            </Text>
-          </Pressable>
+        <View style={s.container}>
+          {/* 상단 버튼 */}
+          <View style={s.buttonRow}>
+            <Pressable
+              style={[s.btn, tab === 'dispatch' && s.activeBtn]}
+              onPress={() => setTab('dispatch')}
+            >
+              <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
+                배차하기
+              </Text>
+            </Pressable>
 
-          <Pressable
-            style={[s.btn, tab === 'status' && s.activeBtn]}
-            onPress={() => setTab('status')}
-          >
-            <Text style={[s.btnText, tab === 'status' && s.activeText]}>
-              차량현황 확인
-            </Text>
-          </Pressable>
+            <Pressable
+              style={[s.btn, tab === 'status' && s.activeBtn]}
+              onPress={() => setTab('status')}
+            >
+              <Text style={[s.btnText, tab === 'status' && s.activeText]}>
+                차량현황 확인
+              </Text>
+            </Pressable>
+          </View>
+
+          {tab === 'dispatch' ? <DispatchSection /> : <StatusSection />}
         </View>
-
-        {tab === 'dispatch' ? <DispatchSection /> : <StatusSection />}
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
-/* 배차하기 섹션 */
+// 배차하기
 function DispatchSection() {
   const navigation = useNavigation<NavProp>();
 
@@ -156,11 +169,31 @@ function DispatchSection() {
   );
 }
 
-/* 차량현황 탭 */
+// 차량현황
 function StatusSection() {
   const navigation = useNavigation<NavProp>();
+  const { query } = useVehicleSearchStore(); // 공유 검색어 사용
   const data = vehicleGroupList;
 
+  // 검색 필터
+  const filteredData = data.filter(company => {
+    if (!query.trim()) return true;
+
+    // 회사명 검색
+    const lowerQuery = query.toLowerCase();
+    if (company.name.toLowerCase().includes(lowerQuery)) return true;
+
+    const companyDetail = vehicleCompanyDetailMock.find(
+      detail => detail.companyId === company.id,
+    );
+    if (!companyDetail) return false;
+
+    return companyDetail.vehicles.some(v =>
+      v.plateNumber.replace(/\s+/g, '').includes(query.replace(/\s+/g, '')),
+    );
+  });
+
+  // 통계
   const totals = data.reduce(
     (acc, cur) => {
       acc.assigned += cur.assigned;
@@ -178,6 +211,37 @@ function StatusSection() {
     { label: '반납신청', value: totals.returning, color: colors.RED_50 },
     { label: '전체', value: totals.total, color: colors.GRAY_90 },
   ];
+
+  // 배경색
+  const getCardStyle = (item: any) => {
+    const total = item.assigned + item.waiting + item.returning;
+    if (total === 0) return s.cardGray;
+    if (
+      item.type === 'normal' ||
+      item.type === 'etc' ||
+      item.type === 'parking'
+    )
+      return s.cardBlue;
+    return s.cardWhite;
+  };
+
+  // 태그 노출
+  const renderBadges = (item: any) => {
+    switch (item.type) {
+      case 'normal':
+        return <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>;
+      case 'parking':
+        return <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>;
+      default:
+        return (
+          <>
+            <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
+            <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
+            <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
+          </>
+        );
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -198,36 +262,47 @@ function StatusSection() {
 
       {/* 리스트 */}
       <FlatList
-        data={data}
+        data={filteredData}
         numColumns={2}
         keyExtractor={item => item.id.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <Pressable
-            style={s.card}
-            onPress={() =>
-              navigation.navigate('VehicleCompanyDetail', {
-                companyId: item.id,
-                companyName: item.name,
-              })
-            }
-          >
-            <View style={s.cardHeader}>
-              <Text style={s.cardTitle}>{item.name}</Text>
-            </View>
-            <View style={s.badgeRow}>
-              <Text style={[s.badge, s.badgeYellow]}>{item.assigned}</Text>
-              <Text style={[s.badge, s.badgeBlue]}>{item.waiting}</Text>
-              <Text style={[s.badge, s.badgeRed]}>{item.returning}</Text>
-              <Image
-                source={require('../../../../assets/common/right_arrow.png')}
-                style={s.arrowIcon}
-              />
-            </View>
-          </Pressable>
-        )}
+        renderItem={({ item }) => {
+          const total = item.assigned + item.waiting + item.returning;
+          const disabled = total === 0;
+
+          return (
+            <Pressable
+              style={[s.card, getCardStyle(item)]}
+              disabled={disabled}
+              onPress={() =>
+                !disabled &&
+                navigation.navigate('VehicleCompanyDetail', {
+                  companyId: item.id,
+                  companyName: item.name,
+                })
+              }
+            >
+              <View style={s.cardHeader}>
+                <Text
+                  style={[s.cardTitle, disabled && { color: colors.GRAY_50 }]}
+                >
+                  {item.name}
+                </Text>
+              </View>
+
+              <View style={s.badgeRow}>
+                {!disabled && renderBadges(item)}
+                {!disabled && (
+                  <Image
+                    source={require('../../../../assets/common/right_arrow.png')}
+                    style={s.arrowIcon}
+                  />
+                )}
+              </View>
+            </Pressable>
+          );
+        }}
       />
     </View>
   );
@@ -240,14 +315,27 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
   },
-  headerSearchInput: {
-    width: 220,
-    height: 36,
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.WHITE,
     borderWidth: 1,
-    borderColor: colors.GRAY_10,
+    borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+  },
+  searchIcon: {
+    width: 14,
+    height: 14,
+    resizeMode: 'contain',
+    tintColor: colors.GRAY_60,
+    marginRight: 6,
+  },
+  headerSearchInput: {
+    minWidth: 158,
+    minHeight: 36,
+    paddingVertical: 0,
+    marginTop: -1.5,
     fontSize: 13,
   },
   buttonRow: {
@@ -281,6 +369,19 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     marginBottom: 8,
+  },
+  cardBlue: {
+    backgroundColor: colors.PRIMARY_00,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_15,
+  },
+  cardWhite: {
+    backgroundColor: colors.WHITE,
+  },
+  cardGray: {
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_20,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -319,7 +420,7 @@ const s = StyleSheet.create({
   badgeGreen: { backgroundColor: colors.GREEN_10 },
   badgeYellow: { backgroundColor: colors.YELLOW_00 },
   badgeBlue: { backgroundColor: colors.PRIMARY_10 },
-  badgeRed: { backgroundColor: colors.RED_00 },
+  badgeRed: { backgroundColor: colors.RED_05 },
   arrowIcon: {
     width: 16,
     height: 16,

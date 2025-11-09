@@ -9,7 +9,9 @@ import {
 } from 'react-native';
 import { colors } from '../../../../constants/colors';
 import {
+  ReturnRequestCompany,
   returnRequestList,
+  WashFuelCompany,
   washFuelList,
 } from '../../../../mock/todo/todoMock';
 import {
@@ -36,18 +38,47 @@ export default function TodoScreen() {
     }, [route?.params?.initialTab]),
   );
 
-  const data = tab === 'return' ? returnRequestList : washFuelList;
-
+  /** 상단 탭의 전체 건수 */
   const totalReturnBadges = returnRequestList.reduce(
     (acc, cur) =>
       acc + cur.immediateReturn + cur.contactCustomer + cur.todayPickup,
     0,
   );
-
   const totalWFBadges = washFuelList.reduce(
     (acc, cur) => acc + cur.washCount + cur.fuelCount,
     0,
   );
+
+  /** 리스트 정렬 */
+  const sortedReturnList = [...returnRequestList].sort((a, b) => {
+    // 보라(전일 미처리) > 빨강(즉시반납) > 흰색
+    if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
+    if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
+    if (a.immediateReturn > 0 && b.immediateReturn === 0) return -1;
+    if (a.immediateReturn === 0 && b.immediateReturn > 0) return 1;
+    return 0;
+  });
+
+  const sortedWashFuelList = [...washFuelList].sort((a, b) => {
+    // 보라(전일 미처리) > 파랑(주차장) > 흰색
+    if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
+    if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
+    if (a.isParkingLot && !b.isParkingLot) return -1;
+    if (!a.isParkingLot && b.isParkingLot) return 1;
+    return 0;
+  });
+
+  /** 카드 배경색 */
+  const getReturnCardStyle = (item: ReturnRequestCompany) => {
+    if (item.unprocessedPrevDay) return s.cardPurple;
+    if (item.immediateReturn > 0) return s.cardRed;
+    return s.cardDefault;
+  };
+  const getWashFuelCardStyle = (item: WashFuelCompany) => {
+    if (item.unprocessedPrevDay) return s.cardPurple;
+    if (item.isParkingLot) return s.cardBlue;
+    return s.cardDefault;
+  };
 
   return (
     <View style={s.container}>
@@ -61,8 +92,8 @@ export default function TodoScreen() {
             <Text style={[s.tabText, tab === 'return' && s.activeTabText]}>
               반납신청
             </Text>
-            <View style={[s.countBadge]}>
-              <Text style={[s.countText]}>{totalReturnBadges}</Text>
+            <View style={s.countBadge}>
+              <Text style={s.countText}>{totalReturnBadges}</Text>
             </View>
           </View>
         </Pressable>
@@ -75,57 +106,77 @@ export default function TodoScreen() {
             <Text style={[s.tabText, tab === 'wash' && s.activeTabText]}>
               세차/주유
             </Text>
-            <View style={[s.countBadge]}>
-              <Text style={[s.countText]}>{totalWFBadges}</Text>
+            <View style={s.countBadge}>
+              <Text style={s.countText}>{totalWFBadges}</Text>
             </View>
           </View>
         </Pressable>
       </View>
 
       {/* 리스트 */}
-      <FlatList
-        data={data as any[]}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        renderItem={({ item }) => (
-          <Pressable
-            style={s.card}
-            onPress={() => {
-              if (tab === 'return') {
+      {tab === 'return' ? (
+        <FlatList<ReturnRequestCompany>
+          data={sortedReturnList}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <Pressable
+              style={[s.card, getReturnCardStyle(item)]}
+              onPress={() =>
                 navigation.navigate('TodoReturnDetail', {
                   companyId: item.id,
                   companyName: item.name,
-                });
-              } else {
-                navigation.navigate('TodoWashFuelDetail', {
-                  companyId: item.id,
-                  companyName: item.name,
-                });
+                })
               }
-            }}
-          >
-            <Text style={s.cardTitle}>{item.name}</Text>
+            >
+              <View style={s.cardHeader}>
+                <Text style={s.cardTitle}>{item.name}</Text>
+                <Text style={s.totalTag}>{item.totalCount}대</Text>
+              </View>
 
-            {tab === 'return' ? (
               <View style={s.badgeRow}>
+                <Text style={[s.badge, s.badgeBlue]}>{item.todayPickup}</Text>
                 <Text style={[s.badge, s.badgeRed]}>
                   {item.immediateReturn}
                 </Text>
                 <Text style={[s.badge, s.badgeGreen]}>
                   {item.contactCustomer}
                 </Text>
-                <Text style={[s.badge, s.badgeBlue]}>{item.todayPickup}</Text>
                 <Image
                   source={require('../../../../assets/common/right_arrow.png')}
                   style={s.arrowIcon}
                 />
               </View>
-            ) : (
+            </Pressable>
+          )}
+        />
+      ) : (
+        <FlatList<WashFuelCompany>
+          data={sortedWashFuelList}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <Pressable
+              style={[s.card, getWashFuelCardStyle(item)]}
+              onPress={() =>
+                navigation.navigate('TodoWashFuelDetail', {
+                  companyId: item.id,
+                  companyName: item.name,
+                })
+              }
+            >
+              <View style={s.cardHeader}>
+                <Text style={s.cardTitle}>{item.name}</Text>
+                <Text style={s.totalTag}>{item.totalCount}대</Text>
+              </View>
+
               <View style={s.badgeRow}>
-                {/* 세차 뱃지 */}
                 <View style={[s.badgeWrap, s.badgeBlueBg]}>
                   <Image
                     source={require('../../../../assets/admin-todo/wash.png')}
@@ -133,8 +184,6 @@ export default function TodoScreen() {
                   />
                   <Text style={s.badgeText}>{item.washCount}</Text>
                 </View>
-
-                {/* 주유 뱃지 */}
                 <View style={[s.badgeWrap, s.badgeRedBg]}>
                   <Image
                     source={require('../../../../assets/admin-todo/fuel.png')}
@@ -142,16 +191,15 @@ export default function TodoScreen() {
                   />
                   <Text style={s.badgeText}>{item.fuelCount}</Text>
                 </View>
-
                 <Image
                   source={require('../../../../assets/common/right_arrow.png')}
                   style={s.arrowIcon}
                 />
               </View>
-            )}
-          </Pressable>
-        )}
-      />
+            </Pressable>
+          )}
+        />
+      )}
     </View>
   );
 }
@@ -176,9 +224,7 @@ const s = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-  activeTab: {
-    backgroundColor: colors.PRIMARY_50,
-  },
+  activeTab: { backgroundColor: colors.PRIMARY_50 },
   tabText: {
     fontSize: 11,
     fontWeight: '400',
@@ -198,58 +244,46 @@ const s = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
     backgroundColor: colors.PRIMARY_10,
   },
   countText: {
     fontSize: 11,
     fontWeight: '400',
     color: colors.GRAY_60,
+    lineHeight: 15.4,
   },
   card: {
     width: '49%',
-    backgroundColor: colors.WHITE,
     borderRadius: 4,
     paddingHorizontal: 12,
     paddingVertical: 16,
     marginBottom: 8,
   },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
   cardTitle: {
     fontWeight: '600',
     fontSize: 12,
-    lineHeight: 16.8,
     color: colors.GRAY_90,
-    marginBottom: 8,
+    lineHeight: 16.8,
+  },
+  totalTag: {
+    fontSize: 11,
+    color: colors.GRAY_60,
+    lineHeight: 15.4,
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    backgroundColor: colors.GRAY_10,
   },
   badgeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
-  badgeWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-  },
-  badgeBlueBg: {
-    backgroundColor: colors.PRIMARY_10,
-  },
-  badgeRedBg: {
-    backgroundColor: colors.RED_00,
-  },
-  badgeIcon: {
-    width: 10,
-    height: 10,
-    resizeMode: 'contain',
-    marginRight: 4,
-  },
-  badgeText: {
-    fontSize: 11,
-    fontWeight: '400',
-    color: colors.GRAY_60,
   },
   badge: {
     paddingVertical: 2,
@@ -259,8 +293,46 @@ const s = StyleSheet.create({
     color: colors.GRAY_80,
   },
   badgeBlue: { backgroundColor: colors.PRIMARY_10 },
-  badgeRed: { backgroundColor: colors.RED_00 },
+  badgeRed: { backgroundColor: colors.RED_05 },
   badgeGreen: { backgroundColor: colors.GREEN_10 },
+  badgeWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+  },
+  badgeBlueBg: { backgroundColor: colors.PRIMARY_10 },
+  badgeRedBg: { backgroundColor: colors.RED_05 },
+  badgeIcon: {
+    width: 10,
+    height: 10,
+    resizeMode: 'contain',
+    marginRight: 4,
+  },
+  badgeText: {
+    fontSize: 11,
+    color: colors.GRAY_60,
+    lineHeight: 15.4,
+  },
+  cardDefault: {
+    backgroundColor: colors.WHITE,
+  },
+  cardPurple: {
+    backgroundColor: '#F3EAF6',
+    borderWidth: 1,
+    borderColor: '#EBBCFF',
+  },
+  cardRed: {
+    backgroundColor: colors.RED_00,
+    borderWidth: 1,
+    borderColor: colors.RED_10,
+  },
+  cardBlue: {
+    backgroundColor: colors.PRIMARY_00,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_15,
+  },
   arrowIcon: {
     width: 16,
     height: 16,
