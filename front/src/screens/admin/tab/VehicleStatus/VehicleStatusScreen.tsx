@@ -9,6 +9,7 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  Platform,
 } from 'react-native';
 import { vehicleGroupList } from '../../../../mock/vehicleStatus/vehicleStatusMock';
 import {
@@ -40,13 +41,19 @@ export default function VehicleStatusScreen() {
         <AppHeader
           centerContent={
             tab === 'status' ? (
-              <TextInput
-                value={query}
-                onChangeText={setQuery}
-                placeholder="차량번호를 검색하세요"
-                placeholderTextColor={colors.GRAY_40}
-                style={s.headerSearchInput}
-              />
+              <View style={s.searchBox}>
+                <Image
+                  source={require('../../../../assets/common/search.png')}
+                  style={s.searchIcon}
+                />
+                <TextInput
+                  value={query}
+                  onChangeText={setQuery}
+                  placeholder="차량번호를 검색하세요"
+                  placeholderTextColor={colors.GRAY_50}
+                  style={s.headerSearchInput}
+                />
+              </View>
             ) : undefined
           }
         />
@@ -308,14 +315,27 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
   },
-  headerSearchInput: {
-    width: 220,
-    height: 36,
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.WHITE,
     borderWidth: 1,
-    borderColor: colors.GRAY_10,
+    borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+  },
+  searchIcon: {
+    width: 14,
+    height: 14,
+    resizeMode: 'contain',
+    tintColor: colors.GRAY_60,
+    marginRight: 6,
+  },
+  headerSearchInput: {
+    minWidth: 158,
+    minHeight: 36,
+    paddingVertical: 0,
+    marginTop: -1.5,
     fontSize: 13,
   },
   buttonRow: {
