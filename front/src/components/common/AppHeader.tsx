@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { HeaderBackButton } from '@react-navigation/elements';
 import { useNavigation } from '@react-navigation/native';
@@ -30,9 +30,12 @@ export default function AppHeader({
       {/* 왼쪽: 뒤로가기 또는 드로어 */}
       <View style={s.left}>
         {canGoBack ? (
-          <HeaderBackButton onPress={() => navigation.goBack()} />
+          <HeaderBackButton
+            onPress={() => navigation.goBack()}
+            tintColor={colors.GRAY_90}
+          />
         ) : (
-          <DrawerToggleButton />
+          <DrawerToggleButton tintColor={colors.GRAY_90} />
         )}
       </View>
 
@@ -61,6 +64,7 @@ const s = StyleSheet.create({
   center: {
     flex: 1,
     alignItems: 'center',
+    marginTop: Platform.OS === 'android' ? -3 : 0,
   },
   right: {
     width: 40,

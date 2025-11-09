@@ -14,6 +14,7 @@ import dayjs from 'dayjs';
 import { colors } from '../../../constants/colors';
 import { reservationMock } from '../../../mock/reservationMock';
 import CommonModal from '../../../components/common/CommonModal';
+import AppHeader from '../../../components/common/AppHeader';
 
 export default function ReservationDrawerScreen() {
   const today = dayjs().format('YYYY-MM-DD');
@@ -50,189 +51,201 @@ export default function ReservationDrawerScreen() {
   };
 
   return (
-    <View style={s.container}>
-      <View style={s.summaryBox}>
-        <View style={s.summaryItem}>
-          <Text style={s.summaryValue}>{todayLeft}</Text>
-          <Text style={s.summaryLabel}>오늘 남은 예약</Text>
-        </View>
-        <View style={s.summaryItem}>
-          <Text style={s.summaryValue}>{totalLeft}</Text>
-          <Text style={s.summaryLabel}>전체 남은 예약</Text>
-        </View>
-      </View>
-
-      {/* 달력 */}
-      <Calendar
-        hideExtraDays={false}
-        disableAllTouchEventsForDisabledDays={false}
-        markingType="custom"
-        style={s.calendar}
-        theme={{
-          arrowColor: colors.PRIMARY_50,
-        }}
-        dayComponent={({ date, state }) => {
-          if (!date) return null;
-
-          const isSelected = date.dateString === selectedDate;
-          const isToday = date.dateString === today;
-          const isReserved = reservationList.some(
-            r => r.date === date.dateString,
-          );
-          const isOtherMonth = state === 'disabled';
-
-          // 배경색
-          let bgColor = 'transparent';
-          if (isSelected) bgColor = colors.PRIMARY_50;
-          else if (isReserved)
-            bgColor = isOtherMonth ? colors.PRIMARY_05 : colors.PRIMARY_10;
-
-          // 테두리색 (오늘)
-          const borderColor = isToday ? colors.PRIMARY_40 : 'transparent';
-          const borderWidth = isToday ? 1 : 0;
-
-          // 글자색
-          const textColor = isOtherMonth
-            ? colors.GRAY_20
-            : isSelected
-            ? colors.WHITE
-            : colors.GRAY_90;
-
-          // 점색
-          const dotColor = isOtherMonth
-            ? colors.PRIMARY_30
-            : isSelected
-            ? colors.WHITE
-            : colors.PRIMARY_50;
-
-          return (
-            <Pressable
-              onPress={() => setSelectedDate(date.dateString)}
-              style={{
-                width: 32,
-                height: 32,
-                backgroundColor: bgColor,
-                borderWidth,
-                borderColor,
-                borderRadius: 100,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Text style={{ color: textColor }}>{date.day}</Text>
-
-              {isReserved && (
-                <View
-                  style={{
-                    width: 3,
-                    height: 3,
-                    borderRadius: 2,
-                    backgroundColor: dotColor,
-                  }}
-                />
-              )}
-            </Pressable>
-          );
-        }}
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>예약관리</Text>}
       />
-
-      {/* 예약 현황 리스트 */}
-      <View style={s.cardContainer}>
-        <View style={s.cardContainerHeader}>
-          <View style={s.headerRow}>
-            <Image
-              source={require('../../../assets/admin-reservation/cheak.png')}
-              style={s.cheakIcon}
-            />
-            <Text style={s.headerTilte}>예약 현황</Text>
+      <View style={s.container}>
+        <View style={s.summaryBox}>
+          <View style={s.summaryItem}>
+            <Text style={s.summaryValue}>{todayLeft}</Text>
+            <Text style={s.summaryLabel}>오늘 남은 예약</Text>
           </View>
-          <Text style={s.headerDate}>
-            {dayjs(selectedDate).format('M월 D일')} 예약 목록 (
-            {filteredList.length}건)
-          </Text>
+          <View style={s.summaryItem}>
+            <Text style={s.summaryValue}>{totalLeft}</Text>
+            <Text style={s.summaryLabel}>전체 남은 예약</Text>
+          </View>
         </View>
-        {filteredList.length > 0 ? (
-          <FlatList
-            data={filteredList}
-            keyExtractor={item => item.id.toString()}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => {
-              const isOpen = !!expanded[item.id];
-              return (
-                <View style={s.card}>
-                  <Pressable
-                    style={s.cardHeader}
-                    onPress={() => handleExpand(item.id)}
-                  >
-                    <View style={s.cardRow}>
-                      <Text style={s.carName}>{item.carName}</Text>
-                      <Text style={s.time}>
-                        {dayjs(item.date).format('M/D')} {item.time}
-                      </Text>
-                    </View>
-                    <View style={s.cardRow}>
-                      <Text style={s.managerName}>{item.manager}</Text>
-                      <Image
-                        source={require('../../../assets/common/down_arrow.png')}
-                        style={[
-                          s.arrowIcon,
-                          {
-                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
-                          },
-                        ]}
-                      />
-                    </View>
-                  </Pressable>
 
-                  {isOpen && (
-                    <View style={s.detailBox}>
-                      <View style={s.detailHeaderRow}>
-                        <Text style={s.detailText}>메모</Text>
-                        <View style={s.detailRow}>
-                          <Pressable>
-                            <Image
-                              source={require('../../../assets/admin-reservation/edit.png')}
-                              style={s.smallIcon}
-                            />
-                          </Pressable>
-                          <Pressable onPress={() => handlePressDelete(item.id)}>
-                            <Image
-                              source={require('../../../assets/admin-reservation/delete.png')}
-                              style={s.smallIcon}
-                            />
-                          </Pressable>
-                        </View>
+        {/* 달력 */}
+        <Calendar
+          hideExtraDays={false}
+          disableAllTouchEventsForDisabledDays={false}
+          markingType="custom"
+          style={s.calendar}
+          theme={{
+            arrowColor: colors.PRIMARY_50,
+          }}
+          dayComponent={({ date, state }) => {
+            if (!date) return null;
+
+            const isSelected = date.dateString === selectedDate;
+            const isToday = date.dateString === today;
+            const isReserved = reservationList.some(
+              r => r.date === date.dateString,
+            );
+            const isOtherMonth = state === 'disabled';
+
+            // 배경색
+            let bgColor = 'transparent';
+            if (isSelected) bgColor = colors.PRIMARY_50;
+            else if (isReserved)
+              bgColor = isOtherMonth ? colors.PRIMARY_05 : colors.PRIMARY_10;
+
+            // 테두리색 (오늘)
+            const borderColor = isToday ? colors.PRIMARY_40 : 'transparent';
+            const borderWidth = isToday ? 1 : 0;
+
+            // 글자색
+            const textColor = isOtherMonth
+              ? colors.GRAY_20
+              : isSelected
+              ? colors.WHITE
+              : colors.GRAY_90;
+
+            // 점색
+            const dotColor = isOtherMonth
+              ? colors.PRIMARY_30
+              : isSelected
+              ? colors.WHITE
+              : colors.PRIMARY_50;
+
+            return (
+              <Pressable
+                onPress={() => setSelectedDate(date.dateString)}
+                style={{
+                  width: 32,
+                  height: 32,
+                  backgroundColor: bgColor,
+                  borderWidth,
+                  borderColor,
+                  borderRadius: 100,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={{ color: textColor }}>{date.day}</Text>
+
+                {isReserved && (
+                  <View
+                    style={{
+                      width: 3,
+                      height: 3,
+                      borderRadius: 2,
+                      backgroundColor: dotColor,
+                    }}
+                  />
+                )}
+              </Pressable>
+            );
+          }}
+        />
+
+        {/* 예약 현황 리스트 */}
+        <View style={s.cardContainer}>
+          <View style={s.cardContainerHeader}>
+            <View style={s.headerRow}>
+              <Image
+                source={require('../../../assets/admin-reservation/cheak.png')}
+                style={s.cheakIcon}
+              />
+              <Text style={s.headerTilte}>예약 현황</Text>
+            </View>
+            <Text style={s.headerDate}>
+              {dayjs(selectedDate).format('M월 D일')} 예약 목록 (
+              {filteredList.length}건)
+            </Text>
+          </View>
+          {filteredList.length > 0 ? (
+            <FlatList
+              data={filteredList}
+              keyExtractor={item => item.id.toString()}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => {
+                const isOpen = !!expanded[item.id];
+                return (
+                  <View style={s.card}>
+                    <Pressable
+                      style={s.cardHeader}
+                      onPress={() => handleExpand(item.id)}
+                    >
+                      <View style={s.cardRow}>
+                        <Text style={s.carName}>{item.carName}</Text>
+                        <Text style={s.time}>
+                          {dayjs(item.date).format('M/D')} {item.time}
+                        </Text>
                       </View>
-                      <Text style={s.detailText}>
-                        요청업체: {item.requester}
-                      </Text>
-                      <Text style={s.detailText}>
-                        렌트차종: {item.rentalCompany}
-                      </Text>
-                      <Text style={s.detailText}>
-                        배차장소: {item.dispatchLocation}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              );
-            }}
-          />
-        ) : (
-          <View style={s.emptyBox}>
-            <Text style={s.emptyText}>해당 날짜에 예약된 차량이 없습니다</Text>
-          </View>
-        )}
+                      <View style={s.cardRow}>
+                        <Text style={s.managerName}>{item.manager}</Text>
+                        <Image
+                          source={require('../../../assets/common/down_arrow.png')}
+                          style={[
+                            s.arrowIcon,
+                            {
+                              transform: [
+                                { rotate: isOpen ? '180deg' : '0deg' },
+                              ],
+                            },
+                          ]}
+                        />
+                      </View>
+                    </Pressable>
+
+                    {isOpen && (
+                      <View style={s.detailBox}>
+                        <View style={s.detailHeaderRow}>
+                          <Text style={s.detailText}>메모</Text>
+                          <View style={s.detailRow}>
+                            <Pressable>
+                              <Image
+                                source={require('../../../assets/admin-reservation/edit.png')}
+                                style={s.smallIcon}
+                              />
+                            </Pressable>
+                            <Pressable
+                              onPress={() => handlePressDelete(item.id)}
+                            >
+                              <Image
+                                source={require('../../../assets/admin-reservation/delete.png')}
+                                style={s.smallIcon}
+                              />
+                            </Pressable>
+                          </View>
+                        </View>
+                        <Text style={s.detailText}>
+                          요청업체: {item.requester}
+                        </Text>
+                        <Text style={s.detailText}>
+                          렌트차종: {item.rentalCompany}
+                        </Text>
+                        <Text style={s.detailText}>
+                          배차장소: {item.dispatchLocation}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                );
+              }}
+            />
+          ) : (
+            <View style={s.emptyBox}>
+              <Text style={s.emptyText}>
+                해당 날짜에 예약된 차량이 없습니다
+              </Text>
+            </View>
+          )}
+        </View>
+        <CommonModal
+          visible={showDeleteModal}
+          title="예약 삭제"
+          message="예약을 삭제할까요?"
+          cancelText="취소"
+          confirmText="삭제"
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={handleConfirmDelete}
+        />
       </View>
-      <CommonModal
-        visible={showDeleteModal}
-        title="예약 삭제"
-        message="예약을 삭제할까요?"
-        cancelText="취소"
-        confirmText="삭제"
-        onCancel={() => setShowDeleteModal(false)}
-        onConfirm={handleConfirmDelete}
-      />
     </View>
   );
 }
@@ -242,6 +255,10 @@ const s = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.GRAY_00,
     padding: 16,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
   },
   summaryBox: {
     flexDirection: 'row',

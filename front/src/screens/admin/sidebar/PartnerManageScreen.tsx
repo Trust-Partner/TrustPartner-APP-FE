@@ -14,6 +14,7 @@ import { colors } from '../../../constants/colors';
 import { partnerList, partnerStats } from '../../../mock/partnerMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import { HIT_SLOP } from '../../../constants/touch';
+import AppHeader from '../../../components/common/AppHeader';
 
 export default function PartnerManageScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
@@ -45,7 +46,11 @@ export default function PartnerManageScreen() {
   };
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>거래처 관리</Text>}
+      />
       <ScrollView>
         <View style={s.container}>
           {/* 월별 통계 카드 */}
@@ -308,6 +313,10 @@ const s = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: colors.GRAY_00,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
   },
   card: {
     backgroundColor: colors.WHITE,
