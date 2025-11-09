@@ -182,14 +182,30 @@ export default function PartnerManageScreen() {
           {/* 담당 거래처 */}
           <View style={s.card}>
             <View style={s.partnerHeader}>
-              <Text style={s.title}>담당 거래처</Text>
-              <TextInput
-                value={search}
-                onChangeText={setSearch}
-                placeholder="거래처명 검색"
-                style={s.searchInput}
-                placeholderTextColor={colors.GRAY_50}
-              />
+              <View style={s.headerLeft}>
+                <Image
+                  source={require('../../../assets/common/building.png')}
+                  style={{
+                    width: 16,
+                    height: 16,
+                    marginRight: 4,
+                  }}
+                />
+                <Text style={s.title}>담당 거래처</Text>
+              </View>
+              <View style={s.searchBox}>
+                <Image
+                  source={require('../../../assets/common/search.png')}
+                  style={s.searchIcon}
+                />
+                <TextInput
+                  value={search}
+                  onChangeText={setSearch}
+                  placeholder="거래처명 검색"
+                  placeholderTextColor={colors.GRAY_50}
+                  style={s.searchInput}
+                />
+              </View>
             </View>
 
             <View style={[s.partnerListContainer, { marginTop: 8 }]}>
@@ -463,16 +479,29 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  searchInput: {
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingVertical: Platform.OS === 'android' ? 0 : 4,
     paddingHorizontal: 8,
+    paddingVertical: Platform.OS === 'android' ? 0 : 8,
+  },
+  searchIcon: {
+    width: 12,
+    height: 12,
+    resizeMode: 'contain',
+    tintColor: colors.GRAY_60,
+    marginRight: 6,
+  },
+  searchInput: {
     fontSize: 11,
     fontWeight: '400',
-    width: 104,
-    color: colors.GRAY_80,
+    lineHeight: 15.4,
+    color: colors.GRAY_50,
+    paddingVertical: 0,
+    marginTop: -1.5,
   },
   partnerListContainer: {
     backgroundColor: colors.GRAY_05,
