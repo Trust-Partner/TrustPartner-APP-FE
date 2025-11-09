@@ -221,7 +221,7 @@ export default function AuthScreen() {
               <Text style={s.link}>아이디 찾기</Text>
             </Pressable>
             <Text style={s.divider}> | </Text>
-            <Pressable>
+            <Pressable onPress={() => navigation.navigate('FindPassword')}>
               <Text style={s.link}>비밀번호 찾기</Text>
             </Pressable>
           </View>
