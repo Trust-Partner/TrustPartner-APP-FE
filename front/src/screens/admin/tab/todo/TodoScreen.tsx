@@ -310,11 +310,13 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: 4,
   },
-  badgeText: { fontSize: 11, color: colors.GRAY_60 },
+  badgeText: {
+    fontSize: 11,
+    color: colors.GRAY_60,
+    lineHeight: 15.4,
+  },
   cardDefault: {
     backgroundColor: colors.WHITE,
-    borderWidth: 1,
-    borderColor: colors.GRAY_10,
   },
   cardPurple: {
     backgroundColor: '#F3EAF6',
