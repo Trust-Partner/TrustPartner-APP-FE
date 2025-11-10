@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AppScreenLayout from '../../../components/layout/AppScreenLayout';
 
-export default function PrepayScreen() {
+export default function ProfitAnalysisScreen() {
   return (
     <AppScreenLayout withTabBar>
       <View style={s.container}>
-        <Text style={s.title}>사전지급 관리</Text>
+        <Text style={s.title}>수익분석</Text>
       </View>
     </AppScreenLayout>
   );

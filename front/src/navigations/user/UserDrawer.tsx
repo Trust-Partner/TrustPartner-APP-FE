@@ -3,13 +3,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { StatusBar } from 'react-native';
 import { colors } from '../../constants/colors';
 
-import UserBottomTabs from './UserBottomTabs';
 import CustomDrawerContent from './UserDrawerContent';
 
-import MyInfoStack from './stacks/MyInfoStack';
-import ContractsStack from './stacks/ContractsStack';
-import SalesManageStack from './stacks/SalesManageStack';
-import InquiryStack from './stacks/InquiryStack';
+import MyInfoStack from './stacks/drawer/MyInfoStack';
+import ContractsStack from './stacks/drawer/ContractsStack';
+import ProfitAnalysisStack from './stacks/drawer/ProfitAnalysisStack';
+import InquiryStack from './stacks/drawer/InquiryStack';
+import UserBottomTabs from './stacks/tabs/UserBottomTabs';
 
 const Drawer = createDrawerNavigator();
 
@@ -37,7 +37,7 @@ export default function UserDrawer() {
         options={{ drawerLabel: () => null, title: undefined }}
       />
       <Drawer.Screen name="MyInfo" component={MyInfoStack} />
-      <Drawer.Screen name="SalesManage" component={SalesManageStack} />
+      <Drawer.Screen name="ProfitAnalysis" component={ProfitAnalysisStack} />
       <Drawer.Screen name="Contracts" component={ContractsStack} />
       <Drawer.Screen name="Inquiry" component={InquiryStack} />
     </Drawer.Navigator>
