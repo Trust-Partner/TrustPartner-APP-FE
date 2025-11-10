@@ -1,14 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { stackHeaderOptions } from '../../common/headers';
-import MyInfoScreen from '../../../screens/user/sidebar/MyInfoScreen';
+import { stackHeaderOptions } from '../../../common/headers';
+import InquiryScreen from '../../../../screens/user/sidebar/InquiryScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function MyInfoStack() {
+export default function InquiryStack() {
   return (
     <Stack.Navigator screenOptions={stackHeaderOptions}>
-      <Stack.Screen name="MyInfoMain" component={MyInfoScreen} />
+      <Stack.Screen name="InquiryMain" component={InquiryScreen} />
     </Stack.Navigator>
   );
 }

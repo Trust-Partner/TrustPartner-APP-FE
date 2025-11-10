@@ -1,13 +1,12 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { stackHeaderOptions } from '../../common/headers';
-import SalesManageScreen from '../../../screens/user/sidebar/SalesManageScreen';
+import SalesManageScreen from '../../../../screens/user/tab/SalesManageScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function SalesManageStack() {
   return (
-    <Stack.Navigator screenOptions={stackHeaderOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="SalesManageMain" component={SalesManageScreen} />
     </Stack.Navigator>
   );
