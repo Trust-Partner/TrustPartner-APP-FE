@@ -2,14 +2,13 @@ import React, { useMemo } from 'react';
 import { Image, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../constants/colors';
-import { drawerHeaderOptions } from '../common/headers';
-
-import HomeScreen from '../../screens/user/tab/HomeScreen';
-import VehicleStatusScreen from '../../screens/user/tab/VehicleStatusScreen';
-import DispatchRequestsScreen from '../../screens/user/tab/DispatchRequestsScreen';
-import SalesManageScreen from '../../screens/user/tab/SalesManageScreen';
-import NotificationsScreen from '../../screens/user/tab/NotificationsScreen';
+import { colors } from '../../../../constants/colors';
+import { drawerHeaderOptions } from '../../../common/headers';
+import HomeStack from './HomeStack';
+import NotificationsStack from './NotificationsStack';
+import SalesManageStack from './SalesManageStack';
+import VehicleStatusStack from './VehicleStatusStack';
+import DispatchRequestStack from './DispatchRequestStack';
 
 export type UserTabParamList = {
   Home: undefined;
@@ -29,11 +28,11 @@ export default function UserBottomTabs() {
 
   const iconMap = useMemo(
     () => ({
-      Home: require('../../assets/bottom-tabs/Home.png'),
-      VehicleStatus: require('../../assets/bottom-tabs/VehicleStatus.png'),
-      DispatchRequests: require('../../assets/bottom-tabs/DispatchRequests.png'),
-      Sales: require('../../assets/bottom-tabs/Sales.png'),
-      Notifications: require('../../assets/bottom-tabs/Notifications.png'),
+      Home: require('../../../../assets/bottom-tabs/Home.png'),
+      VehicleStatus: require('../../../../assets/bottom-tabs/VehicleStatus.png'),
+      DispatchRequests: require('../../../../assets/bottom-tabs/DispatchRequests.png'),
+      Sales: require('../../../../assets/bottom-tabs/Sales.png'),
+      Notifications: require('../../../../assets/bottom-tabs/Notifications.png'),
     }),
     [],
   );
@@ -66,29 +65,25 @@ export default function UserBottomTabs() {
         ),
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ title: '홈' }}
-      />
+      <Tab.Screen name="Home" component={HomeStack} options={{ title: '홈' }} />
       <Tab.Screen
         name="VehicleStatus"
-        component={VehicleStatusScreen}
-        options={{ title: '차량상태' }}
+        component={VehicleStatusStack}
+        options={{ title: '차량현황' }}
       />
       <Tab.Screen
         name="DispatchRequests"
-        component={DispatchRequestsScreen}
+        component={DispatchRequestStack}
         options={{ title: '배차요청' }}
       />
       <Tab.Screen
         name="Sales"
-        component={SalesManageScreen}
+        component={SalesManageStack}
         options={{ title: '매출관리' }}
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsScreen}
+        component={NotificationsStack}
         options={{ title: '알림' }}
       />
     </Tab.Navigator>
