@@ -4,7 +4,7 @@ import { useAuthStore } from '../../states/useAuthStore';
 import AdminDrawer, { AdminDrawerParamList } from '../admin/AdminDrawer';
 import UserDrawer from '../user/UserDrawer';
 import AuthScreen from '../../screens/auth/AuthScreen';
-import ContractIntegratedScreen from '../../screens/admin/contract/ContractIntegratedScreen';
+import ContractIntegratedScreen from '../../screens/contract/ContractIntegratedScreen';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import AuthStack from '../auth/AuthStack';
 

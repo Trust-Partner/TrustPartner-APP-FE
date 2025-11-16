@@ -9,14 +9,14 @@ import {
   Platform,
   Image,
   Dimensions,
+  Clipboard,
 } from 'react-native';
-import { colors } from '../../../constants/colors';
-import { contractMock } from '../../../mock/ContractMockData';
-import Clipboard from '@react-native-clipboard/clipboard';
-import ToastMessage from '../../../components/common/ToastMessage';
-import AppHeader from '../../../components/common/AppHeader';
-import { useAuthStore } from '../../../states/useAuthStore';
-import { HIT_SLOP } from '../../../constants/touch';
+import AppHeader from '../../components/common/AppHeader';
+import ToastMessage from '../../components/common/ToastMessage';
+import { colors } from '../../constants/colors';
+import { HIT_SLOP } from '../../constants/touch';
+import { contractMock } from '../../mock/ContractMockData';
+import { useAuthStore } from '../../states/useAuthStore';
 
 const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
@@ -104,7 +104,7 @@ const ContractIntegratedScreen = () => {
                 onPress={handleSave}
               >
                 <Image
-                  source={require('../../../assets/common/save.png')}
+                  source={require('../../assets/common/save.png')}
                   style={[s.iconSmall, { tintColor: colors.WHITE }]}
                 />
                 <Text style={[s.topBtnText, { color: colors.WHITE }]}>
@@ -116,7 +116,7 @@ const ContractIntegratedScreen = () => {
             <>
               <Pressable style={s.topBtn}>
                 <Image
-                  source={require('../../../assets/common/download.png')}
+                  source={require('../../assets/common/download.png')}
                   style={[s.iconSmall, { tintColor: colors.PRIMARY_50 }]}
                 />
                 <Text style={s.topBtnText}>다운로드</Text>
@@ -129,7 +129,7 @@ const ContractIntegratedScreen = () => {
                 }}
               >
                 <Image
-                  source={require('../../../assets/common/correction.png')}
+                  source={require('../../assets/common/correction.png')}
                   style={[s.iconSmall, { tintColor: colors.PRIMARY_50 }]}
                 />
                 <Text style={s.topBtnText}>수정하기</Text>
@@ -142,7 +142,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/memo.png')}
+              source={require('../../assets/common/memo.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>메모</Text>
@@ -195,7 +195,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/calendar.png')}
+              source={require('../../assets/common/calendar.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>계약 일시</Text>
@@ -220,7 +220,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/person.png')}
+              source={require('../../assets/common/person.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>고객 정보</Text>
@@ -281,7 +281,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/file_icon.png')}
+              source={require('../../assets/common/file_icon.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>사고 차량 정보</Text>
@@ -309,7 +309,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/file_icon.png')}
+              source={require('../../assets/common/file_icon.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>보험사 청구</Text>
@@ -443,7 +443,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/calendar.png')}
+              source={require('../../assets/common/calendar.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>교체 계약서</Text>
@@ -476,7 +476,7 @@ const ContractIntegratedScreen = () => {
         <View style={s.card}>
           <View style={s.cardTitleRow}>
             <Image
-              source={require('../../../assets/common/money.png')}
+              source={require('../../assets/common/money.png')}
               style={s.iconSmall}
             />
             <Text style={s.cardTitle}>결제 정보</Text>
@@ -520,7 +520,7 @@ const InfoRow = ({
           hitSlop={HIT_SLOP.SAFE_VERTICAL}
         >
           <Image
-            source={require('../../../assets/common/copy.png')}
+            source={require('../../assets/common/copy.png')}
             style={{ width: 14, height: 14, tintColor: colors.GRAY_80 }}
           />
         </Pressable>
