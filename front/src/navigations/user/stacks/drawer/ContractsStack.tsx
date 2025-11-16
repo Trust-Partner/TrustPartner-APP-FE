@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function ContractsStack() {
   return (
-    <Stack.Navigator screenOptions={stackHeaderOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="ContractsMain" component={ContractsScreen} />
     </Stack.Navigator>
   );
