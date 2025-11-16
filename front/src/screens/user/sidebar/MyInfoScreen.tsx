@@ -1,17 +1,169 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import AppScreenLayout from '../../../components/layout/AppScreenLayout';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import { colors } from '../../../constants/colors';
+import AppHeader from '../../../components/common/AppHeader';
+import { userMyInfoMock } from '../../../mock/userMyInfoMock';
 
 export default function MyInfoScreen() {
+  const data = userMyInfoMock;
+
   return (
-    <AppScreenLayout withTabBar>
-      <View style={s.container}>
-        <Text style={s.title}>내 정보</Text>
-      </View>
-    </AppScreenLayout>
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>내 정보</Text>}
+      />
+
+      <ScrollView
+        style={s.container}
+        contentContainerStyle={{ paddingBottom: 16 }}
+        bounces={false}
+        alwaysBounceVertical={false}
+      >
+        {/* 프로필 카드 */}
+        <View style={s.profileCard}>
+          <View style={s.profileCircle}>
+            <Image
+              source={require('../../../assets/admin-myinfo/default_profile.png')}
+              style={s.profileIcon}
+            />
+          </View>
+
+          <View>
+            <View style={s.row}>
+              <Text style={s.name}>{data.name}</Text>
+              <Text style={s.badge}>{data.role}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* 기본 정보 카드 */}
+        <View style={s.card}>
+          <View style={s.cardHeader}>
+            <Image
+              source={require('../../../assets/common/building.png')}
+              style={s.icon}
+            />
+            <Text style={s.cardTitle}>기본정보</Text>
+          </View>
+
+          <View style={s.infoRow}>
+            <Text style={s.label}>소속 공업사</Text>
+            <Text style={s.value}>{data.company}</Text>
+          </View>
+
+          <View style={s.infoRow}>
+            <Text style={s.label}>주소</Text>
+            <Text style={s.value}>{data.address}</Text>
+          </View>
+
+          <View style={s.infoRow}>
+            <Text style={s.label}>휴대폰 번호</Text>
+            <Text style={s.value}>{data.phone}</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
 const s = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 20, fontWeight: '600' },
+  container: {
+    flex: 1,
+    backgroundColor: colors.GRAY_00,
+    padding: 16,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
+  },
+  profileCard: {
+    backgroundColor: colors.WHITE,
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    marginBottom: 8,
+  },
+  profileCircle: {
+    padding: 12,
+    borderRadius: 100,
+    backgroundColor: colors.PRIMARY_05,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 8,
+  },
+  profileIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.GRAY_80,
+    lineHeight: 22.4,
+  },
+  badge: {
+    backgroundColor: colors.PRIMARY_10,
+    color: colors.PRIMARY_50,
+    fontSize: 11,
+    fontWeight: '400',
+    lineHeight: 15.4,
+    marginLeft: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 100,
+  },
+  card: {
+    backgroundColor: colors.WHITE,
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+    resizeMode: 'contain',
+  },
+  cardTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.GRAY_80,
+    lineHeight: 16.8,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
+  },
+  infoRow: {
+    marginTop: 8,
+  },
+  label: {
+    fontSize: 12,
+    color: colors.GRAY_70,
+    marginBottom: 4,
+  },
+  value: {
+    fontSize: 12,
+    color: colors.GRAY_90,
+    lineHeight: 16.8,
+  },
 });

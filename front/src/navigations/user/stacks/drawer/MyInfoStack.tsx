@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function MyInfoStack() {
   return (
-    <Stack.Navigator screenOptions={stackHeaderOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MyInfoMain" component={MyInfoScreen} />
     </Stack.Navigator>
   );
