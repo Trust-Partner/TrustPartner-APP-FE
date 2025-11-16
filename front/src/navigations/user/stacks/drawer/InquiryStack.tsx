@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function InquiryStack() {
   return (
-    <Stack.Navigator screenOptions={stackHeaderOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="InquiryMain" component={InquiryScreen} />
     </Stack.Navigator>
   );
