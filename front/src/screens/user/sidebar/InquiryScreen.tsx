@@ -1,17 +1,196 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import AppScreenLayout from '../../../components/layout/AppScreenLayout';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  ScrollView,
+  Platform,
+} from 'react-native';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { colors } from '../../../constants/colors';
+import { contactListMock } from '../../../mock/contactMock';
+import ToastMessage from '../../../components/common/ToastMessage';
+import AppHeader from '../../../components/common/AppHeader';
+import { HIT_SLOP } from '../../../constants/touch';
 
 export default function InquiryScreen() {
+  const [toastMsg, setToastMsg] = useState('');
+
+  const handleCopy = (text: string) => {
+    Clipboard.setString(text);
+    setToastMsg('전화번호가 복사되었습니다.');
+  };
+
   return (
-    <AppScreenLayout withTabBar>
-      <View style={s.container}>
-        <Text style={s.title}>문의</Text>
-      </View>
-    </AppScreenLayout>
+    <View style={{ flex: 1 }}>
+      <AppHeader
+        canGoBack
+        centerContent={<Text style={s.header}>문의하기</Text>}
+      />
+
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+        <View style={s.container}>
+          {/* 연락처 안내 박스 */}
+          <View style={s.card}>
+            <View style={s.cardHeader}>
+              <Image
+                source={require('../../../assets/common/phone.png')}
+                style={s.icon}
+              />
+              <Text style={s.title}>연락처 안내</Text>
+            </View>
+
+            {contactListMock.map(item => (
+              <View key={item.id} style={s.contactBox}>
+                <View style={s.contactRow}>
+                  <Image
+                    source={require('../../../assets/common/person.png')}
+                    style={s.personIcon}
+                  />
+
+                  {/* 오른쪽 텍스트 전체 블록 */}
+                  <View style={{ flex: 1 }}>
+                    <Text style={s.contactTitle}>{item.title}</Text>
+                    <Text style={s.contactName}>{item.name}</Text>
+                    <View style={s.phoneRow}>
+                      <Text style={s.contactPhone}>{item.phone}</Text>
+                      <Pressable
+                        hitSlop={HIT_SLOP.SAFE_VERTICAL}
+                        onPress={() => handleCopy(item.phone)}
+                      >
+                        <Image
+                          source={require('../../../assets/common/copy.png')}
+                          style={s.copyIcon}
+                        />
+                      </Pressable>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            ))}
+
+            {/* 하단 안내 문구 */}
+            <View style={s.noticeBox}>
+              <Text style={s.noticeTitle}>24시간 언제나 열려있습니다.</Text>
+              <Text style={s.noticeText}>
+                전화나 문자 주시면 확인 후 바로 연락드리겠습니다.
+              </Text>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {toastMsg ? (
+        <ToastMessage message={toastMsg} onHide={() => setToastMsg('')} />
+      ) : null}
+    </View>
   );
 }
+
 const s = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 20, fontWeight: '600' },
+  container: {
+    flex: 1,
+    backgroundColor: colors.GRAY_00,
+    padding: 16,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
+  },
+  card: {
+    backgroundColor: colors.WHITE,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  icon: {
+    width: 16,
+    height: 16,
+    marginRight: 4,
+    tintColor: colors.GRAY_80,
+  },
+  title: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.GRAY_80,
+    lineHeight: 16.8,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
+  },
+  contactBox: {
+    backgroundColor: colors.PRIMARY_05,
+    borderWidth: 1,
+    borderColor: colors.PRIMARY_20,
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 8,
+  },
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  personIcon: {
+    width: 16,
+    height: 16,
+    tintColor: colors.GRAY_80,
+    marginRight: 8,
+  },
+  contactTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.GRAY_80,
+    lineHeight: 16.8,
+    marginTop: Platform.OS === 'android' ? -1 : 0,
+  },
+  contactName: {
+    marginTop: 4,
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.PRIMARY_90,
+  },
+  phoneRow: {
+    marginTop: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  contactPhone: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.PRIMARY_90,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
+  },
+  copyIcon: {
+    width: 12,
+    height: 12,
+    tintColor: colors.PRIMARY_90,
+  },
+  noticeBox: {
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+  },
+  noticeTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.GRAY_80,
+  },
+  noticeText: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_50,
+    marginTop: 4,
+  },
 });
