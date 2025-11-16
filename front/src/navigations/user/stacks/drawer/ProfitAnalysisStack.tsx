@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 
 export default function ProfitAnalysisStack() {
   return (
-    <Stack.Navigator screenOptions={stackHeaderOptions}>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="ProfitAnalysisMain"
         component={ProfitAnalysisScreen}
