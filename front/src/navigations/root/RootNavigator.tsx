@@ -3,10 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../../states/useAuthStore';
 import AdminDrawer, { AdminDrawerParamList } from '../admin/AdminDrawer';
 import UserDrawer from '../user/UserDrawer';
-import AuthScreen from '../../screens/auth/AuthScreen';
+import AuthStack from '../auth/AuthStack';
 import ContractIntegratedScreen from '../../screens/contract/ContractIntegratedScreen';
 import { NavigatorScreenParams } from '@react-navigation/native';
-import AuthStack from '../auth/AuthStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +23,7 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!user ? (
         <Stack.Screen name="Auth" component={AuthStack} />
-      ) : user.role === 'admin' ? (
+      ) : user.role === 'ADMIN' ? (
         <Stack.Screen name="AdminRoot" component={AdminDrawer} />
       ) : (
         <Stack.Screen name="UserRoot" component={UserDrawer} />
