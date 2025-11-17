@@ -14,61 +14,45 @@ import {
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuthStore } from '../../states/useAuthStore';
-import { mockUsers } from '../../mock/users';
 import { colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../../navigations/auth/AuthStack';
 
 type LoginForm = {
-  username: string;
+  loginId: string;
   password: string;
 };
 
 export default function AuthScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-
   const login = useAuthStore(s => s.login);
+
   const { control, handleSubmit, watch } = useForm<LoginForm>({
     mode: 'onBlur',
-    defaultValues: { username: '', password: '' },
+    defaultValues: { loginId: '', password: '' },
   });
 
-  const username = watch('username');
+  const loginId = watch('loginId');
   const password = watch('password');
   const [secure, setSecure] = useState(true);
   const [autoLogin, setAutoLogin] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<'admin' | 'user' | null>(
+  const [selectedRole, setSelectedRole] = useState<'ADMIN' | 'USER' | null>(
     null,
   );
 
-  const onSubmit = ({ username, password }: LoginForm) => {
+  const onSubmit = async ({ loginId, password }: LoginForm) => {
     if (!selectedRole) {
       Alert.alert('로그인 실패', '사용자 구분을 선택해주세요.');
       return;
     }
 
-    const found = mockUsers.find(
-      u =>
-        u.username === username &&
-        u.password === password &&
-        u.role === selectedRole,
-    );
-
-    if (!found) {
-      Alert.alert(
-        '로그인 실패',
-        '아이디/비밀번호 또는 사용자 구분을 확인하세요.',
-      );
-      return;
+    try {
+      await login(loginId, password, selectedRole);
+    } catch (err) {
+      Alert.alert('로그인 실패', '아이디 또는 비밀번호를 확인해주세요.');
     }
-
-    login({
-      id: Date.now(),
-      name: found.name,
-      role: found.role,
-    });
   };
 
   return (
@@ -84,15 +68,15 @@ export default function AuthScreen() {
           <Text style={s.label}>사용자 구분</Text>
           <View style={s.roleRow}>
             {[
-              { key: 'admin', label: '매니저' },
-              { key: 'user', label: 'USER' },
+              { key: 'ADMIN', label: '매니저' },
+              { key: 'USER', label: 'USER' },
             ].map(({ key, label }) => (
               <Pressable
                 key={key}
                 style={s.roleItem}
                 onPress={() =>
                   setSelectedRole(
-                    selectedRole === key ? null : (key as 'admin' | 'user'),
+                    selectedRole === key ? null : (key as 'ADMIN' | 'USER'),
                   )
                 }
               >
@@ -108,7 +92,7 @@ export default function AuthScreen() {
           <Text style={s.label}>아이디</Text>
           <Controller
             control={control}
-            name="username"
+            name="loginId"
             rules={{ required: '아이디를 입력해주세요.' }}
             render={({
               field: { onChange, onBlur, value },
@@ -163,10 +147,6 @@ export default function AuthScreen() {
                   <Pressable
                     onPress={() => setSecure(!secure)}
                     style={s.eyeBtn}
-                    accessibilityRole="button"
-                    accessibilityLabel={
-                      secure ? '비밀번호 표시' : '비밀번호 숨기기'
-                    }
                   >
                     <Image
                       source={
@@ -198,21 +178,12 @@ export default function AuthScreen() {
           <Pressable
             style={[
               s.loginBtn,
-              !(username && password && selectedRole) && s.loginBtnDisabled,
+              !(loginId && password && selectedRole) && s.loginBtnDisabled,
             ]}
             onPress={handleSubmit(onSubmit)}
-            disabled={!(username && password && selectedRole)}
+            disabled={!(loginId && password && selectedRole)}
           >
-            <Text
-              style={[
-                s.loginText,
-                !(username && password && selectedRole) && {
-                  color: colors.WHITE,
-                },
-              ]}
-            >
-              로그인
-            </Text>
+            <Text style={s.loginText}>로그인</Text>
           </Pressable>
 
           {/* 하단 링크 */}
