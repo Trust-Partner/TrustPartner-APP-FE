@@ -1,27 +1,58 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { loginStaff, loginPartner } from '../api/auth';
 
-export type Role = 'admin' | 'user';
+type Role = 'USER' | 'ADMIN';
 
-interface User {
-  id: number;
+type User = {
+  id: string;
   name: string;
   role: Role;
-}
+  roleCode?: string;
+  roleDesc?: string;
+  branch?: string;
+  loginId?: string;
+  phoneNumber?: string;
+  address?: string;
+  gradeName?: string;
+};
 
-interface AuthState {
+type AuthState = {
   user: User | null;
-  login: (user: User) => void;
+  login: (loginId: string, password: string, role: Role) => Promise<void>;
   logout: () => void;
-}
+};
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    set => ({
-      user: null,
-      login: user => set({ user }),
-      logout: () => set({ user: null }),
-    }),
-    { name: 'auth-storage' },
-  ),
-);
+export const useAuthStore = create<AuthState>(set => ({
+  user: null,
+
+  login: async (loginId, password, role) => {
+    try {
+      const data =
+        role === 'ADMIN'
+          ? await loginStaff(loginId, password)
+          : await loginPartner(loginId, password);
+
+      const normalizedRole: Role = data.role.code === 'USER' ? 'USER' : 'ADMIN';
+
+      const userData: User = {
+        id: data.staffId || data.partnerId,
+        name: data.name,
+        role: normalizedRole,
+        roleCode: data.role.code,
+        roleDesc: data.role.description,
+        branch: data.branch,
+        loginId: data.loginId,
+        phoneNumber: data.phoneNumber,
+        address: data.address,
+        gradeName: data.gradeName,
+      };
+
+      set({ user: userData });
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      throw error;
+    }
+  },
+
+  logout: () => set({ user: null }),
+}));
