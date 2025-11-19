@@ -7,6 +7,7 @@ import {
   FlatList,
   Pressable,
   Image,
+  Platform,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import { mockAdminDashboard } from '../../../mock/adminDashboard';
@@ -70,6 +71,7 @@ export default function AdminHomeScreen() {
     <ScrollView style={s.container} showsVerticalScrollIndicator={false}>
       <View style={s.section}>
         <Text style={s.sectionTitle}>실시간 상황판</Text>
+        <View style={{ marginBottom: 8 }} />
 
         {/* 상단 박스 */}
         <View style={s.rowBetween}>
@@ -205,7 +207,7 @@ const s = StyleSheet.create({
     paddingVertical: 16,
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 16,
@@ -215,11 +217,10 @@ const s = StyleSheet.create({
   rowBetween: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
     marginBottom: 8,
   },
   topCard: {
-    width: '48%',
+    width: '49%',
     backgroundColor: colors.PRIMARY_10,
     borderRadius: 4,
     borderWidth: 1,
@@ -233,7 +234,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   topLeft: {
-    gap: 6,
+    gap: 4,
   },
   topRightIcon: {
     width: 22,
@@ -241,7 +242,7 @@ const s = StyleSheet.create({
     tintColor: colors.PRIMARY_80,
   },
   middleCard: {
-    width: '31%',
+    width: '32%',
     gap: 4,
     backgroundColor: colors.PRIMARY_10,
     borderRadius: 4,
@@ -255,7 +256,7 @@ const s = StyleSheet.create({
     height: 24,
   },
   bottomCardLarge: {
-    width: '48%',
+    width: '49%',
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 4,
     paddingVertical: 12,
@@ -266,7 +267,7 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_15,
   },
   bottomCardSmall: {
-    width: '31%',
+    width: '32%',
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 4,
     paddingVertical: 12,
@@ -306,7 +307,7 @@ const s = StyleSheet.create({
   alertHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   newAlertBadge: {
     backgroundColor: colors.GRAY_15,
@@ -314,6 +315,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 2,
     marginLeft: 12,
+    marginTop: Platform.OS === 'android' ? 2 : 0,
   },
   newAlertText: {
     color: colors.BLACK,
