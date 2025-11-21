@@ -13,12 +13,12 @@ import { colors } from '../../constants/colors';
 import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonTextarea from '../common/CommonTextarea';
+import { ContractVehicleBase } from '../../types/contractVehicle';
 
 interface Props {
   onBack: () => void;
-  vehicle: DispatchDetail;
+  vehicle: ContractVehicleBase;
 }
 
 export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
