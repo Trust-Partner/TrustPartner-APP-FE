@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { saveDraft, loadDraft } from '../utils/draftStorage';
-import { DispatchDetail } from '../mock/vehicleStatus/vehicleDispatchDetailMock';
+import { ContractVehicleBase } from '../types/contractVehicle';
 
 type ModalType =
   | 'none'
@@ -10,6 +10,8 @@ type ModalType =
   | 'replacement'
   | 'dispatch';
 
+type OriginType = 'main' | 'direct';
+
 interface DraftData {
   [key: string]: any;
 }
@@ -17,18 +19,21 @@ interface DraftData {
 interface ContractModalState {
   visible: boolean;
   modalType: ModalType;
+  originType: OriginType;
+
   options: {
     general: boolean;
     insurance: boolean;
     replacement: boolean;
     dispatch: boolean;
   };
+
   drafts: Record<string, DraftData>;
 
-  selectedVehicle?: DispatchDetail;
-  setSelectedVehicle: (v: DispatchDetail) => void;
+  selectedVehicle?: ContractVehicleBase | null;
+  setSelectedVehicle: (v: ContractVehicleBase | null) => void;
 
-  openModal: (type: ModalType) => void;
+  openModal: (type: ModalType, originType?: OriginType) => void;
   closeModal: () => void;
   goTo: (type: ModalType) => void;
 
@@ -43,35 +48,45 @@ interface ContractModalState {
 export const useContractModalStore = create<ContractModalState>(set => ({
   visible: false,
   modalType: 'none',
+  originType: 'main', // 기본은 main
+
   options: {
     general: true,
     insurance: true,
     replacement: true,
     dispatch: true,
   },
+
   drafts: {},
   selectedVehicle: undefined,
 
   setSelectedVehicle: v => set({ selectedVehicle: v }),
 
-  openModal: type =>
+  openModal: (type, originType = 'main') =>
     set({
       visible: true,
       modalType: type,
+      originType,
     }),
 
-  closeModal: () => set({ visible: false, modalType: 'none' }),
+  closeModal: () =>
+    set({
+      visible: false,
+      modalType: 'none',
+      originType: 'main',
+      selectedVehicle: undefined,
+    }),
 
   goTo: type => set({ modalType: type }),
 
-  saveDraft: async (type: string, vehicleId: string, data: DraftData) => {
+  saveDraft: async (type, vehicleId, data) => {
     await saveDraft(type, vehicleId, data);
     set(state => ({
       drafts: { ...state.drafts, [`${type}_${vehicleId}`]: data },
     }));
   },
 
-  loadDraft: async (type: string, vehicleId: string) => {
+  loadDraft: async (type, vehicleId) => {
     const draft = await loadDraft(type, vehicleId);
     if (draft) {
       set(state => ({
