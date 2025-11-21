@@ -7,10 +7,15 @@ import MainContractModal from './MainContractModal';
 import ReplacementContractModal from './ReplacementContractModal';
 
 export default function ContractModalManager() {
-  const { visible, modalType, closeModal, goTo, selectedVehicle } =
+  const { visible, modalType, closeModal, goTo, selectedVehicle, originType } =
     useContractModalStore();
 
-  if (!visible) return null;
+  if (!visible || !selectedVehicle) return null;
+
+  const handleBack = () => {
+    if (originType === 'main') goTo('main');
+    else closeModal();
+  };
 
   switch (modalType) {
     case 'main':
@@ -39,7 +44,7 @@ export default function ContractModalManager() {
       return (
         selectedVehicle && (
           <InsuranceContractModal
-            onBack={() => goTo('main')}
+            onBack={handleBack}
             vehicle={selectedVehicle}
           />
         )
