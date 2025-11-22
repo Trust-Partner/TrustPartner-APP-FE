@@ -18,13 +18,12 @@ import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
 import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   onBack: () => void;
-  vehicle: DispatchDetail;
+  vehicle: ContractVehicleBase;
 }
 
 export default function ReplacementContractModal({ onBack, vehicle }: Props) {
@@ -551,3 +550,4 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 }
 
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { ContractVehicleBase } from '../../types/contractVehicle';

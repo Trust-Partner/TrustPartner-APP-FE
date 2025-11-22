@@ -19,11 +19,26 @@ import { useContractModalStore } from '../../../../stores/useContractModalStore'
 import ContractModalManager from '../../../../components/contract/ContractModalManager';
 import BookmarkModal from '../../../../components/vehicleStatus/BookmarkModal';
 import VehicleReturnModal from '../../../../components/vehicleStatus/VehicleReturnModal';
+import { ContractVehicleBase } from '../../../../types/contractVehicle';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
   const { openModal, setSelectedVehicle } = useContractModalStore();
   const { groupId, groupName, type } = route.params;
+
+  const toContractVehicleFromDispatch = (
+    v: DispatchDetail,
+  ): ContractVehicleBase => ({
+    id: v.id,
+    model: v.model,
+    number: v.number,
+    location: v.location,
+    year: v.year,
+    washed: v.washed,
+    isConfirmed: v.isConfirmed,
+    isBookmarked: v.isBookmarked,
+    reserverName: v.reserverName,
+  });
 
   const [data, setData] = useState<DispatchDetail[]>(
     (dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []).filter(
@@ -57,8 +72,9 @@ export default function DispatchGroupDetailScreen({ route }: any) {
   };
 
   const handleSelectVehicle = (item: DispatchDetail) => {
-    setSelectedVehicle(item);
-    openModal('main');
+    const normalized = toContractVehicleFromDispatch(item);
+    setSelectedVehicle(normalized);
+    openModal('main', 'main'); // origin=main
   };
 
   const handleSwipeOpen = (rowKey: string, rowMap: any) => {

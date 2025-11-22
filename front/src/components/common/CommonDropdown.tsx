@@ -12,8 +12,9 @@ import { colors } from '../../constants/colors';
 interface Props {
   placeholder: string;
   options: string[];
-  selectedValue?: string;
+  selectedValue?: string | null;
   onSelect: (value: string) => void;
+  disabled?: boolean;
 }
 
 export default function CommonDropdown({
@@ -21,14 +22,18 @@ export default function CommonDropdown({
   options,
   selectedValue,
   onSelect,
+  disabled,
 }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
     <View style={s.container}>
-      <Pressable style={s.selectBox} onPress={() => setOpen(prev => !prev)}>
+      <Pressable
+        style={s.selectBox}
+        onPress={() => !disabled && setOpen(prev => !prev)}
+      >
         <Text
-          style={[s.selectText, !selectedValue && { color: colors.GRAY_50 }]}
+          style={[s.selectText, selectedValue && { color: colors.GRAY_90 }]}
         >
           {selectedValue || placeholder}
         </Text>
