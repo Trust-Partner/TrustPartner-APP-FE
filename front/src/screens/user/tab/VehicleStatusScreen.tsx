@@ -19,6 +19,7 @@ import VehicleGarageWaitModal from '../../../components/vehicleStatus/VehicleGar
 import { useContractModalStore } from '../../../stores/useContractModalStore';
 import ContractModalManager from '../../../components/contract/ContractModalManager';
 import { ContractVehicleBase } from '../../../types/contractVehicle';
+import VehicleReturnRequestModal from '../../../components/vehicleStatus/VehicleReturnRequestModal';
 
 type Vehicle = VehicleCompanyDetail['vehicles'][number];
 
@@ -31,6 +32,8 @@ export default function VehicleStatusScreen() {
   >('전체');
 
   const [garageModalVisible, setGarageModalVisible] = useState(false);
+  const [returnModalVisible, setReturnModalVisible] = useState(false);
+
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   const { openModal, setSelectedVehicle: setContractVehicle } =
@@ -105,7 +108,8 @@ export default function VehicleStatusScreen() {
         data={filteredVehicles}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        bounces={false}
+        alwaysBounceVertical={false}
         renderItem={({ item }) => {
           const isOpen = expanded[item.id];
 
@@ -159,7 +163,6 @@ export default function VehicleStatusScreen() {
                     </View>
 
                     <View style={s.rightWrap}>
-                      {/* 위치가 캘린더/시간 자리를 대체하는 케이스 */}
                       {isParked || isDispatchedRequestCompany ? (
                         <View style={s.locationWrap}>
                           <Image
@@ -216,10 +219,16 @@ export default function VehicleStatusScreen() {
                   {/* 버튼 영역 */}
                   {showButtons && (
                     <View style={s.buttonRow}>
-                      {/* 🟡 배차중 */}
+                      {/* 배차중 */}
                       {item.status === '배차중' && item.isGarage && (
                         <>
-                          <Pressable style={[s.actionBtn, s.grayBtn]}>
+                          <Pressable
+                            style={[s.actionBtn, s.grayBtn]}
+                            onPress={() => {
+                              setSelectedVehicle(item);
+                              setReturnModalVisible(true);
+                            }}
+                          >
                             <Text style={s.actionText}>반납신청</Text>
                           </Pressable>
 
@@ -235,10 +244,16 @@ export default function VehicleStatusScreen() {
                         </>
                       )}
 
-                      {/* 🔵 대기중 + 내 회사 */}
+                      {/* 대기중 + 내 회사 */}
                       {item.status === '대기중' && isAtMyCompany && (
                         <>
-                          <Pressable style={[s.actionBtn, s.grayBtn]}>
+                          <Pressable
+                            style={[s.actionBtn, s.grayBtn]}
+                            onPress={() => {
+                              setSelectedVehicle(item);
+                              setReturnModalVisible(true);
+                            }}
+                          >
                             <Text style={s.actionText}>반납신청</Text>
                           </Pressable>
 
@@ -256,7 +271,7 @@ export default function VehicleStatusScreen() {
                         </>
                       )}
 
-                      {/* 🔴 반납신청 */}
+                      {/* 반납신청 */}
                       {item.status === '반납신청' && (
                         <Pressable style={[s.actionBtn, s.redBtn]}>
                           <Text style={s.actionText}>반납취소</Text>
@@ -280,6 +295,18 @@ export default function VehicleStatusScreen() {
           onClose={() => setGarageModalVisible(false)}
           vehicle={selectedVehicle}
           companyName={company.companyName}
+        />
+      )}
+
+      {selectedVehicle && (
+        <VehicleReturnRequestModal
+          visible={returnModalVisible}
+          onClose={() => setReturnModalVisible(false)}
+          vehicle={selectedVehicle}
+          staffId={1}
+          onSubmitSuccess={() => {
+            setReturnModalVisible(false);
+          }}
         />
       )}
     </View>
