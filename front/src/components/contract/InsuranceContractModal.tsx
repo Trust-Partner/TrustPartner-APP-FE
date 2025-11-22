@@ -18,16 +18,19 @@ import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { HIT_SLOP } from '../../constants/touch';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { ContractVehicleBase } from '../../types/contractVehicle';
 
 interface Props {
   onBack: () => void;
-  vehicle: DispatchDetail;
+  vehicle: ContractVehicleBase;
 }
 
 export default function InsuranceContractModal({ onBack, vehicle }: Props) {
+  if (!vehicle) return null;
+
   const requiredFields = ['phone', 'requestCompany', 'garageCompany'];
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
@@ -462,5 +465,3 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     </Modal>
   );
 }
-
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';

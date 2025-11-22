@@ -14,6 +14,8 @@ export type VehicleCompanyDetail = {
     status: '배차중' | '대기중' | '반납신청';
     lastUpdate: string;
     duration: string;
+    isGarage: boolean; // 해당 거래처에 주차되어 있는지 여부
+    location?: string;
   }[];
 };
 
@@ -21,7 +23,7 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
   {
     companyId: 6,
     companyName: '위너스모터스',
-    summary: { dispatched: 1, waiting: 4, returning: 1, total: 6 },
+    summary: { dispatched: 2, waiting: 3, returning: 1, total: 6 },
     vehicles: [
       {
         id: 1,
@@ -30,14 +32,18 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
         status: '배차중',
         lastUpdate: '8/18 04:40',
         duration: '55일 10시간',
+        isGarage: true,
+        location: '위너스모터스',
       },
       {
         id: 2,
         name: '싼타페',
         plateNumber: '88허5474',
-        status: '대기중',
+        status: '배차중',
         lastUpdate: '8/20 20:32',
         duration: '52일 18시간',
+        isGarage: false,
+        location: '한라',
       },
       {
         id: 3,
@@ -46,6 +52,8 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
         status: '대기중',
         lastUpdate: '8/22 12:24',
         duration: '51일 2시간',
+        isGarage: false,
+        location: 'ESA',
       },
       {
         id: 4,
@@ -54,6 +62,8 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
         status: '대기중',
         lastUpdate: '8/19 19:31',
         duration: '53일 19시간',
+        isGarage: true,
+        location: '위너스모터스',
       },
       {
         id: 5,
@@ -62,6 +72,8 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
         status: '대기중',
         lastUpdate: '8/22 22:34',
         duration: '50일 16시간',
+        isGarage: false,
+        location: '렉시온모터스',
       },
       {
         id: 6,
@@ -70,6 +82,8 @@ export const vehicleCompanyDetailMock: VehicleCompanyDetail[] = [
         status: '반납신청',
         lastUpdate: '8/18 18:30',
         duration: '54일 20시간',
+        isGarage: false,
+        location: '레시온모터스',
       },
     ],
   },

@@ -12,7 +12,6 @@ import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
 import CommonInput from '../common/CommonInput';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonTextarea from '../common/CommonTextarea';
 import CommonAmountInput from '../common/CommonAmountInput';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -21,10 +20,12 @@ import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { HIT_SLOP } from '../../constants/touch';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { ContractVehicleBase } from '../../types/contractVehicle';
 
 interface Props {
   onBack: () => void;
-  vehicle: DispatchDetail;
+  vehicle: ContractVehicleBase;
 }
 
 export default function GeneralContractModal({ onBack, vehicle }: Props) {
@@ -486,5 +487,3 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
     </Modal>
   );
 }
-
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';

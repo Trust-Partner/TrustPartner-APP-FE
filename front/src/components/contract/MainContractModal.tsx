@@ -10,7 +10,7 @@ import {
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { HIT_SLOP } from '../../constants/touch';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
+import { ContractVehicleBase } from '../../types/contractVehicle';
 
 interface Props {
   visible: boolean;
@@ -18,7 +18,7 @@ interface Props {
   onSelect: (
     type: 'general' | 'insurance' | 'replacement' | 'dispatch',
   ) => void;
-  vehicle: DispatchDetail;
+  vehicle: ContractVehicleBase;
 }
 
 export default function MainContractModal({

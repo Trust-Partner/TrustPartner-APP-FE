@@ -191,6 +191,8 @@ export default function VehicleCompanyDetailScreen() {
           data={filteredVehicles}
           keyExtractor={item => item.id.toString()}
           showsVerticalScrollIndicator={false}
+          bounces={false}
+          alwaysBounceVertical={false}
           renderItem={({ item }) => {
             const isOpen = expanded[item.id];
             const isDispatched = item.status === '배차중';
@@ -393,7 +395,7 @@ const s = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 18,
+    marginBottom: 16,
     backgroundColor: colors.WHITE,
   },
   summaryCell: {
