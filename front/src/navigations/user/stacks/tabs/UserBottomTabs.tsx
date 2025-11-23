@@ -4,11 +4,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../../../constants/colors';
 import { drawerHeaderOptions } from '../../../common/headers';
-import HomeStack from './HomeStack';
-import NotificationsStack from './NotificationsStack';
-import SalesManageStack from './SalesManageStack';
-import VehicleStatusStack from './VehicleStatusStack';
-import DispatchRequestStack from './DispatchRequestStack';
+import UserDispatchRequestStack from './UserDispatchRequestStack';
+import UserHomeStack from './UserHomeStack';
+import UserNotificationsStack from './UserNotificationsStack';
+import UserSalesManageStack from './UserSalesManageStack';
+import UserVehicleStatusStack from './UserVehicleStatusStack';
 
 export type UserTabParamList = {
   Home: undefined;
@@ -65,25 +65,29 @@ export default function UserBottomTabs() {
         ),
       })}
     >
-      <Tab.Screen name="Home" component={HomeStack} options={{ title: '홈' }} />
+      <Tab.Screen
+        name="Home"
+        component={UserHomeStack}
+        options={{ title: '홈' }}
+      />
       <Tab.Screen
         name="VehicleStatus"
-        component={VehicleStatusStack}
+        component={UserVehicleStatusStack}
         options={{ title: '차량현황' }}
       />
       <Tab.Screen
         name="DispatchRequests"
-        component={DispatchRequestStack}
+        component={UserDispatchRequestStack}
         options={{ title: '배차요청' }}
       />
       <Tab.Screen
         name="Sales"
-        component={SalesManageStack}
+        component={UserSalesManageStack}
         options={{ title: '매출관리' }}
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsStack}
+        component={UserNotificationsStack}
         options={{ title: '알림' }}
       />
     </Tab.Navigator>

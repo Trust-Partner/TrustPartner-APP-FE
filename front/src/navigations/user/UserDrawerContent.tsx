@@ -10,9 +10,11 @@ import { useAuthStore } from '../../states/useAuthStore';
 
 export default function UserDrawerContent(props: DrawerContentComponentProps) {
   const logout = useAuthStore(s => s.logout);
-  const go = (name: 'MyInfo' | 'ProfitAnalysis' | 'Contracts' | 'Inquiry') => {
+  const go = (
+    name: 'UserMyInfo' | 'UserProfitAnalysis' | 'UserContracts' | 'UserInquiry',
+  ) => {
     props.navigation.closeDrawer();
-    props.navigation.navigate(name as never);
+    props.navigation.navigate(name);
   };
 
   const handleLogout = () => {
@@ -32,22 +34,22 @@ export default function UserDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItem
         label="내 정보"
         labelStyle={s.label}
-        onPress={() => go('MyInfo')}
+        onPress={() => go('UserMyInfo')}
       />
       <DrawerItem
         label="수익 분석"
         labelStyle={s.label}
-        onPress={() => go('ProfitAnalysis')}
+        onPress={() => go('UserProfitAnalysis')}
       />
       <DrawerItem
         label="계약서 목록"
         labelStyle={s.label}
-        onPress={() => go('Contracts')}
+        onPress={() => go('UserContracts')}
       />
       <DrawerItem
         label="문의하기"
         labelStyle={s.label}
-        onPress={() => go('Inquiry')}
+        onPress={() => go('UserInquiry')}
       />
 
       <View style={s.divider} />

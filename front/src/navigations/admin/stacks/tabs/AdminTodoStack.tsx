@@ -4,7 +4,7 @@ import TodoScreen from '../../../../screens/admin/tab/todo/TodoScreen';
 import TodoReturnDetailScreen from '../../../../screens/admin/tab/todo/TodoReturnDetailScreen';
 import TodoWashFuelDetailScreen from '../../../../screens/admin/tab/todo/TodoWashFuelDetailScreen';
 
-export type TodoStackParamList = {
+export type AdminTodoStackParamList = {
   TodoMain: undefined;
   TodoReturnDetail: {
     companyId: number;
@@ -16,9 +16,9 @@ export type TodoStackParamList = {
   };
 };
 
-const Stack = createNativeStackNavigator<TodoStackParamList>();
+const Stack = createNativeStackNavigator<AdminTodoStackParamList>();
 
-export default function TodoStack() {
+export default function AdminTodoStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="TodoMain" component={TodoScreen} />
