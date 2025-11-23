@@ -4,7 +4,7 @@ import VehicleStatusScreen from '../../../../screens/admin/tab/VehicleStatus/Veh
 import DispatchGroupDetailScreen from '../../../../screens/admin/tab/VehicleStatus/DispatchGroupDetailScreen';
 import VehicleCompanyDetailScreen from '../../../../screens/admin/tab/VehicleStatus/VehicleCompanyDetailScreen';
 
-export type VehicleStatusStackParamList = {
+export type AdminVehicleStatusStackParamList = {
   VehicleStatusMain: undefined;
   DispatchGroupDetail: {
     type: 'sedan' | 'suv' | 'import';
@@ -18,9 +18,9 @@ export type VehicleStatusStackParamList = {
   };
 };
 
-const Stack = createNativeStackNavigator<VehicleStatusStackParamList>();
+const Stack = createNativeStackNavigator<AdminVehicleStatusStackParamList>();
 
-export default function VehicleStatusStack() {
+export default function AdminVehicleStatusStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="VehicleStatusMain" component={VehicleStatusScreen} />

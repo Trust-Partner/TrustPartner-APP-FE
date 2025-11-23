@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import VehicleStatusScreen from '../../../../screens/user/tab/VehicleStatusScreen';
+import MyInfoScreen from '../../../../screens/admin/sidebar/MyInfoScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function VehicleStatusStack() {
+export default function AdminMyInfoStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="VehicleStatusMain" component={VehicleStatusScreen} />
+      <Stack.Screen name="MyInfoMain" component={MyInfoScreen} />
     </Stack.Navigator>
   );
 }

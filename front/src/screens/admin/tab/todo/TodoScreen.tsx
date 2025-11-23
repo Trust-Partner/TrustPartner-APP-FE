@@ -20,12 +20,12 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { TodoStackParamList } from '../../../../navigations/admin/stacks/tabs/TodoStack';
+import { AdminTodoStackParamList } from '../../../../navigations/admin/stacks/tabs/AdminTodoStack';
 
 export default function TodoScreen() {
   const route = useRoute<any>();
   const navigation =
-    useNavigation<NativeStackNavigationProp<TodoStackParamList>>();
+    useNavigation<NativeStackNavigationProp<AdminTodoStackParamList>>();
 
   const initialTab = route?.params?.initialTab ?? 'return';
   const [tab, setTab] = useState<'return' | 'wash'>(initialTab);

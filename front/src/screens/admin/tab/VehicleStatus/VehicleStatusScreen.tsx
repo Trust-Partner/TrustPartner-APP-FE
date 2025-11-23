@@ -21,12 +21,12 @@ import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { VehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/VehicleStatusStack';
+import { AdminVehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/AdminVehicleStatusStack';
 import { vehicleCompanyDetailMock } from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 
 type NavProp = NativeStackNavigationProp<
-  VehicleStatusStackParamList,
+  AdminVehicleStatusStackParamList,
   'VehicleStatusMain'
 >;
 
