@@ -11,9 +11,16 @@ import { useAuthStore } from '../../states/useAuthStore';
 export default function AdminDrawerContent(props: DrawerContentComponentProps) {
   const logout = useAuthStore(s => s.logout);
 
-  const go = (name: string) => {
+  const go = (
+    name:
+      | 'AdminMyInfo'
+      | 'AdminPartnerManage'
+      | 'AdminContracts'
+      | 'AdminPrepay'
+      | 'AdminReservations',
+  ) => {
     props.navigation.closeDrawer();
-    props.navigation.navigate(name as never);
+    props.navigation.getParent()?.navigate(name);
   };
 
   const handleLogout = () => {
@@ -33,27 +40,27 @@ export default function AdminDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItem
         label="내 정보"
         labelStyle={s.label}
-        onPress={() => go('MyInfo')}
+        onPress={() => go('AdminMyInfo')}
       />
       <DrawerItem
         label="거래처 관리"
         labelStyle={s.label}
-        onPress={() => go('PartnerManage')}
+        onPress={() => go('AdminPartnerManage')}
       />
       <DrawerItem
         label="계약서 목록"
         labelStyle={s.label}
-        onPress={() => go('Contracts')}
+        onPress={() => go('AdminContracts')}
       />
       <DrawerItem
         label="사전지급 관리"
         labelStyle={s.label}
-        onPress={() => go('Prepay')}
+        onPress={() => go('AdminPrepay')}
       />
       <DrawerItem
         label="예약관리"
         labelStyle={s.label}
-        onPress={() => go('Reservations')}
+        onPress={() => go('AdminReservations')}
       />
 
       <View style={s.divider} />

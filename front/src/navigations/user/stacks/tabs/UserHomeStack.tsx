@@ -1,14 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { stackHeaderOptions } from '../../../common/headers';
-import MyInfoScreen from '../../../../screens/user/sidebar/MyInfoScreen';
+import HomeScreen from '../../../../screens/user/tab/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function MyInfoStack() {
+export default function UserHomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="MyInfoMain" component={MyInfoScreen} />
+      <Stack.Screen name="HomeMain" component={HomeScreen} />
     </Stack.Navigator>
   );
 }

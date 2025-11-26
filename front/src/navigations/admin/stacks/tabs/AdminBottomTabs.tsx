@@ -5,11 +5,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../../../constants/colors';
 import { drawerHeaderOptions } from '../../../common/headers';
 
-import DispatchRequestStack from './DispatchRequestStack';
-import HomeStack from './HomeStack';
-import NotificationsStack from './NotificationsStack';
-import TodoStack from './TodoStack';
-import VehicleStatusStack from './VehicleStatusStack';
+import AdminDispatchRequestStack from './AdminDispatchRequestStack';
+import AdminHomeStack from './AdminHomeStack';
+import AdminNotificationsStack from './AdminNotificationsStack';
+import AdminTodoStack from './AdminTodoStack';
+import AdminVehicleStatusStack from './AdminVehicleStatusStack';
 
 export type AdminTabParamList = {
   Home: undefined;
@@ -66,25 +66,29 @@ export default function AdminBottomTabs() {
         ),
       })}
     >
-      <Tab.Screen name="Home" component={HomeStack} options={{ title: '홈' }} />
+      <Tab.Screen
+        name="Home"
+        component={AdminHomeStack}
+        options={{ title: '홈' }}
+      />
       <Tab.Screen
         name="VehicleStatus"
-        component={VehicleStatusStack}
+        component={AdminVehicleStatusStack}
         options={{ title: '차량상태', headerShown: false }}
       />
       <Tab.Screen
         name="DispatchRequests"
-        component={DispatchRequestStack}
+        component={AdminDispatchRequestStack}
         options={{ title: '배차요청건' }}
       />
       <Tab.Screen
         name="Todo"
-        component={TodoStack}
+        component={AdminTodoStack}
         options={{ title: '할일' }}
       />
       <Tab.Screen
         name="Notifications"
-        component={NotificationsStack}
+        component={AdminNotificationsStack}
         options={{ title: '알림' }}
       />
     </Tab.Navigator>
