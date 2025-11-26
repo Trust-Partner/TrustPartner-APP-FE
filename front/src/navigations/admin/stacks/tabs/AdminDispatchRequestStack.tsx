@@ -1,13 +1,16 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ContractListScreen from '../../../../screens/admin/sidebar/ContractListScreen';
+import DispatchRequestsScreen from '../../../../screens/admin/tab/DispatchRequestsScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function ContractsStack() {
+export default function AdminDispatchRequestStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ContractsMain" component={ContractListScreen} />
+      <Stack.Screen
+        name="DispatchRequestMain"
+        component={DispatchRequestsScreen}
+      />
     </Stack.Navigator>
   );
 }

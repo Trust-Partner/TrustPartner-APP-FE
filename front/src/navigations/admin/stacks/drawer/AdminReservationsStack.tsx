@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import PartnerManageScreen from '../../../../screens/admin/sidebar/PartnerManageScreen';
+import ReservationScreen from '../../../../screens/admin/sidebar/ReservationScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function PartnerManageStack() {
+export default function AdminReservationsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="PartnerManageMain" component={PartnerManageScreen} />
+      <Stack.Screen name="ReservationsMain" component={ReservationScreen} />
     </Stack.Navigator>
   );
 }

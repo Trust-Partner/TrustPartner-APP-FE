@@ -2,17 +2,27 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../../states/useAuthStore';
 import AdminDrawer, { AdminDrawerParamList } from '../admin/AdminDrawer';
-import UserDrawer from '../user/UserDrawer';
+import UserDrawer, { UserDrawerParamList } from '../user/UserDrawer';
 import AuthStack from '../auth/AuthStack';
 import ContractIntegratedScreen from '../../screens/contract/ContractIntegratedScreen';
 import { NavigatorScreenParams } from '@react-navigation/native';
+
+import AdminContractsStack from '../admin/stacks/drawer/AdminContractsStack';
+import AdminMyInfoStack from '../admin/stacks/drawer/AdminMyInfoStack';
+import AdminPartnerManageStack from '../admin/stacks/drawer/AdminPartnerManageStack';
+import AdminPrepayStack from '../admin/stacks/drawer/AdminPrepayStack';
+import AdminReservationsStack from '../admin/stacks/drawer/AdminReservationsStack';
+import UserContractsStack from '../user/stacks/drawer/UserContractsStack';
+import UserInquiryStack from '../user/stacks/drawer/UserInquiryStack';
+import UserMyInfoStack from '../user/stacks/drawer/UserMyInfoStack';
+import UserProfitAnalysisStack from '../user/stacks/drawer/UserProfitAnalysisStack';
 
 const Stack = createNativeStackNavigator();
 
 export type RootStackParamList = {
   Auth: undefined;
   AdminRoot: NavigatorScreenParams<AdminDrawerParamList>;
-  UserRoot: undefined;
+  UserRoot: NavigatorScreenParams<UserDrawerParamList>;
   ContractIntegrated: { contractId: number };
 };
 
@@ -24,15 +34,38 @@ export default function RootNavigator() {
       {!user ? (
         <Stack.Screen name="Auth" component={AuthStack} />
       ) : user.role === 'ADMIN' ? (
-        <Stack.Screen name="AdminRoot" component={AdminDrawer} />
+        <>
+          <Stack.Screen name="AdminRoot" component={AdminDrawer} />
+
+          <Stack.Screen name="AdminMyInfo" component={AdminMyInfoStack} />
+          <Stack.Screen
+            name="AdminPartnerManage"
+            component={AdminPartnerManageStack}
+          />
+          <Stack.Screen name="AdminContracts" component={AdminContractsStack} />
+          <Stack.Screen name="AdminPrepay" component={AdminPrepayStack} />
+          <Stack.Screen
+            name="AdminReservations"
+            component={AdminReservationsStack}
+          />
+        </>
       ) : (
-        <Stack.Screen name="UserRoot" component={UserDrawer} />
+        <>
+          <Stack.Screen name="UserRoot" component={UserDrawer} />
+
+          <Stack.Screen name="UserMyInfo" component={UserMyInfoStack} />
+          <Stack.Screen name="UserContracts" component={UserContractsStack} />
+          <Stack.Screen
+            name="UserProfitAnalysis"
+            component={UserProfitAnalysisStack}
+          />
+          <Stack.Screen name="UserInquiry" component={UserInquiryStack} />
+        </>
       )}
 
       <Stack.Screen
         name="ContractIntegrated"
         component={ContractIntegratedScreen}
-        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

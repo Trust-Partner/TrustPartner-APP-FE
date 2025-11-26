@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../../../../screens/admin/tab/HomeScreen';
+import VehicleStatusScreen from '../../../../screens/user/tab/VehicleStatusScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function HomeStack() {
+export default function UserVehicleStatusStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeMain" component={HomeScreen} />
+      <Stack.Screen name="VehicleStatusMain" component={VehicleStatusScreen} />
     </Stack.Navigator>
   );
 }

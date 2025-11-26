@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ReservationScreen from '../../../../screens/admin/sidebar/ReservationScreen';
+import NotificationsScreen from '../../../../screens/admin/tab/NotificationsScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function ReservationsStack() {
+export default function AdminNotificationsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ReservationsMain" component={ReservationScreen} />
+      <Stack.Screen name="NotificationsMain" component={NotificationsScreen} />
     </Stack.Navigator>
   );
 }
