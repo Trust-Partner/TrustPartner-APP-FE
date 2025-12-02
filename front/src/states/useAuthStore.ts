@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { loginStaff, loginPartner } from '../api/auth';
+import axiosInstance from '../api/axiosInstance';
 
 type Role = 'USER' | 'ADMIN';
 
@@ -27,17 +28,26 @@ export const useAuthStore = create<AuthState>(set => ({
 
   login: async (loginId, password, role) => {
     try {
-      const data =
+      // 1. 서버 로그인 요청 (response 전체를 받아야 header 접근 가능)
+      const response =
         role === 'ADMIN'
           ? await loginStaff(loginId, password)
           : await loginPartner(loginId, password);
 
-      const normalizedRole: Role = data.role.code === 'USER' ? 'USER' : 'ADMIN';
+      // 2. 응답 헤더에서 accessToken 추출
+      const accessToken = response.headers['authorization'];
 
+      // 3. axios 전역 Authorization 헤더 설정
+      axiosInstance.defaults.headers.Authorization = accessToken;
+
+      // 4. body 데이터 추출
+      const data = response.data.data;
+
+      // 5. userData 생성
       const userData: User = {
         id: data.staffId || data.partnerId,
         name: data.name,
-        role: normalizedRole,
+        role,
         roleCode: data.role.code,
         roleDesc: data.role.description,
         branch: data.branch,
@@ -47,6 +57,7 @@ export const useAuthStore = create<AuthState>(set => ({
         gradeName: data.gradeName,
       };
 
+      // 6. 전역 user 상태 저장
       set({ user: userData });
     } catch (error) {
       console.error('로그인 실패:', error);
@@ -54,5 +65,8 @@ export const useAuthStore = create<AuthState>(set => ({
     }
   },
 
-  logout: () => set({ user: null }),
+  logout: () => {
+    delete axiosInstance.defaults.headers.Authorization;
+    set({ user: null });
+  },
 }));

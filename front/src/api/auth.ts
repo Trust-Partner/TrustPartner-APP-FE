@@ -1,11 +1,19 @@
-import api from './axiosInstance';
+import axiosInstance from './axiosInstance';
 
 export async function loginStaff(loginId: string, password: string) {
-  const res = await api.post('/api/auth/staffs', { loginId, password });
-  return res.data.data;
+  const response = await axiosInstance.post('/api/auth/staffs', {
+    loginId,
+    password,
+  });
+
+  return response;
 }
 
 export async function loginPartner(loginId: string, password: string) {
-  const res = await api.post('/api/auth/partners', { loginId, password });
-  return res.data.data;
+  const response = await axiosInstance.post('/api/auth/partners', {
+    loginId,
+    password,
+  });
+
+  return response;
 }
