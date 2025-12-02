@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,17 +9,67 @@ import {
   Platform,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
-import { adminMyInfoMock } from '../../../mock/adminMyInfoMock';
 import AppHeader from '../../../components/common/AppHeader';
+import {
+  getMyInfo,
+  getPartnerGrades,
+  getCarFeesByGrade,
+} from '../../../api/mypage';
+import { useAuthStore } from '../../../states/useAuthStore';
 
 export default function MyInfoScreen() {
-  const data = adminMyInfoMock;
-  const [selectedGrade, setSelectedGrade] = useState<
-    keyof typeof data.carRatesByGrade
-  >(data.grade as keyof typeof data.carRatesByGrade);
+  const user = useAuthStore(state => state.user);
+
+  const [myInfo, setMyInfo] = useState<any>(null);
+
+  const [grades, setGrades] = useState<any[]>([]);
+  const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
-  const carRates = data.carRatesByGrade[selectedGrade];
+  const [carFees, setCarFees] = useState<any[]>([]);
+  const [gradeRates, setGradeRates] = useState<any[]>([]);
+
+  const canAccessFee = user?.roleCode !== 'MANAGER';
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const info = await getMyInfo();
+
+        const userData = info.data.data;
+        setMyInfo(userData);
+
+        const gradeRes = await getPartnerGrades();
+        const gradeList = gradeRes.data.data ?? [];
+
+        setGrades(gradeList);
+        setGradeRates(gradeList);
+
+        if (gradeList.length > 0) {
+          setSelectedGrade(gradeList[0].gradeId);
+        }
+      } catch (e) {
+        console.log('MyInfo load error:', e);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedGrade) return;
+
+    (async () => {
+      try {
+        const res = await getCarFeesByGrade(selectedGrade);
+
+        const feeList = res.data.data.grades ?? [];
+        setCarFees(feeList);
+      } catch (e) {
+        console.log('CarFee load error:', e);
+      }
+    })();
+  }, [selectedGrade]);
+
+  if (!myInfo) return null;
 
   return (
     <View style={{ flex: 1 }}>
@@ -27,11 +77,12 @@ export default function MyInfoScreen() {
         canGoBack
         centerContent={<Text style={s.header}>내 정보</Text>}
       />
+
       <ScrollView
         style={s.container}
         contentContainerStyle={{ paddingBottom: 16 }}
       >
-        {/* 프로필 카드 */}
+        {/* --------- 프로필 카드 --------- */}
         <View style={s.profileCard}>
           <View style={s.profileCircle}>
             <Image
@@ -42,105 +93,107 @@ export default function MyInfoScreen() {
 
           <View>
             <View style={s.row}>
-              <Text style={s.name}>{data.name}</Text>
-              <Text style={s.badge}>{data.role}</Text>
+              <Text style={s.name}>{myInfo.staffName}</Text>
+              <Text style={s.badge}>{myInfo.staffRole.description}</Text>
             </View>
-            <Text style={s.branch}>{data.branch}</Text>
+            <Text style={s.branch}>{myInfo.branch}</Text>
           </View>
         </View>
 
-        {/* 차량관리 금액표 */}
-        <View style={s.card}>
-          <View style={s.cardHeader}>
-            <View style={s.cardTitleBox}>
-              <Image
-                source={require('../../../assets/admin-myinfo/money.png')}
-                style={s.icon}
-              />
-              <Text style={s.cardTitle}>차량관리 금액표</Text>
-            </View>
-
-            {/* 등급 드롭다운 */}
-            <View style={{ position: 'relative' }}>
-              <Pressable
-                style={s.selectBox}
-                onPress={e => {
-                  setOpen(!open);
-                }}
-              >
-                <Text style={s.selectText}>{selectedGrade}</Text>
+        {/* --------- 차량관리 금액표 --------- */}
+        {canAccessFee && (
+          <View style={s.card}>
+            <View style={s.cardHeader}>
+              <View style={s.cardTitleBox}>
                 <Image
-                  source={require('../../../assets/common/down_arrow.png')}
-                  style={s.arrow}
+                  source={require('../../../assets/admin-myinfo/money.png')}
+                  style={s.icon}
                 />
-              </Pressable>
+                <Text style={s.cardTitle}>차량관리 금액표</Text>
+              </View>
 
-              {open && (
-                <View style={s.dropdown}>
-                  {Object.keys(data.carRatesByGrade).map(grade => (
-                    <Pressable
-                      key={grade}
-                      style={[
-                        s.dropdownItem,
-                        grade === selectedGrade && s.dropdownItemActive,
-                      ]}
-                      onPress={e => {
-                        setSelectedGrade(
-                          grade as keyof typeof data.carRatesByGrade,
-                        );
-                        setOpen(false);
-                      }}
-                    >
-                      <Text
+              {/* 드롭다운 */}
+              <View style={{ position: 'relative' }}>
+                <Pressable style={s.selectBox} onPress={() => setOpen(!open)}>
+                  <Text style={s.selectText}>
+                    {grades.find(g => g.gradeId === selectedGrade)?.gradeName ??
+                      '등급 선택'}
+                  </Text>
+                  <Image
+                    source={require('../../../assets/common/down_arrow.png')}
+                    style={s.arrow}
+                  />
+                </Pressable>
+
+                {open && (
+                  <View style={s.dropdown}>
+                    {grades.map(grade => (
+                      <Pressable
+                        key={grade.gradeId}
                         style={[
-                          s.dropdownText,
-                          grade === selectedGrade && s.dropdownTextActive,
+                          s.dropdownItem,
+                          grade.gradeId === selectedGrade &&
+                            s.dropdownItemActive,
                         ]}
+                        onPress={() => {
+                          setSelectedGrade(grade.gradeId);
+                          setOpen(false);
+                        }}
                       >
-                        {grade}
-                      </Text>
-                    </Pressable>
-                  ))}
+                        <Text
+                          style={[
+                            s.dropdownText,
+                            grade.gradeId === selectedGrade &&
+                              s.dropdownTextActive,
+                          ]}
+                        >
+                          {grade.gradeName}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+
+            {/* 금액표 Row */}
+            {carFees.map((item, i) => (
+              <View key={i} style={s.tableRow}>
+                <Text style={s.tableLeft}>{item.gradeName}</Text>
+                <Text style={s.tableRight}>{item.managementFee}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* --------- 지급비율표 --------- */}
+        {canAccessFee && (
+          <View style={s.card}>
+            <View style={s.cardHeader}>
+              <View style={s.cardTitleBox}>
+                <Image
+                  source={require('../../../assets/admin-myinfo/chart.png')}
+                  style={s.icon}
+                />
+                <Text style={s.cardTitle}>등급별 지급비율표</Text>
+              </View>
+            </View>
+
+            {gradeRates.map((g, i) => (
+              <View key={i} style={s.rateCard}>
+                <View>
+                  <Text style={s.gradeLabel}>{g.gradeName}</Text>
+                  <Text style={s.gradeSub}>{g.description}</Text>
                 </View>
-              )}
-            </View>
-          </View>
 
-          {/* 금액표 */}
-          {carRates.map((item, i) => (
-            <View key={i} style={s.tableRow}>
-              <Text style={s.tableLeft}>{item.type}</Text>
-              <Text style={s.tableRight}>{item.amount}</Text>
-            </View>
-          ))}
-        </View>
-
-        {/* 등급별 지급비율표 */}
-        <View style={s.card}>
-          <View style={s.cardHeader}>
-            <View style={s.cardTitleBox}>
-              <Image
-                source={require('../../../assets/admin-myinfo/chart.png')}
-                style={s.icon}
-              />
-              <Text style={s.cardTitle}>등급별 지급비율표</Text>
-            </View>
-          </View>
-
-          {data.gradeRates.map((g, i) => (
-            <View key={i} style={s.rateCard}>
-              <View>
-                <Text style={s.gradeLabel}>{g.grade}</Text>
-                <Text style={s.gradeSub}>{g.name}</Text>
+                <View style={s.rateCardRight}>
+                  <Text style={s.rateText}>{g.discountRate}%</Text>
+                  <Text style={s.rateDesc}>지급비율</Text>
+                </View>
               </View>
-
-              <View style={s.rateCardRight}>
-                <Text style={s.rateText}>{g.rate}</Text>
-                <Text style={s.rateDesc}>지급비율</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -237,6 +290,7 @@ const s = StyleSheet.create({
     lineHeight: 16.8,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
+
   /* 드롭다운 관련 */
   selectBox: {
     flexDirection: 'row',
@@ -265,7 +319,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     top: 30,
     right: 0,
-    // width: '100%',
     backgroundColor: colors.WHITE,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
