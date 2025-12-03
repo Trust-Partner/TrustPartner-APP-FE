@@ -1,22 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import Modal from 'react-native-modal';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../constants/colors';
-import { DispatchRequest } from '../../mock/mockDispatchRequests';
 import ToastMessage from '../common/ToastMessage';
 import { HIT_SLOP } from '../../constants/touch';
+import {
+  DispatchItem,
+  getPartnerInfo,
+  PartnerInfoResponse,
+} from '../../api/dispatch';
 
 type Props = {
   visible: boolean;
-  item?: DispatchRequest | null;
+  item?: DispatchItem | null;
   onClose: () => void;
 };
 
 export default function DispatchInfoModal({ visible, item, onClose }: Props) {
   const [toastMsg, setToastMsg] = useState('');
+  const [partner, setPartner] = useState<PartnerInfoResponse | null>(null);
+
+  // 거래처 정보
+  useEffect(() => {
+    if (!item?.partnerId) return;
+
+    (async () => {
+      try {
+        const res = await getPartnerInfo(item.partnerId);
+        setPartner(res.data.data);
+      } catch (e) {
+        console.log('거래처 상세 조회 실패:', e);
+      }
+    })();
+  }, [item]);
+
   if (!item) return null;
 
+  // 클립보드 복사
   const handleCopy = (text: string, label: string) => {
     Clipboard.setString(text);
     setToastMsg(`${label}가 복사되었습니다.`);
@@ -39,6 +60,7 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
             style={s.close}
           />
         </Pressable>
+
         {/* 회사명 */}
         <View style={s.box}>
           <View style={s.rowBetween}>
@@ -50,7 +72,10 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
                 />
                 <Text style={s.label}>회사명</Text>
               </View>
-              <Text style={[s.value, { marginLeft: 25 }]}>{item.company}</Text>
+
+              <Text style={[s.value, { marginLeft: 25 }]}>
+                {item.partnerName}
+              </Text>
             </View>
           </View>
         </View>
@@ -66,7 +91,10 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
                 />
                 <Text style={s.label}>담당자</Text>
               </View>
-              <Text style={[s.value, { marginLeft: 25 }]}>안병권</Text>
+
+              <Text style={[s.value, { marginLeft: 25 }]}>
+                {partner?.teamLeaderInfo.staffName ?? '-'}
+              </Text>
             </View>
           </View>
         </View>
@@ -82,11 +110,14 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
                 />
                 <Text style={s.label}>연락처</Text>
               </View>
-              <Text style={[s.value, { marginLeft: 25 }]}>010-5486-5478</Text>
+
+              <Text style={[s.value, { marginLeft: 25 }]}>
+                {partner?.phoneNumber ?? '-'}
+              </Text>
             </View>
 
             <Pressable
-              onPress={() => handleCopy('010-5486-5478', '연락처')}
+              onPress={() => handleCopy(partner?.phoneNumber ?? '', '연락처')}
               style={s.copyBtn}
               hitSlop={HIT_SLOP.MEDIUM}
             >
@@ -109,11 +140,14 @@ export default function DispatchInfoModal({ visible, item, onClose }: Props) {
                 />
                 <Text style={s.label}>주소</Text>
               </View>
-              <Text style={[s.value, { marginLeft: 25 }]}>중계로 95길 33</Text>
+
+              <Text style={[s.value, { marginLeft: 25 }]}>
+                {partner?.address ?? '-'}
+              </Text>
             </View>
 
             <Pressable
-              onPress={() => handleCopy('중계로 95길 33', '주소')}
+              onPress={() => handleCopy(partner?.address ?? '', '주소')}
               style={s.copyBtn}
               hitSlop={HIT_SLOP.MEDIUM}
             >
