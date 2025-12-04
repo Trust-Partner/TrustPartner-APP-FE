@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -7,26 +7,57 @@ import {
   Image,
   LayoutAnimation,
 } from 'react-native';
-import {
-  DispatchRequest,
-  mockDispatchRequests,
-} from '../../../mock/mockDispatchRequests';
 import { colors } from '../../../constants/colors';
 import DispatchInfoModal from '../../../components/dispatch/DispatchInfoModal';
 import DispatchRejectModal from '../../../components/dispatch/DispatchRejectModal';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { HIT_SLOP } from '../../../constants/touch';
+import {
+  getDispatchRequests,
+  rejectDispatchRequest,
+  DispatchItem,
+} from '../../../api/dispatch';
+import {
+  getCarYearGroupLabel,
+  getDisplacementLabel,
+} from '../../../utils/carMapping';
 
 export default function DispatchRequestScreen() {
   const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
   const [infoVisible, setInfoVisible] = useState(false);
   const [rejectVisible, setRejectVisible] = useState(false);
-  const [selected, setSelected] = useState<DispatchRequest | null>(null);
+  const [selected, setSelected] = useState<DispatchItem | null>(null);
+  const [requests, setRequests] = useState<DispatchItem[]>([]);
+
+  const loadRequests = async () => {
+    try {
+      const res = await getDispatchRequests('ALL');
+      setRequests(res.data.data.dispatchList);
+    } catch (e) {
+      console.log('배차 요청 목록 조회 실패:', e);
+    }
+  };
+
+  useEffect(() => {
+    loadRequests();
+  }, []);
 
   const activeRequests = useMemo(
-    () => mockDispatchRequests.filter(req => req.status === 'active'),
-    [],
+    () => requests.filter(req => req.dispatchStatus === 'REQUESTED'),
+    [requests],
   );
+
+  const formatDateTime = (iso: string) => {
+    const date = new Date(iso);
+
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+
+    return `${month}/${day} ${hour}:${minute}`;
+  };
 
   const handleExpand = (id: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -36,19 +67,29 @@ export default function DispatchRequestScreen() {
     }));
   };
 
-  const openInfo = (item: DispatchRequest) => {
+  const openInfo = (item: DispatchItem) => {
     setSelected(item);
     setInfoVisible(true);
   };
 
-  const openReject = (item: DispatchRequest) => {
+  const openReject = (item: DispatchItem) => {
     setSelected(item);
     setRejectVisible(true);
   };
 
+  const handleReject = async () => {
+    if (!selected) return;
+    try {
+      await rejectDispatchRequest(selected.dispatchId);
+      setRejectVisible(false);
+      loadRequests();
+    } catch (e) {
+      console.log('배차 요청 거부 실패:', e);
+    }
+  };
+
   return (
     <View style={s.container}>
-      {/* 서브헤더 */}
       <View style={s.header}>
         <Text style={s.headerTitle}>
           배차 요청건 <Text style={s.count}>{activeRequests.length}건</Text>
@@ -57,11 +98,14 @@ export default function DispatchRequestScreen() {
       </View>
 
       <SwipeListView
-        data={mockDispatchRequests}
-        keyExtractor={item => item.id}
+        data={requests}
+        keyExtractor={item => String(item.dispatchId)}
         renderItem={({ item }) => {
-          const isActive = item.status === 'active';
-          const isOpen = !!expanded[item.id];
+          const isOpen = !!expanded[item.dispatchId];
+
+          // 교체건 판별 (교체건 + 완료건 동시에 표현)
+          const isReplacement = item.dispatchStatus === 'CONFIRMED';
+          const isActive = item.dispatchStatus === 'REQUESTED'; // 요청 건만 active
 
           return (
             <Pressable onPress={() => openInfo(item)} style={s.item}>
@@ -78,24 +122,32 @@ export default function DispatchRequestScreen() {
                   ]}
                 />
 
-                {/* 본문 */}
                 <View style={{ flex: 1 }}>
                   <View style={s.contentRow}>
+                    {/* 회사명 (완료건이면 회색 텍스트 처리) */}
                     <Text style={[s.company, !isActive && s.textGray]}>
-                      {item.company}
+                      {item.partnerName}
                     </Text>
-                    {item.isReplacement && (
+
+                    {/* 교체건 배지 유지 */}
+                    {isReplacement && (
                       <View style={s.badge}>
                         <Text style={s.badgeText}>교체건</Text>
                       </View>
                     )}
+
                     <View style={{ flex: 1 }} />
-                    <Text style={s.time}>{item.time}</Text>
+
+                    {/* 날짜 (완료건이면 회색 처리) */}
+                    <Text style={[s.time, !isActive && s.textGray]}>
+                      {formatDateTime(item.dispatchDateTime)}
+                    </Text>
+
                     <Pressable
                       hitSlop={HIT_SLOP.MEDIUM}
                       onPress={e => {
                         e.stopPropagation();
-                        handleExpand(item.id);
+                        handleExpand(String(item.dispatchId));
                       }}
                     >
                       <Image
@@ -110,16 +162,31 @@ export default function DispatchRequestScreen() {
                     </Pressable>
                   </View>
 
+                  {/* 펼침 영역 */}
                   {isOpen && (
                     <View style={s.expandArea}>
-                      {item.isReplacement ? (
-                        <Text style={s.expandBadgeText}>{item.model}</Text>
+                      {isReplacement ? (
+                        <Text
+                          style={[s.expandBadgeText, !isActive && s.textGray]}
+                        >
+                          {item.carModel}
+                        </Text>
                       ) : (
                         <>
-                          <Text style={s.expandBadgeText}>{item.model}</Text>
-                          <Text style={s.expandBadgeText}>{item.year}</Text>
-                          <Text style={s.expandBadgeText}>
-                            {item.displacement}
+                          <Text
+                            style={[s.expandBadgeText, !isActive && s.textGray]}
+                          >
+                            {item.carModel}
+                          </Text>
+                          <Text
+                            style={[s.expandBadgeText, !isActive && s.textGray]}
+                          >
+                            {getCarYearGroupLabel(item.carYearGroup)}
+                          </Text>
+                          <Text
+                            style={[s.expandBadgeText, !isActive && s.textGray]}
+                          >
+                            {getDisplacementLabel(item.displacementGroup)}
                           </Text>
                         </>
                       )}
@@ -133,27 +200,23 @@ export default function DispatchRequestScreen() {
         renderHiddenItem={() => <View />}
         rightOpenValue={-70}
         disableRightSwipe
-        // 스와이프하면 모달 띄우기
         onRowOpen={(rowKey, rowMap) => {
-          const item = mockDispatchRequests.find(i => i.id === rowKey);
-          if (item) {
-            openReject(item);
-            // 스와이프 후 자동 닫기
-            rowMap[rowKey]?.closeRow?.();
-          }
+          const item = requests.find(i => String(i.dispatchId) === rowKey);
+          if (item) openReject(item);
+          rowMap[rowKey]?.closeRow?.();
         }}
       />
 
-      {/* 모달 */}
       <DispatchInfoModal
         visible={infoVisible}
         item={selected}
         onClose={() => setInfoVisible(false)}
       />
+
       <DispatchRejectModal
         visible={rejectVisible}
         onClose={() => setRejectVisible(false)}
-        onReject={() => setRejectVisible(false)}
+        onReject={handleReject}
       />
     </View>
   );
