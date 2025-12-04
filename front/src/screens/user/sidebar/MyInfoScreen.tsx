@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,44 @@ import {
   Image,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import AppHeader from '../../../components/common/AppHeader';
-import { userMyInfoMock } from '../../../mock/userMyInfoMock';
+import { getPartnerMyInfo } from '../../../api/mypage';
 
 export default function MyInfoScreen() {
-  const data = userMyInfoMock;
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await getPartnerMyInfo();
+        setData(res.data.data);
+      } catch (error) {
+        console.log('MyInfo load error:', error);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+      </View>
+    );
+  }
+
+  if (!data) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>정보를 불러오지 못했습니다.</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -38,8 +69,8 @@ export default function MyInfoScreen() {
 
           <View>
             <View style={s.row}>
-              <Text style={s.name}>{data.name}</Text>
-              <Text style={s.badge}>{data.role}</Text>
+              <Text style={s.name}>{data.partnerName}</Text>
+              <Text style={s.badge}>{data.partnerRole.description}</Text>
             </View>
           </View>
         </View>
@@ -56,7 +87,7 @@ export default function MyInfoScreen() {
 
           <View style={s.infoRow}>
             <Text style={s.label}>소속 공업사</Text>
-            <Text style={s.value}>{data.company}</Text>
+            <Text style={s.value}>{data.branch}</Text>
           </View>
 
           <View style={s.infoRow}>
@@ -66,7 +97,7 @@ export default function MyInfoScreen() {
 
           <View style={s.infoRow}>
             <Text style={s.label}>휴대폰 번호</Text>
-            <Text style={s.value}>{data.phone}</Text>
+            <Text style={s.value}>{data.phoneNumber}</Text>
           </View>
         </View>
       </ScrollView>
