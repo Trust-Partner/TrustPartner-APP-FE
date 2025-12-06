@@ -49,7 +49,7 @@ export default function AuthScreen() {
     }
 
     try {
-      await login(loginId, password, selectedRole);
+      await login(loginId, password, selectedRole, autoLogin);
     } catch (err) {
       Alert.alert('로그인 실패', '아이디 또는 비밀번호를 확인해주세요.');
     }
