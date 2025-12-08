@@ -10,64 +10,36 @@ import {
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import AppHeader from '../../../components/common/AppHeader';
-import {
-  getMyInfo,
-  getPartnerGrades,
-  getCarFeesByGrade,
-} from '../../../api/mypage';
 import { useAuthStore } from '../../../states/useAuthStore';
+import { useCarFees } from '../../../hooks/mypage/useCarFees';
+import { usePartnerGrades } from '../../../hooks/mypage/usePartnerGrades';
+import { useStaffMe } from '../../../hooks/mypage/useStaffMe';
 
 export default function MyInfoScreen() {
   const user = useAuthStore(state => state.user);
 
-  const [myInfo, setMyInfo] = useState<any>(null);
+  // 관리자만 금액표 접근 가능
+  const canAccessFee = user?.role.code !== 'MANAGER';
 
-  const [grades, setGrades] = useState<any[]>([]);
+  // --- 관리자 정보 ---
+  const { data: myInfo } = useStaffMe();
+
+  // --- 등급 리스트 ---
+  const { data: grades = [] } = usePartnerGrades();
+
   const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (grades.length > 0 && selectedGrade === null) {
+      setSelectedGrade(grades[0].gradeId);
+    }
+  }, [grades, selectedGrade]);
+
   const [open, setOpen] = useState(false);
 
-  const [carFees, setCarFees] = useState<any[]>([]);
-  const [gradeRates, setGradeRates] = useState<any[]>([]);
-
-  const canAccessFee = user?.roleCode !== 'MANAGER';
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const info = await getMyInfo();
-
-        const userData = info.data.data;
-        setMyInfo(userData);
-
-        const gradeRes = await getPartnerGrades();
-        const gradeList = gradeRes.data.data ?? [];
-
-        setGrades(gradeList);
-        setGradeRates(gradeList);
-
-        if (gradeList.length > 0) {
-          setSelectedGrade(gradeList[0].gradeId);
-        }
-      } catch (e) {
-        console.log('MyInfo load error:', e);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (!selectedGrade) return;
-
-    (async () => {
-      try {
-        const res = await getCarFeesByGrade(selectedGrade);
-
-        const feeList = res.data.data.grades ?? [];
-        setCarFees(feeList);
-      } catch (e) {
-        console.log('CarFee load error:', e);
-      }
-    })();
-  }, [selectedGrade]);
+  // --- 차량 관리 금액표 ---
+  const { data: carFeeData } = useCarFees(selectedGrade ?? undefined);
+  const carFees = carFeeData?.grades ?? [];
 
   if (!myInfo) return null;
 
@@ -179,7 +151,7 @@ export default function MyInfoScreen() {
               </View>
             </View>
 
-            {gradeRates.map((g, i) => (
+            {grades.map((g, i) => (
               <View key={i} style={s.rateCard}>
                 <View>
                   <Text style={s.gradeLabel}>{g.gradeName}</Text>
