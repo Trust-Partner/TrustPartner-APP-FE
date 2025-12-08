@@ -33,7 +33,7 @@ export default function RootNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!user ? (
         <Stack.Screen name="Auth" component={AuthStack} />
-      ) : user.role === 'ADMIN' ? (
+      ) : user.kind === 'ADMIN' ? (
         <>
           <Stack.Screen name="AdminRoot" component={AdminDrawer} />
 

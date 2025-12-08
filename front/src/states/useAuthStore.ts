@@ -1,72 +1,132 @@
 import { create } from 'zustand';
-import { loginStaff, loginPartner } from '../api/auth';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import axiosInstance from '../api/axiosInstance';
+import { User } from '../types/User';
 
 type Role = 'USER' | 'ADMIN';
 
-type User = {
-  id: string;
-  name: string;
-  role: Role;
-  roleCode?: string;
-  roleDesc?: string;
-  branch?: string;
-  loginId?: string;
-  phoneNumber?: string;
-  address?: string;
-  gradeName?: string;
-};
-
 type AuthState = {
   user: User | null;
-  login: (loginId: string, password: string, role: Role) => Promise<void>;
-  logout: () => void;
+  accessToken: string | null;
+  refreshToken: string | null;
+
+  initialized: boolean;
+
+  login: (
+    loginId: string,
+    password: string,
+    role: Role,
+    autoLogin: boolean,
+  ) => Promise<void>;
+
+  logout: () => Promise<void>;
+  restore: () => Promise<void>;
 };
 
-export const useAuthStore = create<AuthState>(set => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
+  accessToken: null,
+  refreshToken: null,
 
-  login: async (loginId, password, role) => {
+  initialized: false,
+
+  login: async (loginId, password, role, autoLogin) => {
     try {
-      // 1. 서버 로그인 요청 (response 전체를 받아야 header 접근 가능)
       const response =
         role === 'ADMIN'
-          ? await loginStaff(loginId, password)
-          : await loginPartner(loginId, password);
+          ? await axiosInstance.post('/api/auth/staffs', { loginId, password })
+          : await axiosInstance.post('/api/auth/partners', {
+              loginId,
+              password,
+            });
 
-      // 2. 응답 헤더에서 accessToken 추출
-      const accessToken = response.headers['authorization'];
-
-      // 3. axios 전역 Authorization 헤더 설정
-      axiosInstance.defaults.headers.Authorization = accessToken;
-
-      // 4. body 데이터 추출
       const data = response.data.data;
 
-      // 5. userData 생성
-      const userData: User = {
-        id: data.staffId || data.partnerId,
-        name: data.name,
-        role,
-        roleCode: data.role.code,
-        roleDesc: data.role.description,
-        branch: data.branch,
-        loginId: data.loginId,
-        phoneNumber: data.phoneNumber,
-        address: data.address,
-        gradeName: data.gradeName,
-      };
+      const rawToken = response.headers['authorization'];
+      const accessToken = rawToken?.replace('Bearer ', '') ?? '';
+      const refreshToken = ''; // 아직 없음
 
-      // 6. 전역 user 상태 저장
-      set({ user: userData });
+      // User 타입 생성
+      let user: User;
+
+      if (role === 'ADMIN') {
+        user = {
+          kind: 'ADMIN',
+          staffId: data.staffId,
+          name: data.name,
+          loginId: data.loginId,
+          phoneNumber: data.phoneNumber,
+          branch: data.branch,
+          enabled: data.enabled,
+          role: {
+            code: data.role.code,
+            description: data.role.description,
+          },
+        };
+      } else {
+        user = {
+          kind: 'USER',
+          partnerId: data.partnerId,
+          name: data.name,
+          loginId: data.loginId,
+          phoneNumber: data.phoneNumber,
+          branch: data.branch,
+          enabled: data.enabled,
+          address: data.address,
+          gradeName: data.gradeName,
+          role: {
+            code: data.role.code,
+            description: data.role.description,
+          },
+        };
+      }
+
+      // autoLogin이 true일 때 저장
+      if (autoLogin) {
+        await EncryptedStorage.setItem('user', JSON.stringify(user));
+        await EncryptedStorage.setItem('accessToken', accessToken);
+        await EncryptedStorage.setItem('refreshToken', refreshToken);
+      }
+
+      // 상태 저장
+      set({
+        user,
+        accessToken,
+        refreshToken,
+      });
+
+      // axios auth 적용
+      axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
     } catch (error) {
       console.error('로그인 실패:', error);
       throw error;
     }
   },
 
-  logout: () => {
+  logout: async () => {
+    await EncryptedStorage.clear();
     delete axiosInstance.defaults.headers.Authorization;
-    set({ user: null });
+    set({ user: null, accessToken: null, refreshToken: null });
+  },
+
+  restore: async () => {
+    try {
+      const [userStr, token, refresh] = await Promise.all([
+        EncryptedStorage.getItem('user'),
+        EncryptedStorage.getItem('accessToken'),
+        EncryptedStorage.getItem('refreshToken'),
+      ]);
+
+      if (userStr && token) {
+        const user: User = JSON.parse(userStr);
+        axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
+
+        set({ user, accessToken: token, refreshToken: refresh ?? '' });
+      }
+    } catch (err) {
+      console.log('restore error:', err);
+    } finally {
+      set({ initialized: true });
+    }
   },
 }));
