@@ -5,11 +5,8 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../constants/colors';
 import ToastMessage from '../common/ToastMessage';
 import { HIT_SLOP } from '../../constants/touch';
-import {
-  DispatchItem,
-  getPartnerInfo,
-  PartnerInfoResponse,
-} from '../../api/dispatch';
+import { DispatchItem } from '../../api/dispatch';
+import { usePartnerInfo } from '../../hooks/dispatch/usePartnerInfo';
 
 type Props = {
   visible: boolean;
@@ -19,25 +16,11 @@ type Props = {
 
 export default function DispatchInfoModal({ visible, item, onClose }: Props) {
   const [toastMsg, setToastMsg] = useState('');
-  const [partner, setPartner] = useState<PartnerInfoResponse | null>(null);
 
-  // 거래처 정보
-  useEffect(() => {
-    if (!item?.partnerId) return;
-
-    (async () => {
-      try {
-        const res = await getPartnerInfo(item.partnerId);
-        setPartner(res.data.data);
-      } catch (e) {
-        console.log('거래처 상세 조회 실패:', e);
-      }
-    })();
-  }, [item]);
+  const { data: partner } = usePartnerInfo(item?.partnerId);
 
   if (!item) return null;
 
-  // 클립보드 복사
   const handleCopy = (text: string, label: string) => {
     Clipboard.setString(text);
     setToastMsg(`${label}가 복사되었습니다.`);
