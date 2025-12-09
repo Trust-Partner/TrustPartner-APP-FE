@@ -7,21 +7,18 @@ import {
   Pressable,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import CommonInput from '../../../components/common/CommonInput';
 import CommonModal from '../../../components/common/CommonModal';
-
-const YEARS = ['2년 이내에요', '4년 정도 됐어요', '5년 이상이에요'];
-const CC_RANGES = [
-  '~1000cc',
-  '1000~1600cc',
-  '1601~2000cc',
-  '2001~2500cc',
-  '2501~3000cc',
-  '3001~3500cc',
-  '3501cc~',
-];
+import { useUserDispatchMutation } from '../../../hooks/dispatch/useUserDispatchMutation';
+import {
+  carYearLabels,
+  displacementLabels,
+  yearLabelToEnum,
+  displacementLabelToEnum,
+} from '../../../utils/carMapping';
 
 export default function DispatchRequestsScreen() {
   const [carInfo, setCarInfo] = useState('');
@@ -31,8 +28,27 @@ export default function DispatchRequestsScreen() {
 
   const isActive = !!(carInfo && year && cc);
 
+  const dispatchMutation = useUserDispatchMutation();
+
   const handleConfirm = () => {
-    setModalVisible(true);
+    if (!carInfo || !year || !cc) return;
+
+    dispatchMutation.mutate(
+      {
+        carModel: carInfo,
+        carYearGroup: yearLabelToEnum[year],
+        displacementGroup: displacementLabelToEnum[cc],
+      },
+      {
+        onSuccess: () => {
+          setModalVisible(true);
+        },
+        onError: e => {
+          Alert.alert('오류', '배차 요청에 실패했습니다.');
+          console.log(e);
+        },
+      },
+    );
   };
 
   const handleCloseModal = () => {
@@ -64,7 +80,7 @@ export default function DispatchRequestsScreen() {
           {/* 차량 연식 선택 */}
           <Text style={s.sectionTitle}>고객 차량 연식을 선택해주세요</Text>
           <View style={s.radioGroup}>
-            {YEARS.map(option => (
+            {carYearLabels.map(option => (
               <Pressable
                 key={option}
                 onPress={() =>
@@ -83,7 +99,7 @@ export default function DispatchRequestsScreen() {
           {/* 차량 배기량 선택 */}
           <Text style={s.sectionTitle}>고객 차량 배기량을 선택해주세요</Text>
           <View style={s.grid}>
-            {CC_RANGES.map(option => (
+            {displacementLabels.map(option => (
               <Pressable
                 key={option}
                 onPress={() => setCc(prev => (prev === option ? null : option))}
