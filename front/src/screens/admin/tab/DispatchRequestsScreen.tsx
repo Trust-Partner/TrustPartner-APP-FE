@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Pressable,
   Image,
   LayoutAnimation,
+  RefreshControl,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import DispatchInfoModal from '../../../components/dispatch/DispatchInfoModal';
@@ -19,6 +20,7 @@ import {
 } from '../../../utils/carMapping';
 import { useDispatchList } from '../../../hooks/dispatch/useDispatchList';
 import { useRejectDispatch } from '../../../hooks/dispatch/useRejectDispatch';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function DispatchRequestScreen() {
   const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
@@ -27,6 +29,12 @@ export default function DispatchRequestScreen() {
   const [selected, setSelected] = useState<DispatchItem | null>(null);
 
   const { data, isLoading, isError, refetch } = useDispatchList();
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, []),
+  );
 
   const rejectMutation = useRejectDispatch();
 
@@ -109,6 +117,9 @@ export default function DispatchRequestScreen() {
       <SwipeListView
         data={requests}
         keyExtractor={item => String(item.dispatchId)}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
         renderItem={({ item }) => {
           const isOpen = !!expanded[item.dispatchId];
 
