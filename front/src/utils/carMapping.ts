@@ -14,8 +14,23 @@ export const displacementGroupMap: Record<string, string> = {
   OVER_3500: '3500cc~',
 };
 
+// 라벨 배열
+export const carYearLabels = Object.values(carYearGroupMap);
+export const displacementLabels = Object.values(displacementGroupMap);
+
+// ENUM → 라벨 변환 함수
 export const getCarYearGroupLabel = (value?: string) =>
   value ? carYearGroupMap[value] ?? value : '-';
 
 export const getDisplacementLabel = (value?: string) =>
   value ? displacementGroupMap[value] ?? value : '-';
+
+// 한글 라벨 → ENUM 자동 역매핑
+export const yearLabelToEnum: Record<string, string> = Object.fromEntries(
+  Object.entries(carYearGroupMap).map(([key, label]) => [label, key]),
+);
+
+export const displacementLabelToEnum: Record<string, string> =
+  Object.fromEntries(
+    Object.entries(displacementGroupMap).map(([key, label]) => [label, key]),
+  );

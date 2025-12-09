@@ -82,3 +82,20 @@ export const rejectDispatchRequest = async (
 
   return res.data.data;
 };
+
+// ====================== USER 배차 요청 ======================
+export interface UserDispatchRequestPayload {
+  carModel: string;
+  carYearGroup: string;
+  displacementGroup: string;
+}
+
+export const requestUserDispatch = async (
+  payload: UserDispatchRequestPayload,
+) => {
+  const res = await axiosInstance.post<ApiResponse<any>>(
+    '/api/cars/dispatch/request',
+    payload,
+  );
+  return res.data.data;
+};
