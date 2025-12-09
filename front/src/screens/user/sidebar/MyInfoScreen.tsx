@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,40 +10,28 @@ import {
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import AppHeader from '../../../components/common/AppHeader';
-import { getPartnerMyInfo } from '../../../api/mypage';
+import { usePartnerMe } from '../../../hooks/mypage/usePartnerMe';
 
 export default function MyInfoScreen() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, isError } = usePartnerMe();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await getPartnerMyInfo();
-        setData(res.data.data);
-      } catch (error) {
-        console.log('MyInfo load error:', error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={s.center}>
         <ActivityIndicator size="large" color={colors.PRIMARY_50} />
       </View>
     );
   }
 
-  if (!data) {
+  if (isError || !data) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={s.center}>
         <Text>정보를 불러오지 못했습니다.</Text>
       </View>
     );
   }
+
+  const info = data;
 
   return (
     <View style={{ flex: 1 }}>
@@ -56,7 +44,6 @@ export default function MyInfoScreen() {
         style={s.container}
         contentContainerStyle={{ paddingBottom: 16 }}
         bounces={false}
-        alwaysBounceVertical={false}
       >
         {/* 프로필 카드 */}
         <View style={s.profileCard}>
@@ -69,8 +56,8 @@ export default function MyInfoScreen() {
 
           <View>
             <View style={s.row}>
-              <Text style={s.name}>{data.partnerName}</Text>
-              <Text style={s.badge}>{data.partnerRole.description}</Text>
+              <Text style={s.name}>{info.partnerName}</Text>
+              <Text style={s.badge}>{info.partnerRole.description}</Text>
             </View>
           </View>
         </View>
@@ -87,17 +74,17 @@ export default function MyInfoScreen() {
 
           <View style={s.infoRow}>
             <Text style={s.label}>소속 공업사</Text>
-            <Text style={s.value}>{data.branch}</Text>
+            <Text style={s.value}>{info.branch}</Text>
           </View>
 
           <View style={s.infoRow}>
             <Text style={s.label}>주소</Text>
-            <Text style={s.value}>{data.address}</Text>
+            <Text style={s.value}>{info.address}</Text>
           </View>
 
           <View style={s.infoRow}>
             <Text style={s.label}>휴대폰 번호</Text>
-            <Text style={s.value}>{data.phoneNumber}</Text>
+            <Text style={s.value}>{info.phoneNumber}</Text>
           </View>
         </View>
       </ScrollView>
@@ -106,6 +93,11 @@ export default function MyInfoScreen() {
 }
 
 const s = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,

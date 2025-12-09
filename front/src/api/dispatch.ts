@@ -2,6 +2,7 @@ import axiosInstance from './axiosInstance';
 
 export type DispatchStatusRequest = 'REQUESTED' | 'CONFIRMED' | 'ALL';
 
+/** 개별 배차 요청 Item */
 export interface DispatchItem {
   dispatchId: number;
   partnerId: string;
@@ -19,7 +20,7 @@ export interface DispatchListResponse {
   dispatchList: DispatchItem[];
 }
 
-/** 거래처 정보 */
+/** 거래처 상세 조회 응답 */
 export interface PartnerInfoResponse {
   partnerId: string;
   partnerName: string;
@@ -41,30 +42,43 @@ export interface PartnerInfoResponse {
   };
 }
 
+/** 공통 API response 타입 */
 export interface ApiResponse<T> {
   code: string;
   message: string;
   data: T;
 }
 
-// 배차 요청 목록 조회
-export const getDispatchRequests = async (status: DispatchStatusRequest) => {
-  return axiosInstance.get<ApiResponse<DispatchListResponse>>(
+/* 배차 요청 목록 조회 */
+export const getDispatchRequests = async (
+  status: DispatchStatusRequest,
+): Promise<DispatchListResponse> => {
+  const res = await axiosInstance.get<ApiResponse<DispatchListResponse>>(
     '/api/cars/dispatch/request',
     { params: { dispatchStatusRequest: status } },
   );
+
+  return res.data.data;
 };
 
-// 거래처 상세 조회
-export const getPartnerInfo = async (partnerId: string) => {
-  return axiosInstance.get<ApiResponse<PartnerInfoResponse>>(
+/* 거래처 상세 조회 */
+export const getPartnerInfo = async (
+  partnerId: string,
+): Promise<PartnerInfoResponse> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerInfoResponse>>(
     `/api/partners/${partnerId}`,
   );
+
+  return res.data.data;
 };
 
-// 배차 요청 거부 (삭제)
-export const rejectDispatchRequest = async (dispatchId: number) => {
-  return axiosInstance.delete<ApiResponse<{}>>(
+/* 배차 요청 거부 */
+export const rejectDispatchRequest = async (
+  dispatchId: number,
+): Promise<{}> => {
+  const res = await axiosInstance.delete<ApiResponse<{}>>(
     `/api/cars/dispatch/${dispatchId}`,
   );
+
+  return res.data.data;
 };

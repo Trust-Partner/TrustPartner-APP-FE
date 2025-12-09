@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -12,35 +12,25 @@ import DispatchInfoModal from '../../../components/dispatch/DispatchInfoModal';
 import DispatchRejectModal from '../../../components/dispatch/DispatchRejectModal';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { HIT_SLOP } from '../../../constants/touch';
-import {
-  getDispatchRequests,
-  rejectDispatchRequest,
-  DispatchItem,
-} from '../../../api/dispatch';
+import { DispatchItem } from '../../../api/dispatch';
 import {
   getCarYearGroupLabel,
   getDisplacementLabel,
 } from '../../../utils/carMapping';
+import { useDispatchList } from '../../../hooks/dispatch/useDispatchList';
+import { useRejectDispatch } from '../../../hooks/dispatch/useRejectDispatch';
 
 export default function DispatchRequestScreen() {
   const [expanded, setExpanded] = useState<{ [key: string]: boolean }>({});
   const [infoVisible, setInfoVisible] = useState(false);
   const [rejectVisible, setRejectVisible] = useState(false);
   const [selected, setSelected] = useState<DispatchItem | null>(null);
-  const [requests, setRequests] = useState<DispatchItem[]>([]);
 
-  const loadRequests = async () => {
-    try {
-      const res = await getDispatchRequests('ALL');
-      setRequests(res.data.data.dispatchList);
-    } catch (e) {
-      console.log('배차 요청 목록 조회 실패:', e);
-    }
-  };
+  const { data, isLoading, isError, refetch } = useDispatchList();
 
-  useEffect(() => {
-    loadRequests();
-  }, []);
+  const rejectMutation = useRejectDispatch();
+
+  const requests = data?.dispatchList ?? [];
 
   const activeRequests = useMemo(
     () => requests.filter(req => req.dispatchStatus === 'REQUESTED'),
@@ -49,13 +39,10 @@ export default function DispatchRequestScreen() {
 
   const formatDateTime = (iso: string) => {
     const date = new Date(iso);
-
     const month = date.getMonth() + 1;
     const day = date.getDate();
-
     const hour = String(date.getHours()).padStart(2, '0');
     const minute = String(date.getMinutes()).padStart(2, '0');
-
     return `${month}/${day} ${hour}:${minute}`;
   };
 
@@ -79,14 +66,36 @@ export default function DispatchRequestScreen() {
 
   const handleReject = async () => {
     if (!selected) return;
+
     try {
-      await rejectDispatchRequest(selected.dispatchId);
+      await rejectMutation.mutateAsync(selected.dispatchId);
       setRejectVisible(false);
-      loadRequests();
+      refetch();
     } catch (e) {
       console.log('배차 요청 거부 실패:', e);
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={s.container}>
+        <Text style={s.loading}>불러오는 중...</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={s.container}>
+        <Text style={s.errorText}>배차 요청 목록을 불러올 수 없습니다.</Text>
+        <Text style={s.errorSub}>네트워크 또는 서버 오류가 발생했습니다.</Text>
+
+        <Pressable onPress={() => refetch()} style={s.retryBtn}>
+          <Text style={s.retryText}>다시 시도</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View style={s.container}>
@@ -103,9 +112,8 @@ export default function DispatchRequestScreen() {
         renderItem={({ item }) => {
           const isOpen = !!expanded[item.dispatchId];
 
-          // 교체건 판별 (교체건 + 완료건 동시에 표현)
           const isReplacement = item.dispatchStatus === 'CONFIRMED';
-          const isActive = item.dispatchStatus === 'REQUESTED'; // 요청 건만 active
+          const isActive = item.dispatchStatus === 'REQUESTED';
 
           return (
             <Pressable onPress={() => openInfo(item)} style={s.item}>
@@ -124,12 +132,10 @@ export default function DispatchRequestScreen() {
 
                 <View style={{ flex: 1 }}>
                   <View style={s.contentRow}>
-                    {/* 회사명 (완료건이면 회색 텍스트 처리) */}
                     <Text style={[s.company, !isActive && s.textGray]}>
                       {item.partnerName}
                     </Text>
 
-                    {/* 교체건 배지 유지 */}
                     {isReplacement && (
                       <View style={s.badge}>
                         <Text style={s.badgeText}>교체건</Text>
@@ -138,7 +144,6 @@ export default function DispatchRequestScreen() {
 
                     <View style={{ flex: 1 }} />
 
-                    {/* 날짜 (완료건이면 회색 처리) */}
                     <Text style={[s.time, !isActive && s.textGray]}>
                       {formatDateTime(item.dispatchDateTime)}
                     </Text>
@@ -162,7 +167,6 @@ export default function DispatchRequestScreen() {
                     </Pressable>
                   </View>
 
-                  {/* 펼침 영역 */}
                   {isOpen && (
                     <View style={s.expandArea}>
                       {isReplacement ? (
@@ -246,8 +250,34 @@ const s = StyleSheet.create({
     fontWeight: '400',
     color: colors.GRAY_40,
   },
-  list: {
-    paddingBottom: 80,
+  loading: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+  },
+  errorText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.RED_50,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorSub: {
+    fontSize: 12,
+    color: colors.GRAY_50,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryBtn: {
+    alignSelf: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: colors.PRIMARY_05,
+    borderRadius: 6,
+  },
+  retryText: {
+    color: colors.PRIMARY_50,
+    fontSize: 13,
+    fontWeight: '500',
   },
   item: {
     backgroundColor: colors.WHITE,
