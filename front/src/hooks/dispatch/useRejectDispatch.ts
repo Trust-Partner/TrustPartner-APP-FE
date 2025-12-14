@@ -7,7 +7,7 @@ export const useRejectDispatch = () => {
   return useMutation({
     mutationFn: (dispatchId: number) => rejectDispatchRequest(dispatchId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['dispatch', 'list'] });
+      queryClient.invalidateQueries({ queryKey: ['dispatchList'] });
     },
   });
 };

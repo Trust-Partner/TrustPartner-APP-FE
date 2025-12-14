@@ -78,7 +78,6 @@ export default function DispatchRequestScreen() {
     try {
       await rejectMutation.mutateAsync(selected.dispatchId);
       setRejectVisible(false);
-      refetch();
     } catch (e) {
       console.log('배차 요청 거부 실패:', e);
     }
