@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -11,21 +11,36 @@ import { useNavigation } from '@react-navigation/native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import AppHeader from '../../../../components/common/AppHeader';
 import { colors } from '../../../../constants/colors';
-import {
-  dispatchDetailMock,
-  DispatchDetail,
-} from '../../../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { useContractModalStore } from '../../../../stores/useContractModalStore';
 import ContractModalManager from '../../../../components/contract/ContractModalManager';
 import BookmarkModal from '../../../../components/vehicleStatus/BookmarkModal';
 import VehicleReturnModal from '../../../../components/vehicleStatus/VehicleReturnModal';
 import { ContractVehicleBase } from '../../../../types/contractVehicle';
+import { DispatchDetail } from '../../../../types/dispatch';
+import { useDispatchCarsByGrade } from '../../../../hooks/vehicleStatus/useDispatchCarsByGrade';
+import { mapDispatchCarItemToDetail } from '../../../../utils/dispatchMapping';
 
 export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
   const { openModal, setSelectedVehicle } = useContractModalStore();
-  const { groupId, groupName, type } = route.params;
+  const { groupId, groupName } = route.params;
+  const { data: apiData, refetch, isLoading } = useDispatchCarsByGrade(groupId);
 
+  const data: DispatchDetail[] = useMemo(() => {
+    if (!apiData) return [];
+    return apiData.cars.map(mapDispatchCarItemToDetail);
+  }, [apiData]);
+
+  const totalCount = data.length;
+
+  // 모달 상태
+  const [bookmarkVisible, setBookmarkVisible] = useState(false);
+  const [bookmarkTarget, setBookmarkTarget] = useState<DispatchDetail | null>(
+    null,
+  );
+  const [returnVisible, setReturnVisible] = useState(false);
+
+  // 계약서 연동
   const toContractVehicleFromDispatch = (
     v: DispatchDetail,
   ): ContractVehicleBase => ({
@@ -40,65 +55,33 @@ export default function DispatchGroupDetailScreen({ route }: any) {
     reserverName: v.reserverName,
   });
 
-  const [data, setData] = useState<DispatchDetail[]>(
-    (dispatchDetailMock[type as keyof typeof dispatchDetailMock] || []).filter(
-      item => item.groupId === groupId,
-    ),
-  );
-
-  const [bookmarkVisible, setBookmarkVisible] = useState(false);
-  const [bookmarkTarget, setBookmarkTarget] = useState<DispatchDetail | null>(
-    null,
-  );
-  const [returnVisible, setReturnVisible] = useState(false);
-
-  const totalCount = data.length;
-
-  const handleBookmarkClose = (status?: 'bookmarked' | 'booked') => {
-    if (bookmarkTarget && status) {
-      setData(prev =>
-        prev.map(v =>
-          v.id === bookmarkTarget.id
-            ? {
-                ...v,
-                isBookmarked: status === 'bookmarked', // 찜(즉시)
-                isBookedFuture: status === 'booked', // 예약(미래)
-              }
-            : v,
-        ),
-      );
-    }
-    setBookmarkVisible(false);
-  };
-
   const handleSelectVehicle = (item: DispatchDetail) => {
-    const normalized = toContractVehicleFromDispatch(item);
-    setSelectedVehicle(normalized);
-    openModal('main', 'main'); // origin=main
+    setSelectedVehicle(toContractVehicleFromDispatch(item));
+    openModal('main', 'main');
   };
 
+  // 스와이프 처리
   const handleSwipeOpen = (rowKey: string, rowMap: any) => {
     const item = data.find(i => i.id.toString() === rowKey);
     if (!item) return;
 
-    const sideBarColor =
-      item.isConfirmed || item.isBookmarked
-        ? colors.GREEN_50
-        : colors.PRIMARY_50;
+    setBookmarkTarget(item);
 
-    if (sideBarColor === colors.PRIMARY_50) {
-      // 파란색: 찜/예약 모달
-      setBookmarkTarget(item);
-      setBookmarkVisible(true);
-    } else {
-      // 초록색: 반납 모달
-      setBookmarkTarget(item);
+    if (item.isConfirmed || item.isBookmarked) {
       setReturnVisible(true);
+    } else {
+      setBookmarkVisible(true);
     }
 
     rowMap[rowKey]?.closeRow?.();
   };
 
+  const handleBookmarkClose = () => {
+    setBookmarkVisible(false);
+    refetch();
+  };
+
+  // Row 렌더링 (기존 UI 유지)
   const renderItem = ({ item }: { item: DispatchDetail }) => {
     const sideBarColor =
       item.isConfirmed || item.isBookmarked
@@ -136,6 +119,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
   return (
     <View style={{ flex: 1 }}>
       <AppHeader />
+
       <View style={s.container}>
         {/* 상단 헤더 */}
         <View style={s.subHeader}>
@@ -172,6 +156,8 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             disableRightSwipe
             onRowOpen={handleSwipeOpen}
             showsVerticalScrollIndicator={false}
+            refreshing={isLoading}
+            onRefresh={refetch}
           />
         </View>
       </View>

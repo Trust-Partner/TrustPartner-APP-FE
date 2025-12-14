@@ -4,8 +4,9 @@ import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonModal from '../common/CommonModal';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import { HIT_SLOP } from '../../constants/touch';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { DispatchDetail } from '../../types/dispatch';
 
 interface Props {
   visible: boolean;
@@ -160,5 +161,3 @@ export default function VehicleReturnModal({
     </Modal>
   );
 }
-
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
