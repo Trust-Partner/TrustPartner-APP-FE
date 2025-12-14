@@ -14,31 +14,27 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
-import {
-  VehicleCompanyDetail,
-  vehicleCompanyDetailMock,
-} from '../../../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import VehicleReplaceModal from '../../../../components/vehicleStatus/VehicleReplaceModal';
 import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRetrieveModal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../navigations/root/RootNavigator';
 import { HIT_SLOP } from '../../../../constants/touch';
 import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
+import { useCarStatusByLocation } from '../../../../hooks/vehicleStatus/useCarStatusByLocation';
+import { useCarsByLocation } from '../../../../hooks/vehicleStatus/useCarsByLocation';
 
 export default function VehicleCompanyDetailScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
-  const { companyId, companyName } = route.params as {
-    companyId: number;
-    companyName: string;
+  const { locationId, locationName } = route.params as {
+    locationId: number;
+    locationName: string;
   };
 
   const { query, setQuery, clearQuery } = useVehicleSearchStore();
   useEffect(() => {
-    return () => {
-      clearQuery();
-    };
+    return () => clearQuery();
   }, []);
 
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
@@ -48,72 +44,70 @@ export default function VehicleCompanyDetailScreen() {
 
   const [replaceModalVisible, setReplaceModalVisible] = useState(false);
   const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
-  const [selectedVehicle, setSelectedVehicle] = useState<
-    VehicleCompanyDetail['vehicles'][number] | null
-  >(null);
+  const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
 
-  const company = vehicleCompanyDetailMock.find(c => c.companyId === companyId);
-  const filteredVehicles =
-    company?.vehicles
-      ?.filter(v =>
-        activeStatus === '전체' ? true : v.status === activeStatus,
-      )
-      ?.filter(v => {
-        if (!query.trim()) return true;
-        const lower = query.toLowerCase();
-        return (
-          v.name.toLowerCase().includes(lower) ||
-          v.plateNumber.replace(/\s+/g, '').includes(lower)
-        );
-      }) ?? [];
+  const { data: summary } = useCarStatusByLocation(locationId);
+  const { data: carStatusGroups = [] } = useCarsByLocation(locationId, query);
+
+  let seq = 1;
+  const mappedVehicles = carStatusGroups.flatMap(group => {
+    const status =
+      group.carStatus === 'IN_USE'
+        ? '배차중'
+        : group.carStatus === 'AVAILABLE'
+        ? '대기중'
+        : '반납신청';
+
+    return group.carListByLocation.map(car => ({
+      id: seq++,
+      status,
+      name: car.carModel,
+      plateNumber: car.carNum,
+      lastUpdate: car.updatedAt,
+      duration: car.timeAfterUpdate,
+    }));
+  });
+
+  const filteredVehicles = mappedVehicles.filter(v => {
+    const statusMatch =
+      activeStatus === '전체' ? true : v.status === activeStatus;
+
+    const searchMatch = query.trim()
+      ? v.name.toLowerCase().includes(query.toLowerCase()) ||
+        v.plateNumber.replace(/\s+/g, '').includes(query.replace(/\s+/g, ''))
+      : true;
+
+    return statusMatch && searchMatch;
+  });
+
+  const formatDateTime = (iso: string) => {
+    const date = new Date(iso);
+
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${month}/${day} ${hours}:${minutes}`;
+  };
+
+  const formatDuration = (raw: string) => {
+    if (!raw) return '';
+
+    const dayMatch = raw.match(/(\d+)d/);
+    const hourMatch = raw.match(/(\d+)h/);
+
+    const days = dayMatch ? dayMatch[1] : '0';
+    const hours = hourMatch ? hourMatch[1] : '0';
+
+    return `${days}일 ${hours}시간`;
+  };
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
   };
-
-  if (!company) {
-    return (
-      <View style={{ flex: 1 }}>
-        <AppHeader
-          centerContent={
-            <View style={s.searchBox}>
-              <Image
-                source={require('../../../../assets/common/search.png')}
-                style={s.searchIcon}
-              />
-              <TextInput
-                value={query}
-                onChangeText={setQuery}
-                placeholder="차량번호를 검색하세요"
-                placeholderTextColor={colors.GRAY_50}
-                style={s.headerSearchInput}
-              />
-            </View>
-          }
-        />
-        <View style={s.subHeader}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={s.backButton}
-          >
-            <Image
-              source={require('../../../../assets/admin-vehicle/left_arrow.png')}
-              style={{ width: 20, height: 20 }}
-            />
-          </TouchableOpacity>
-          <Text style={s.title}>{companyName}</Text>
-        </View>
-
-        <View style={[s.emptyContainer, { flex: 1 }]}>
-          <Text style={s.emptyText}>데이터가 없습니다.</Text>
-        </View>
-      </View>
-    );
-  }
+  console.log(JSON.stringify(carStatusGroups, null, 2));
 
   return (
     <View style={{ flex: 1 }}>
@@ -141,32 +135,31 @@ export default function VehicleCompanyDetailScreen() {
           />
         </TouchableOpacity>
 
-        <Text style={s.title}>{companyName}</Text>
+        <Text style={s.title}>{locationName}</Text>
       </View>
 
       <View style={s.container}>
-        {/* 통계 */}
         <View style={s.summaryContainer}>
           {(
             [
               {
                 label: '배차중',
-                value: company.summary.dispatched,
+                value: summary?.inUse ?? 0,
                 color: colors.YELLOW_50,
               },
               {
                 label: '대기중',
-                value: company.summary.waiting,
+                value: summary?.available ?? 0,
                 color: colors.PRIMARY_50,
               },
               {
                 label: '반납신청',
-                value: company.summary.returning,
+                value: summary?.returnRequested ?? 0,
                 color: colors.RED_50,
               },
               {
                 label: '전체',
-                value: company.summary.total,
+                value: summary?.all ?? 0,
                 color: colors.GRAY_90,
               },
             ] as const
@@ -180,13 +173,12 @@ export default function VehicleCompanyDetailScreen() {
               >
                 <Text style={[s.value, { color: box.color }]}>{box.value}</Text>
                 <Text style={s.label}>{box.label}</Text>
-                {isActive && <View style={[s.activeBorder]} />}
+                {isActive && <View style={s.activeBorder} />}
               </TouchableOpacity>
             );
           })}
         </View>
 
-        {/* 리스트 */}
         <FlatList
           data={filteredVehicles}
           keyExtractor={item => item.id.toString()}
@@ -221,9 +213,10 @@ export default function VehicleCompanyDetailScreen() {
                       },
                     ]}
                   />
+
                   {/* 본문 */}
                   <View style={s.itemBody}>
-                    {/* 상단: 차량명 / 날짜·시간 / 화살표 */}
+                    {/* 상단 */}
                     <View style={s.itemTop}>
                       <View style={s.carInfo}>
                         <Text style={s.carName}>{item.name}</Text>
@@ -232,7 +225,7 @@ export default function VehicleCompanyDetailScreen() {
                         </View>
                       </View>
 
-                      {/* 오른쪽: 날짜·시간 + 화살표 */}
+                      {/* 오른쪽 날짜·시간 + 화살표 */}
                       <View style={s.rightWrap}>
                         <View style={{ alignItems: 'flex-end' }}>
                           <View style={s.row}>
@@ -240,16 +233,21 @@ export default function VehicleCompanyDetailScreen() {
                               source={require('../../../../assets/common/calendar.png')}
                               style={s.smallIcon}
                             />
-                            <Text style={s.date}>{item.lastUpdate}</Text>
+                            <Text style={s.date}>
+                              {formatDateTime(item.lastUpdate)}
+                            </Text>
                           </View>
                           <View style={s.row}>
                             <Image
                               source={require('../../../../assets/common/clock.png')}
                               style={s.smallIcon}
                             />
-                            <Text style={s.time}>{item.duration}</Text>
+                            <Text style={s.time}>
+                              {formatDuration(item.duration)}
+                            </Text>
                           </View>
                         </View>
+
                         <Pressable
                           hitSlop={HIT_SLOP.MEDIUM}
                           onPress={e => {
@@ -287,6 +285,7 @@ export default function VehicleCompanyDetailScreen() {
                             <Text style={s.actionText}>교체하기</Text>
                           </Pressable>
                         )}
+
                         <Pressable
                           style={[s.actionBtn, s.blueBtn]}
                           onPress={() => {
@@ -294,9 +293,7 @@ export default function VehicleCompanyDetailScreen() {
                             setRetrieveModalVisible(true);
                           }}
                         >
-                          <Text style={[s.actionText, { color: colors.WHITE }]}>
-                            회수하기
-                          </Text>
+                          <Text style={s.actionText}>회수하기</Text>
                         </Pressable>
                       </View>
                     )}
@@ -308,6 +305,7 @@ export default function VehicleCompanyDetailScreen() {
         />
       </View>
 
+      {/* 모달 */}
       {selectedVehicle && (
         <VehicleReplaceModal
           visible={replaceModalVisible}

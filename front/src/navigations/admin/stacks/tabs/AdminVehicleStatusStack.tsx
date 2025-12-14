@@ -13,8 +13,8 @@ export type AdminVehicleStatusStackParamList = {
     totalCount: number;
   };
   VehicleCompanyDetail: {
-    companyId: number;
-    companyName: string;
+    locationId: number;
+    locationName: string;
   };
 };
 
