@@ -12,9 +12,9 @@ import {
 import Modal from 'react-native-modal';
 import { Calendar } from 'react-native-calendars';
 import { colors } from '../../constants/colors';
-import { DispatchDetail } from '../../mock/vehicleStatus/vehicleDispatchDetailMock';
 import CommonModal from '../common/CommonModal';
 import { HIT_SLOP } from '../../constants/touch';
+import { DispatchDetail } from '../../types/dispatch';
 
 interface Props {
   visible: boolean;

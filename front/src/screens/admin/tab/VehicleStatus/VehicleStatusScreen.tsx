@@ -23,6 +23,8 @@ import { AdminVehicleStatusStackParamList } from '../../../../navigations/admin/
 import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
 import { useCarStatusSummary } from '../../../../hooks/vehicleStatus/useCarStatusSummary';
 import { useCarStatusLocation } from '../../../../hooks/vehicleStatus/useCarStatusLocation';
+import { DispatchCarType } from '../../../../api/vehicleStatus';
+import { useDispatchCarGrades } from '../../../../hooks/vehicleStatus/useCarGrades';
 
 type NavProp = NativeStackNavigationProp<
   AdminVehicleStatusStackParamList,
@@ -94,16 +96,21 @@ function DispatchSection() {
     'sedan',
   );
 
-  const data =
-    selectedType === 'sedan'
-      ? sedanDispatchList
-      : selectedType === 'suv'
-      ? suvDispatchList
-      : importDispatchList;
+  const CAR_TYPE_MAP: Record<'sedan' | 'suv' | 'import', DispatchCarType> = {
+    sedan: 'DOMESTIC_SEDAN',
+    suv: 'DOMESTIC_SUV',
+    import: 'IMPORTED',
+  };
+
+  const carType = CAR_TYPE_MAP[selectedType];
+
+  const { data, isLoading, isError, refetch } = useDispatchCarGrades(carType);
+
+  const list = data?.grades ?? [];
 
   return (
     <View style={{ flex: 1 }}>
-      {/* 필터 */}
+      {/* 필터 (변경 없음) */}
       <View style={s.filterRow}>
         {[
           { label: '세단 배차에요', key: 'sedan' },
@@ -130,30 +137,35 @@ function DispatchSection() {
 
       {/* 리스트 */}
       <FlatList
-        data={data}
+        data={list}
         numColumns={2}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.gradeId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
+        refreshing={isLoading}
+        onRefresh={refetch}
         renderItem={({ item }) => (
           <Pressable
             style={s.card}
+            disabled={item.totalCount === 0}
             onPress={() =>
               navigation.navigate('DispatchGroupDetail', {
-                groupId: item.id,
-                groupName: item.name,
-                totalCount: item.total,
+                groupId: item.gradeId,
+                groupName: item.gradeName,
+                totalCount: item.totalCount,
                 type: selectedType,
               })
             }
           >
             <View style={s.cardHeader}>
-              <Text style={s.cardTitle}>{item.name}</Text>
-              <Text style={s.cardBadge}>{item.total}대</Text>
+              <Text style={s.cardTitle}>{item.gradeName}</Text>
+              <Text style={s.cardBadge}>{item.totalCount}대</Text>
             </View>
 
             <View style={s.badgeRow}>
-              <Text style={[s.badge, s.badgeGreen]}>{item.ready}</Text>
-              <Text style={[s.badge, s.badgeBlue]}>{item.active}</Text>
+              <Text style={[s.badge, s.badgeGreen]}>
+                {item.likedOrConfirmedCount}
+              </Text>
+              <Text style={[s.badge, s.badgeBlue]}>{item.availableCount}</Text>
               <Image
                 source={require('../../../../assets/common/right_arrow.png')}
                 style={s.arrowIcon}
