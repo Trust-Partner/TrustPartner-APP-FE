@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message';
 import './src/config/localeConfig';
 import { useAuthStore } from './src/states/useAuthStore';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import RNBootSplash from 'react-native-bootsplash';
 
 if (
   Platform.OS === 'android' &&
@@ -31,6 +32,12 @@ export default function App() {
   useEffect(() => {
     restore();
   }, []);
+
+  useEffect(() => {
+    if (initialized) {
+      RNBootSplash.hide({ fade: false });
+    }
+  }, [initialized]);
 
   if (!initialized) return null;
 
