@@ -11,6 +11,7 @@ import {
   Keyboard,
   Pressable,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { useAuthStore } from '../../states/useAuthStore';
@@ -36,22 +37,25 @@ export default function AuthScreen() {
 
   const loginId = watch('loginId');
   const password = watch('password');
+
   const [secure, setSecure] = useState(true);
   const [autoLogin, setAutoLogin] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<'ADMIN' | 'USER' | null>(
-    null,
-  );
+  const [isManager, setIsManager] = useState(false);
+
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const onSubmit = async ({ loginId, password }: LoginForm) => {
-    if (!selectedRole) {
-      Alert.alert('로그인 실패', '사용자 구분을 선택해주세요.');
-      return;
-    }
+    if (isLoggingIn) return;
+
+    const role: 'ADMIN' | 'USER' = isManager ? 'ADMIN' : 'USER';
 
     try {
-      await login(loginId, password, selectedRole, autoLogin);
+      setIsLoggingIn(true);
+      await login(loginId, password, role, autoLogin);
     } catch (err) {
       Alert.alert('로그인 실패', '아이디 또는 비밀번호를 확인해주세요.');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -64,40 +68,13 @@ export default function AuthScreen() {
         <View style={s.card}>
           <Text style={s.logo}>Trust Solution</Text>
 
-          {/* 사용자 구분 */}
-          <Text style={s.label}>사용자 구분</Text>
-          <View style={s.roleRow}>
-            {[
-              { key: 'ADMIN', label: '매니저' },
-              { key: 'USER', label: 'USER' },
-            ].map(({ key, label }) => (
-              <Pressable
-                key={key}
-                style={s.roleItem}
-                onPress={() =>
-                  setSelectedRole(
-                    selectedRole === key ? null : (key as 'ADMIN' | 'USER'),
-                  )
-                }
-              >
-                <View style={s.checkbox}>
-                  {selectedRole === key && <Text style={s.checkmark}>✓</Text>}
-                </View>
-                <Text style={s.checkboxLabel}>{label}</Text>
-              </Pressable>
-            ))}
-          </View>
-
           {/* 아이디 */}
           <Text style={s.label}>아이디</Text>
           <Controller
             control={control}
             name="loginId"
             rules={{ required: '아이디를 입력해주세요.' }}
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <>
                 <TextInput
                   placeholder="아이디를 입력하세요"
@@ -110,9 +87,11 @@ export default function AuthScreen() {
                   textContentType="username"
                   autoComplete="username"
                   returnKeyType="next"
-                  style={[s.input, error && s.inputError]}
+                  style={[s.input, fieldState.error && s.inputError]}
                 />
-                {error && <Text style={s.errorText}>{error.message}</Text>}
+                {fieldState.error && (
+                  <Text style={s.errorText}>{fieldState.error.message}</Text>
+                )}
               </>
             )}
           />
@@ -123,12 +102,11 @@ export default function AuthScreen() {
             control={control}
             name="password"
             rules={{ required: '비밀번호를 입력해주세요.' }}
-            render={({
-              field: { onChange, onBlur, value },
-              fieldState: { error },
-            }) => (
+            render={({ field: { onChange, onBlur, value }, fieldState }) => (
               <>
-                <View style={[s.inputContainer, error && s.inputError]}>
+                <View
+                  style={[s.inputContainer, fieldState.error && s.inputError]}
+                >
                   <TextInput
                     placeholder="비밀번호를 입력하세요"
                     placeholderTextColor={colors.GRAY_50}
@@ -158,32 +136,57 @@ export default function AuthScreen() {
                     />
                   </Pressable>
                 </View>
-                {error && <Text style={s.errorText}>{error.message}</Text>}
+                {fieldState.error && (
+                  <Text style={s.errorText}>{fieldState.error.message}</Text>
+                )}
               </>
             )}
           />
 
-          {/* 자동 로그인 */}
-          <Pressable
-            style={s.checkboxRow}
-            onPress={() => setAutoLogin(!autoLogin)}
-          >
-            <View style={s.checkbox}>
-              {autoLogin && <Text style={s.checkmark}>✓</Text>}
-            </View>
-            <Text style={s.checkboxLabel}>자동 로그인</Text>
-          </Pressable>
+          {/* 자동 로그인 / 매니저 */}
+          <View style={s.optionRow}>
+            <Pressable
+              style={s.optionItem}
+              onPress={() => setAutoLogin(!autoLogin)}
+            >
+              <View style={s.checkbox}>
+                {autoLogin && <Text style={s.checkmark}>✓</Text>}
+              </View>
+              <Text style={s.checkboxLabel}>자동 로그인</Text>
+            </Pressable>
+
+            <Pressable
+              style={s.optionItem}
+              onPress={() => setIsManager(!isManager)}
+            >
+              <View style={s.checkbox}>
+                {isManager && <Text style={s.checkmark}>✓</Text>}
+              </View>
+              <Text style={s.checkboxLabel}>매니저</Text>
+            </Pressable>
+          </View>
 
           {/* 로그인 버튼 */}
           <Pressable
             style={[
               s.loginBtn,
-              !(loginId && password && selectedRole) && s.loginBtnDisabled,
+              (!(loginId && password) || isLoggingIn) && s.loginBtnDisabled,
             ]}
             onPress={handleSubmit(onSubmit)}
-            disabled={!(loginId && password && selectedRole)}
+            disabled={!(loginId && password) || isLoggingIn}
           >
-            <Text style={s.loginText}>로그인</Text>
+            <View style={s.loginContent}>
+              <Text style={[s.loginText, isLoggingIn && { opacity: 0 }]}>
+                로그인
+              </Text>
+              {isLoggingIn && (
+                <ActivityIndicator
+                  size="small"
+                  color={colors.WHITE}
+                  style={StyleSheet.absoluteFill}
+                />
+              )}
+            </View>
           </Pressable>
 
           {/* 하단 링크 */}
@@ -227,16 +230,6 @@ const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     marginBottom: 24,
   },
-  roleRow: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    justifyContent: 'space-between',
-  },
-  roleItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   label: {
     fontSize: 11,
     marginBottom: 8,
@@ -251,7 +244,6 @@ const s = StyleSheet.create({
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     marginBottom: 12,
     fontSize: 11,
-    fontWeight: '400',
     backgroundColor: colors.GRAY_05,
   },
   inputContainer: {
@@ -268,7 +260,6 @@ const s = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     fontSize: 11,
-    fontWeight: '400',
   },
   inputError: {
     borderColor: colors.RED_50,
@@ -281,10 +272,14 @@ const s = StyleSheet.create({
     height: 15,
     tintColor: colors.GRAY_50,
   },
-  checkboxRow: {
+  optionRow: {
+    flexDirection: 'row',
+    marginBottom: 24,
+  },
+  optionItem: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
   },
   checkbox: {
     width: 16,
@@ -298,10 +293,8 @@ const s = StyleSheet.create({
   },
   checkmark: {
     fontSize: 12,
-    color: colors.BLACK,
     fontWeight: '600',
     lineHeight: 16,
-    textAlign: 'center',
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
@@ -320,6 +313,10 @@ const s = StyleSheet.create({
   loginBtnDisabled: {
     backgroundColor: colors.GRAY_15,
   },
+  loginContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   loginText: {
     color: colors.WHITE,
     fontWeight: '400',
@@ -328,16 +325,12 @@ const s = StyleSheet.create({
   bottomLinks: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   link: {
     color: colors.GRAY_80,
     fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
   },
   divider: {
-    color: colors.BLACK,
     marginHorizontal: 14,
   },
   errorText: {
