@@ -78,9 +78,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.trustpartner"
+    namespace "com.trustpartner.erp"
     defaultConfig {
-        applicationId "com.trustpartner"
+        applicationId "com.trustpartner.erp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
