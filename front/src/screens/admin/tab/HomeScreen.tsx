@@ -29,31 +29,29 @@ export default function AdminHomeScreen() {
   const handleCardPress = (label: string) => {
     switch (label) {
       case '배차요청건':
-        navigation.navigate('AdminTabsStack', {
-          screen: 'DispatchRequests',
-        });
+        navigation.navigate('DispatchRequests');
         break;
 
       case '반납신청':
-        navigation.navigate('AdminTabsStack', {
-          screen: 'Todo',
-          params: { screen: 'TodoMain', params: { initialTab: 'return' } },
+        navigation.navigate('Todo', {
+          screen: 'TodoMain',
+          params: { initialTab: 'return' },
         });
         break;
 
       case '세차/주유':
-        navigation.navigate('AdminTabsStack', {
-          screen: 'Todo',
-          params: { screen: 'TodoMain', params: { initialTab: 'wash' } },
+        navigation.navigate('Todo', {
+          screen: 'TodoMain',
+          params: { initialTab: 'wash' },
         });
         break;
 
       case '지급확정':
-        navigation.navigate('Prepay');
+        navigation.navigate('AdminPrepay');
         break;
 
       case '예약관리':
-        navigation.navigate('Reservations');
+        navigation.navigate('AdminReservations');
         break;
 
       default:
