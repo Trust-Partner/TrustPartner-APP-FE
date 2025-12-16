@@ -1,4 +1,4 @@
-package com.trustpartner
+package com.trustpartner.erp
 
 import android.app.Application
 import com.facebook.react.PackageList

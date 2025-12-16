@@ -1,4 +1,4 @@
-package com.trustpartner
+package com.trustpartner.erp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
