@@ -23,7 +23,7 @@ export interface StaffMeResponse {
 // 관리자 - 내 정보 조회
 export const getMyInfo = async (): Promise<StaffMeResponse> => {
   const res = await axiosInstance.get<ApiResponse<StaffMeResponse>>(
-    '/api/staffs/me',
+    '/staffs/v1/me',
   );
   return res.data.data;
 };
@@ -53,7 +53,7 @@ export interface PartnerMeResponse {
 // 파트너 - 내 정보 조회
 export const getPartnerMyInfo = async (): Promise<PartnerMeResponse> => {
   const res = await axiosInstance.get<ApiResponse<PartnerMeResponse>>(
-    '/api/partners/me',
+    '/partners/v1/me',
   );
   return res.data.data;
 };
@@ -71,7 +71,7 @@ export interface PartnerGrade {
 // 등급 목록 조회
 export const getPartnerGrades = async (): Promise<PartnerGrade[]> => {
   const res = await axiosInstance.get<ApiResponse<PartnerGrade[]>>(
-    '/api/partner-grades',
+    '/partner-grades/v1',
   );
   return res.data.data;
 };
@@ -93,7 +93,7 @@ export const getCarFeesByGrade = async (
   gradeId: number,
 ): Promise<CarFeeResponse> => {
   const res = await axiosInstance.get<ApiResponse<CarFeeResponse>>(
-    `/api/car-fees/${gradeId}`,
+    `/car-fees//v1/${gradeId}`,
   );
   return res.data.data;
 };

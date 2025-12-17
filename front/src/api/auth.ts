@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance';
 
 export async function loginStaff(loginId: string, password: string) {
-  const response = await axiosInstance.post('/api/auth/staffs', {
+  const response = await axiosInstance.post('auth/v1/staffs', {
     loginId,
     password,
   });
@@ -10,7 +10,7 @@ export async function loginStaff(loginId: string, password: string) {
 }
 
 export async function loginPartner(loginId: string, password: string) {
-  const response = await axiosInstance.post('/api/auth/partners', {
+  const response = await axiosInstance.post('auth/v1/partners', {
     loginId,
     password,
   });

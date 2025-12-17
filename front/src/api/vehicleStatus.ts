@@ -30,7 +30,7 @@ export const getDispatchCarGrades = async (
   carType: DispatchCarType,
 ): Promise<DispatchCarGradeResponse> => {
   const res = await axiosInstance.get<ApiResponse<DispatchCarGradeResponse>>(
-    '/api/cars/carGrade',
+    '/cars/v1/carGrade',
     { params: { carType } },
   );
 
@@ -59,7 +59,7 @@ export const getDispatchCarsByGrade = async (
   gradeId: number,
 ): Promise<DispatchCarsByGradeResponse> => {
   const res = await axiosInstance.get<ApiResponse<DispatchCarsByGradeResponse>>(
-    `/api/cars/grade/${gradeId}`,
+    `/cars/v1/grade/${gradeId}`,
   );
 
   return res.data.data;
@@ -81,7 +81,7 @@ export interface CarStatusSummary {
 
 export const getCarStatusSummary = async (): Promise<CarStatusSummary> => {
   const res = await axiosInstance.get<ApiResponse<CarStatusSummary>>(
-    '/api/cars/status',
+    '/cars/v1/status',
   );
   return res.data.data;
 };
@@ -101,7 +101,7 @@ export const getCarStatusLocation = async (
 ): Promise<LocationStatusItem[]> => {
   const res = await axiosInstance.get<
     ApiResponse<{ locations: LocationStatusItem[] }>
-  >('/api/cars/status/location', {
+  >('/cars/v1/status/location', {
     params: { carNum },
   });
 
@@ -122,7 +122,7 @@ export const getCarStatusByLocation = async (
   locationId: number,
 ): Promise<CarStatusByLocation> => {
   const res = await axiosInstance.get<ApiResponse<CarStatusByLocation>>(
-    `/api/cars/status/location/${locationId}`,
+    `/cars/v1/status/location/${locationId}`,
   );
   return res.data.data;
 };
@@ -147,7 +147,7 @@ export const getCarsByLocation = async (
   carNum?: string,
 ): Promise<CarsByLocationItem[]> => {
   const res = await axiosInstance.get<ApiResponse<CarsByLocationItem[]>>(
-    `/api/cars/status/${locationId}/cars`,
+    `/cars/v1/status/${locationId}/cars`,
     { params: { carNum } },
   );
   return res.data.data;

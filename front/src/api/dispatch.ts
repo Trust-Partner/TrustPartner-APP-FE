@@ -54,7 +54,7 @@ export const getDispatchRequests = async (
   status: DispatchStatusRequest,
 ): Promise<DispatchListResponse> => {
   const res = await axiosInstance.get<ApiResponse<DispatchListResponse>>(
-    '/api/cars/dispatch/request',
+    '/cars/v1/dispatch/request',
     { params: { dispatchStatusRequest: status } },
   );
 
@@ -66,7 +66,7 @@ export const getPartnerInfo = async (
   partnerId: string,
 ): Promise<PartnerInfoResponse> => {
   const res = await axiosInstance.get<ApiResponse<PartnerInfoResponse>>(
-    `/api/partners/${partnerId}`,
+    `/partners/v1/${partnerId}`,
   );
 
   return res.data.data;
@@ -77,7 +77,7 @@ export const rejectDispatchRequest = async (
   dispatchId: number,
 ): Promise<{}> => {
   const res = await axiosInstance.delete<ApiResponse<{}>>(
-    `/api/cars/dispatch/${dispatchId}`,
+    `/cars/v1/dispatch/${dispatchId}`,
   );
 
   return res.data.data;
@@ -94,7 +94,7 @@ export const requestUserDispatch = async (
   payload: UserDispatchRequestPayload,
 ) => {
   const res = await axiosInstance.post<ApiResponse<any>>(
-    '/api/cars/dispatch/request',
+    '/cars/v1/dispatch/request',
     payload,
   );
   return res.data.data;
