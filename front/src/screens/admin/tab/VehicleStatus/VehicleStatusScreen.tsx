@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,12 +9,9 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
-import {
-  sedanDispatchList,
-  suvDispatchList,
-  importDispatchList,
-} from '../../../../mock/vehicleStatus/vehicleDispatchMock';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
 import { useNavigation } from '@react-navigation/native';
@@ -32,13 +29,45 @@ type NavProp = NativeStackNavigationProp<
 >;
 
 export default function VehicleStatusScreen() {
+  const hasMountedRef = useRef(false);
   const [tab, setTab] = useState<'dispatch' | 'status'>('dispatch');
   const { query, setQuery } = useVehicleSearchStore();
 
+  // 배차하기 탭
+  const [selectedType, setSelectedType] = useState<'sedan' | 'suv' | 'import'>(
+    'sedan',
+  );
+
+  const CAR_TYPE_MAP: Record<'sedan' | 'suv' | 'import', DispatchCarType> = {
+    sedan: 'DOMESTIC_SEDAN',
+    suv: 'DOMESTIC_SUV',
+    import: 'IMPORTED',
+  };
+
+  const carType = CAR_TYPE_MAP[selectedType];
+  const dispatchGrades = useDispatchCarGrades(carType);
+
+  // 차량현황 탭
+  const statusSummary = useCarStatusSummary();
+  const statusLocations = useCarStatusLocation(query);
+
+  const isContentLoading =
+    !hasMountedRef.current &&
+    (tab === 'dispatch'
+      ? dispatchGrades.isLoading
+      : statusSummary.isLoading || statusLocations.isLoading);
+
+  const isContentError =
+    tab === 'dispatch'
+      ? dispatchGrades.isError
+      : statusSummary.isError || statusLocations.isError;
+
+  if (!hasMountedRef.current && !isContentLoading) {
+    hasMountedRef.current = true;
+  }
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1 }}>
-        {/* 헤더 */}
         <AppHeader
           centerContent={
             tab === 'status' ? (
@@ -60,28 +89,77 @@ export default function VehicleStatusScreen() {
         />
 
         <View style={s.container}>
-          {/* 탭 버튼 */}
-          <View style={s.buttonRow}>
-            <Pressable
-              style={[s.btn, tab === 'dispatch' && s.activeBtn]}
-              onPress={() => setTab('dispatch')}
-            >
-              <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
-                배차하기
+          {isContentLoading ? (
+            <View style={s.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.PRIMARY_50} />
+            </View>
+          ) : isContentError ? (
+            <View style={s.container}>
+              <Text style={s.errorText}>차량 정보를 불러올 수 없습니다.</Text>
+              <Text style={s.errorSub}>
+                네트워크 또는 서버 오류가 발생했습니다.
               </Text>
-            </Pressable>
 
-            <Pressable
-              style={[s.btn, tab === 'status' && s.activeBtn]}
-              onPress={() => setTab('status')}
-            >
-              <Text style={[s.btnText, tab === 'status' && s.activeText]}>
-                차량현황 확인
-              </Text>
-            </Pressable>
-          </View>
+              <Pressable
+                style={s.retryBtn}
+                onPress={() => {
+                  if (tab === 'dispatch') {
+                    dispatchGrades.refetch();
+                  } else {
+                    statusSummary.refetch();
+                    statusLocations.refetch();
+                  }
+                }}
+              >
+                <Text style={s.retryText}>다시 시도</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <>
+              {/* 탭 버튼 */}
+              <View style={s.buttonRow}>
+                <Pressable
+                  style={[s.btn, tab === 'dispatch' && s.activeBtn]}
+                  onPress={() => setTab('dispatch')}
+                >
+                  <Text style={[s.btnText, tab === 'dispatch' && s.activeText]}>
+                    배차하기
+                  </Text>
+                </Pressable>
 
-          {tab === 'dispatch' ? <DispatchSection /> : <StatusSection />}
+                <Pressable
+                  style={[s.btn, tab === 'status' && s.activeBtn]}
+                  onPress={() => setTab('status')}
+                >
+                  <Text style={[s.btnText, tab === 'status' && s.activeText]}>
+                    차량현황 확인
+                  </Text>
+                </Pressable>
+              </View>
+
+              {tab === 'dispatch' ? (
+                <DispatchSection
+                  selectedType={selectedType}
+                  setSelectedType={setSelectedType}
+                  list={dispatchGrades.data?.grades ?? []}
+                  isFetching={dispatchGrades.isFetching}
+                  refetch={dispatchGrades.refetch}
+                />
+              ) : (
+                <StatusSection
+                  summary={statusSummary.data}
+                  locations={statusLocations.data ?? []}
+                  isFetching={
+                    statusSummary.isFetching || statusLocations.isFetching
+                  }
+                  refetchAll={() => {
+                    statusSummary.refetch();
+                    statusLocations.refetch();
+                  }}
+                />
+              )}
+            </>
+          )}
         </View>
       </View>
     </TouchableWithoutFeedback>
@@ -89,28 +167,23 @@ export default function VehicleStatusScreen() {
 }
 
 // 배차하기
-function DispatchSection() {
+function DispatchSection({
+  selectedType,
+  setSelectedType,
+  list,
+  isFetching,
+  refetch,
+}: {
+  selectedType: 'sedan' | 'suv' | 'import';
+  setSelectedType: (v: 'sedan' | 'suv' | 'import') => void;
+  list: any[];
+  isFetching: boolean;
+  refetch: () => void;
+}) {
   const navigation = useNavigation<NavProp>();
-
-  const [selectedType, setSelectedType] = useState<'sedan' | 'suv' | 'import'>(
-    'sedan',
-  );
-
-  const CAR_TYPE_MAP: Record<'sedan' | 'suv' | 'import', DispatchCarType> = {
-    sedan: 'DOMESTIC_SEDAN',
-    suv: 'DOMESTIC_SUV',
-    import: 'IMPORTED',
-  };
-
-  const carType = CAR_TYPE_MAP[selectedType];
-
-  const { data, isLoading, isError, refetch } = useDispatchCarGrades(carType);
-
-  const list = data?.grades ?? [];
 
   return (
     <View style={{ flex: 1 }}>
-      {/* 필터 (변경 없음) */}
       <View style={s.filterRow}>
         {[
           { label: '세단 배차에요', key: 'sedan' },
@@ -135,14 +208,15 @@ function DispatchSection() {
         ))}
       </View>
 
-      {/* 리스트 */}
       <FlatList
         data={list}
         numColumns={2}
         keyExtractor={item => item.gradeId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
-        refreshing={isLoading}
-        onRefresh={refetch}
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+        }
+        contentContainerStyle={{ flexGrow: 1 }}
         renderItem={({ item }) => (
           <Pressable
             style={s.card}
@@ -179,14 +253,19 @@ function DispatchSection() {
 }
 
 // 차량현황
-function StatusSection() {
+function StatusSection({
+  summary,
+  locations,
+  isFetching,
+  refetchAll,
+}: {
+  summary: any;
+  locations: any[];
+  isFetching: boolean;
+  refetchAll: () => void;
+}) {
   const navigation = useNavigation<NavProp>();
-  const { query } = useVehicleSearchStore();
 
-  const { data: summary } = useCarStatusSummary();
-  const { data: locations = [] } = useCarStatusLocation(query);
-
-  // 통계
   const stats = [
     { label: '배차중', value: summary?.inUseNum ?? 0, color: colors.YELLOW_50 },
     {
@@ -209,7 +288,6 @@ function StatusSection() {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* 통계 */}
       <View style={s.statsRow}>
         {stats.map((item, index, arr) => (
           <React.Fragment key={item.label}>
@@ -224,56 +302,56 @@ function StatusSection() {
         ))}
       </View>
 
-      {/* 장소 리스트 */}
       <FlatList
         data={locations}
         numColumns={2}
         keyExtractor={item => item.locationId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const disabled = item.all === 0;
+        refreshControl={
+          <RefreshControl refreshing={isFetching} onRefresh={refetchAll} />
+        }
+        contentContainerStyle={{ flexGrow: 1 }}
+        renderItem={({ item }) => (
+          <Pressable
+            style={[s.card, getCardStyle(item)]}
+            onPress={() => {
+              if (item.all === 0) return;
+              navigation.navigate('VehicleCompanyDetail', {
+                locationId: item.locationId,
+                locationName: item.locationName,
+              });
+            }}
+          >
+            <View style={s.cardHeader}>
+              <Text
+                style={[
+                  s.cardTitle,
+                  item.all === 0 && { color: colors.GRAY_50 },
+                ]}
+              >
+                {item.locationName}
+              </Text>
+            </View>
 
-          return (
-            <Pressable
-              style={[s.card, getCardStyle(item)]}
-              disabled={disabled}
-              onPress={() =>
-                navigation.navigate('VehicleCompanyDetail', {
-                  locationId: item.locationId,
-                  locationName: item.locationName,
-                })
-              }
-            >
-              <View style={s.cardHeader}>
-                <Text
-                  style={[s.cardTitle, disabled && { color: colors.GRAY_50 }]}
-                >
-                  {item.locationName}
+            <View style={s.badgeRow}>
+              {item.inUse > 0 && (
+                <Text style={[s.badge, s.badgeYellow]}>{item.inUse}</Text>
+              )}
+              {item.available > 0 && (
+                <Text style={[s.badge, s.badgeBlue]}>{item.available}</Text>
+              )}
+              {item.returnRequested > 0 && (
+                <Text style={[s.badge, s.badgeRed]}>
+                  {item.returnRequested}
                 </Text>
-              </View>
-
-              <View style={s.badgeRow}>
-                {item.inUse > 0 && (
-                  <Text style={[s.badge, s.badgeYellow]}>{item.inUse}</Text>
-                )}
-                {item.available > 0 && (
-                  <Text style={[s.badge, s.badgeBlue]}>{item.available}</Text>
-                )}
-                {item.returnRequested > 0 && (
-                  <Text style={[s.badge, s.badgeRed]}>
-                    {item.returnRequested}
-                  </Text>
-                )}
-
-                <Image
-                  source={require('../../../../assets/common/right_arrow.png')}
-                  style={s.arrowIcon}
-                />
-              </View>
-            </Pressable>
-          );
-        }}
+              )}
+              <Image
+                source={require('../../../../assets/common/right_arrow.png')}
+                style={s.arrowIcon}
+              />
+            </View>
+          </Pressable>
+        )}
       />
     </View>
   );
@@ -285,6 +363,41 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
     paddingHorizontal: 16,
     paddingTop: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.GRAY_00,
+  },
+  loading: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+  },
+  errorText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.RED_50,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  errorSub: {
+    fontSize: 12,
+    color: colors.GRAY_50,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryBtn: {
+    alignSelf: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: colors.PRIMARY_05,
+    borderRadius: 6,
+  },
+  retryText: {
+    color: colors.PRIMARY_50,
+    fontSize: 13,
+    fontWeight: '500',
   },
   searchBox: {
     flexDirection: 'row',
