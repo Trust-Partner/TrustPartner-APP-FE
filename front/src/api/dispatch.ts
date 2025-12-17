@@ -5,6 +5,8 @@ export type DispatchStatusRequest = 'REQUESTED' | 'CONFIRMED' | 'ALL';
 /** 개별 배차 요청 Item */
 export interface DispatchItem {
   dispatchId: number;
+  replacementDispatchId?: number | null;
+  isReplacement: boolean;
   partnerId: string;
   partnerName: string;
   carModel: string;
