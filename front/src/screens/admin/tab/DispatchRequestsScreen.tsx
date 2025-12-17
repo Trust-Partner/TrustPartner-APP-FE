@@ -7,6 +7,7 @@ import {
   Image,
   LayoutAnimation,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import DispatchInfoModal from '../../../components/dispatch/DispatchInfoModal';
@@ -28,7 +29,7 @@ export default function DispatchRequestScreen() {
   const [rejectVisible, setRejectVisible] = useState(false);
   const [selected, setSelected] = useState<DispatchItem | null>(null);
 
-  const { data, isLoading, isError, refetch } = useDispatchList();
+  const { data, isLoading, isFetching, isError, refetch } = useDispatchList();
 
   useFocusEffect(
     useCallback(() => {
@@ -44,6 +45,25 @@ export default function DispatchRequestScreen() {
     () => requests.filter(req => req.dispatchStatus === 'REQUESTED'),
     [requests],
   );
+
+  const sortedRequests = useMemo(() => {
+    if (!requests) return [];
+
+    return [...requests].sort((a, b) => {
+      const aActive = a.dispatchStatus === 'REQUESTED';
+      const bActive = b.dispatchStatus === 'REQUESTED';
+
+      // 진행중 먼저
+      if (aActive && !bActive) return -1;
+      if (!aActive && bActive) return 1;
+
+      // 같은 그룹이면 최신순 (선택)
+      return (
+        new Date(b.dispatchDateTime).getTime() -
+        new Date(a.dispatchDateTime).getTime()
+      );
+    });
+  }, [requests]);
 
   const formatDateTime = (iso: string) => {
     const date = new Date(iso);
@@ -85,8 +105,8 @@ export default function DispatchRequestScreen() {
 
   if (isLoading) {
     return (
-      <View style={s.container}>
-        <Text style={s.loading}>불러오는 중...</Text>
+      <View style={s.loadingContainer}>
+        <ActivityIndicator size="small" color={colors.PRIMARY_50} />
       </View>
     );
   }
@@ -114,15 +134,26 @@ export default function DispatchRequestScreen() {
       </View>
 
       <SwipeListView
-        data={requests}
+        data={sortedRequests}
         keyExtractor={item => String(item.dispatchId)}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+          <RefreshControl
+            refreshing={isFetching && !isLoading}
+            onRefresh={refetch}
+          />
+        }
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+        ListEmptyComponent={
+          <View style={s.emptyContainer}>
+            <Text style={s.emptyText}>배차 요청이 없습니다.</Text>
+          </View>
         }
         renderItem={({ item }) => {
           const isOpen = !!expanded[item.dispatchId];
 
-          const isReplacement = item.dispatchStatus === 'CONFIRMED';
+          const isReplacement = item.isReplacement;
           const isActive = item.dispatchStatus === 'REQUESTED';
 
           return (
@@ -260,6 +291,12 @@ const s = StyleSheet.create({
     fontWeight: '400',
     color: colors.GRAY_40,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.GRAY_00,
+  },
   loading: {
     fontSize: 14,
     color: colors.GRAY_60,
@@ -288,6 +325,16 @@ const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     fontSize: 13,
     fontWeight: '500',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 40,
+  },
+  emptyText: {
+    fontSize: 13,
+    color: colors.GRAY_40,
   },
   item: {
     backgroundColor: colors.WHITE,
