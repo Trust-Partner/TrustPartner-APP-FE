@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SwipeListView } from 'react-native-swipe-list-view';
@@ -24,7 +25,12 @@ export default function DispatchGroupDetailScreen({ route }: any) {
   const navigation = useNavigation();
   const { openModal, setSelectedVehicle } = useContractModalStore();
   const { groupId, groupName } = route.params;
-  const { data: apiData, refetch, isLoading } = useDispatchCarsByGrade(groupId);
+  const {
+    data: apiData,
+    isFetching,
+    refetch,
+    isLoading,
+  } = useDispatchCarsByGrade(groupId);
 
   const data: DispatchDetail[] = useMemo(() => {
     if (!apiData) return [];
@@ -156,8 +162,15 @@ export default function DispatchGroupDetailScreen({ route }: any) {
             disableRightSwipe
             onRowOpen={handleSwipeOpen}
             showsVerticalScrollIndicator={false}
-            refreshing={isLoading}
-            onRefresh={refetch}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching && !isLoading}
+                onRefresh={refetch}
+              />
+            }
+            contentContainerStyle={{
+              flexGrow: 1,
+            }}
           />
         </View>
       </View>

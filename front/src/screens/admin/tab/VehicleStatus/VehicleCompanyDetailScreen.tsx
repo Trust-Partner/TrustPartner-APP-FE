@@ -10,6 +10,7 @@ import {
   LayoutAnimation,
   TextInput,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
@@ -46,7 +47,12 @@ export default function VehicleCompanyDetailScreen() {
   const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<any>(null);
 
-  const { data: summary } = useCarStatusByLocation(locationId);
+  const {
+    data: summary,
+    isFetching,
+    refetch,
+    isLoading,
+  } = useCarStatusByLocation(locationId);
   const { data: carStatusGroups = [] } = useCarsByLocation(locationId, query);
 
   let seq = 1;
@@ -183,8 +189,15 @@ export default function VehicleCompanyDetailScreen() {
           data={filteredVehicles}
           keyExtractor={item => item.id.toString()}
           showsVerticalScrollIndicator={false}
-          bounces={false}
-          alwaysBounceVertical={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isFetching && !isLoading}
+              onRefresh={refetch}
+            />
+          }
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
           renderItem={({ item }) => {
             const isOpen = expanded[item.id];
             const isDispatched = item.status === '배차중';
