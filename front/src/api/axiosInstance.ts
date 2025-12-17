@@ -8,12 +8,24 @@ const axiosInstance = axios.create({
   timeout: 15000,
 });
 
+const SKIP_AUTH_PATHS = ['/auth/v1/partners', '/auth/v1/staffs'];
+
 // 요청 시 자동으로 AccessToken 주입
 axiosInstance.interceptors.request.use(async config => {
+  const url = config.url ?? '';
+
+  const shouldSkipAuth = SKIP_AUTH_PATHS.some(path => url.includes(path));
+
+  if (shouldSkipAuth) {
+    return config;
+  }
+
   const token = await EncryptedStorage.getItem('accessToken');
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
@@ -24,7 +36,7 @@ axiosInstance.interceptors.response.use(
     const status = error.response?.status;
 
     if (status === 401) {
-      console.log('[401] 토큰 만료 - refresh 준비(아직 API 없음)');
+      console.log('[401] 토큰 만료 - 로그아웃 처리');
       await useAuthStore.getState().logout();
     }
 
