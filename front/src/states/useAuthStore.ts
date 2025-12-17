@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axiosInstance from '../api/axiosInstance';
 import { User } from '../types/User';
+import { loginStaff, loginPartner } from '../api/auth';
 
 type Role = 'USER' | 'ADMIN';
 
@@ -34,11 +35,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const response =
         role === 'ADMIN'
-          ? await axiosInstance.post('/api/auth/staffs', { loginId, password })
-          : await axiosInstance.post('/api/auth/partners', {
-              loginId,
-              password,
-            });
+          ? await loginStaff(loginId, password)
+          : await loginPartner(loginId, password);
 
       const data = response.data.data;
 
@@ -81,11 +79,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         };
       }
 
+      await EncryptedStorage.setItem('accessToken', accessToken);
+      await EncryptedStorage.setItem('refreshToken', refreshToken);
+
       // autoLogin이 true일 때 저장
       if (autoLogin) {
         await EncryptedStorage.setItem('user', JSON.stringify(user));
-        await EncryptedStorage.setItem('accessToken', accessToken);
-        await EncryptedStorage.setItem('refreshToken', refreshToken);
       }
 
       // 상태 저장
@@ -94,9 +93,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         accessToken,
         refreshToken,
       });
-
-      // axios auth 적용
-      axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
     } catch (error) {
       console.error('로그인 실패:', error);
       throw error;
@@ -117,14 +113,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         EncryptedStorage.getItem('refreshToken'),
       ]);
 
-      if (userStr && token) {
+      if (userStr) {
         const user: User = JSON.parse(userStr);
-        axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
-
-        set({ user, accessToken: token, refreshToken: refresh ?? '' });
+        set({
+          user,
+          accessToken: token,
+          refreshToken: refresh ?? '',
+        });
       }
-    } catch (err) {
-      console.log('restore error:', err);
     } finally {
       set({ initialized: true });
     }
