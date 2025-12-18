@@ -71,6 +71,40 @@ export const getDispatchCarsByGrade = async (
 };
 
 /* -------------------------------------------------------------------------- */
+/*                     Dispatch Actions (찜 / 예약 / 반납)                       */
+/* -------------------------------------------------------------------------- */
+export interface ReserveCarRequest {
+  staffId: string; // zustand에서 가져옴
+  carId: number;
+  isReserved: boolean;
+  dispatchDateTime: string;
+
+  reserveRequest?: {
+    requestCompany: string;
+    rentalType: string;
+    dispatchLocation: string;
+  };
+}
+
+export interface ReserveCarResponse {
+  staffId: string;
+  carId: number;
+  isReserved: boolean;
+  reserveId?: number;
+}
+
+export const reserveCar = async (
+  payload: ReserveCarRequest,
+): Promise<ReserveCarResponse> => {
+  const res = await axiosInstance.post<ApiResponse<ReserveCarResponse>>(
+    '/cars/v1/reserve',
+    payload,
+  );
+
+  return res.data.data;
+};
+
+/* -------------------------------------------------------------------------- */
 /*                           Vehicle Status (현황)                            */
 /* -------------------------------------------------------------------------- */
 
