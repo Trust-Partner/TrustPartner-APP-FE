@@ -64,23 +64,12 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
     '16:30',
   ];
 
-  const dispatchDateTime = isBooking
-    ? new Date(`${date}T${time}:00`).toISOString() // 예약
-    : new Date().toISOString(); // 찜 (현재 시각)
-
   const handleConfirm = async () => {
     if (!staffId) return;
 
-    if (isBooking) {
-      if (!company || !carModel || !location) {
-        setResultModal({
-          visible: true,
-          title: '입력 필요',
-          message: '요청업체, 렌트차종, 배차장소를 모두 입력해주세요',
-        });
-        return;
-      }
+    let dispatchDateTime: string;
 
+    if (isBooking) {
       if (!date || !time) {
         setResultModal({
           visible: true,
@@ -89,6 +78,10 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
         });
         return;
       }
+
+      dispatchDateTime = new Date(`${date}T${time}:00`).toISOString();
+    } else {
+      dispatchDateTime = new Date().toISOString();
     }
 
     try {
@@ -97,7 +90,6 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
         carId: vehicle.id,
         isReserved: isBooking,
         dispatchDateTime,
-
         ...(isBooking && {
           reserveRequest: {
             requestCompany: company,
