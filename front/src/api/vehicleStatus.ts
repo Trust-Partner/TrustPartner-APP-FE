@@ -37,15 +37,20 @@ export const getDispatchCarGrades = async (
   return res.data.data;
 };
 
+export type FuelType = 'GASOLINE' | 'DIESEL' | 'ELECTRIC';
+
 /** 차급별 차량 */
 export interface DispatchCarItem {
   carId: number;
   model: string;
   year: number;
   carNum: string;
-  LocationName: string;
+  locationName: string;
   needsWash: boolean;
   likedOrConfirmed: boolean;
+  reservationName: string | null;
+  fuelLevel: number | null;
+  fuelType: FuelType;
 }
 
 export interface DispatchCarsByGradeResponse {

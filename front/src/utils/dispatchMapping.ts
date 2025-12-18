@@ -11,11 +11,11 @@ export const mapDispatchCarItemToDetail = (
     model: car.model,
     year: String(car.year),
     number: car.carNum,
-    location: car.LocationName,
+    location: car.locationName,
     washed: !car.needsWash,
     isConfirmed: car.likedOrConfirmed,
     isBookmarked: car.likedOrConfirmed,
-    isInWashArea: car.LocationName === 'ESA' || car.LocationName === '렉시온',
-    reserverName: '',
+    isInWashArea: car.locationName === 'ESA' || car.locationName === '렉시온',
+    reserverName: car.reservationName,
   };
 };

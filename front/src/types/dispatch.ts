@@ -8,5 +8,5 @@ export interface DispatchDetail {
   isConfirmed: boolean;
   isBookmarked: boolean;
   isInWashArea: boolean;
-  reserverName: string;
+  reserverName: string | null;
 }
