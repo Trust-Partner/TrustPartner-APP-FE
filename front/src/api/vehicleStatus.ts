@@ -73,8 +73,10 @@ export const getDispatchCarsByGrade = async (
 /* -------------------------------------------------------------------------- */
 /*                     Dispatch Actions (찜 / 예약 / 반납)                       */
 /* -------------------------------------------------------------------------- */
+
+// 찜 / 예약
 export interface ReserveCarRequest {
-  staffId: string; // zustand에서 가져옴
+  staffId: string;
   carId: number;
   isReserved: boolean;
   dispatchDateTime: string;
@@ -98,6 +100,34 @@ export const reserveCar = async (
 ): Promise<ReserveCarResponse> => {
   const res = await axiosInstance.post<ApiResponse<ReserveCarResponse>>(
     '/cars/v1/reserve',
+    payload,
+  );
+
+  return res.data.data;
+};
+
+// 반납
+export interface ReturnCarRequest {
+  carId: number;
+  locationName: 'ESA' | '렉시온';
+  needsWash: boolean;
+  needsFuel: boolean;
+}
+
+export interface ReturnCarResponse {
+  carId: number;
+  carModel: string;
+  carNum: string;
+  locationName: string;
+  needsWash: boolean;
+  needsFuel: boolean;
+}
+
+export const returnCar = async (
+  payload: ReturnCarRequest,
+): Promise<ReturnCarResponse> => {
+  const res = await axiosInstance.post<ApiResponse<ReturnCarResponse>>(
+    '/cars/v1/dispatch/return',
     payload,
   );
 

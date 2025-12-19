@@ -7,6 +7,7 @@ import CommonModal from '../common/CommonModal';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { DispatchDetail } from '../../types/dispatch';
+import { useReturnCar } from '../../hooks/vehicleStatus/useReturnCar';
 
 interface Props {
   visible: boolean;
@@ -24,6 +25,28 @@ export default function VehicleReturnModal({
 
   const updateField = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const { mutateAsync: returnCarMutate, isPending } = useReturnCar();
+
+  const handleConfirm = async () => {
+    if (!formData.location) {
+      return;
+    }
+
+    const payload = {
+      carId: vehicle.id,
+      locationName: formData.location as 'ESA' | '렉시온',
+      needsWash: formData.needWash ?? false,
+      needsFuel: formData.fuelLack ?? false,
+    };
+
+    try {
+      await returnCarMutate(payload);
+      setConfirmVisible(true);
+    } catch (e) {
+      console.log('returnCar error:', e);
+    }
   };
 
   return (
@@ -135,7 +158,7 @@ export default function VehicleReturnModal({
 
             <Pressable
               style={[ms.footerBtn, { backgroundColor: colors.PRIMARY_50 }]}
-              onPress={() => setConfirmVisible(true)}
+              onPress={handleConfirm}
             >
               <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                 확인
