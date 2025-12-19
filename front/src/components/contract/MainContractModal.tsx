@@ -37,7 +37,7 @@ export default function MainContractModal({
     reserverName,
   } = vehicle;
 
-  const isInsuranceOnly = isBookmarked || isConfirmed;
+  const isRestricted = isBookmarked || isConfirmed;
 
   return (
     <Modal
@@ -86,7 +86,7 @@ export default function MainContractModal({
           <ContractButton
             label="일반계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isInsuranceOnly}
+            disabled={isRestricted}
             onPress={() => onSelect('general')}
           />
           <ContractButton
@@ -97,13 +97,12 @@ export default function MainContractModal({
           <ContractButton
             label="교체계약서 작성"
             icon={require('../../assets/common/replace.png')}
-            disabled={isInsuranceOnly}
             onPress={() => onSelect('replacement')}
           />
           <ContractButton
             label="배차 확정"
             icon={require('../../assets/common/check.png')}
-            disabled={isInsuranceOnly}
+            disabled={isRestricted}
             onPress={() => onSelect('dispatch')}
           />
         </View>
