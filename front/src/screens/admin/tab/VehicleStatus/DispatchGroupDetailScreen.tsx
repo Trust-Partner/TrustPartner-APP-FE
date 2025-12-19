@@ -87,7 +87,11 @@ export default function DispatchGroupDetailScreen({ route }: any) {
     refetch();
   };
 
-  // Row 렌더링 (기존 UI 유지)
+  const handleReturnClose = (status?: 'returned') => {
+    setReturnVisible(false);
+    refetch();
+  };
+
   const renderItem = ({ item }: { item: DispatchDetail }) => {
     const sideBarColor =
       item.isConfirmed || item.isBookmarked
@@ -189,7 +193,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
         <VehicleReturnModal
           visible={returnVisible}
           vehicle={bookmarkTarget}
-          onClose={() => setReturnVisible(false)}
+          onClose={handleReturnClose}
         />
       )}
     </View>
