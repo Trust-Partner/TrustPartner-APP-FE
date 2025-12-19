@@ -33,6 +33,9 @@ interface ContractModalState {
   selectedVehicle?: ContractVehicleBase | null;
   setSelectedVehicle: (v: ContractVehicleBase | null) => void;
 
+  dispatchId?: number | null;
+  setDispatchId: (id: number | null) => void;
+
   openModal: (type: ModalType, originType?: OriginType) => void;
   closeModal: () => void;
   goTo: (type: ModalType) => void;
@@ -60,7 +63,11 @@ export const useContractModalStore = create<ContractModalState>(set => ({
   drafts: {},
   selectedVehicle: undefined,
 
+  dispatchId: null,
+
   setSelectedVehicle: v => set({ selectedVehicle: v }),
+
+  setDispatchId: id => set({ dispatchId: id }),
 
   openModal: (type, originType = 'main') =>
     set({
@@ -75,6 +82,7 @@ export const useContractModalStore = create<ContractModalState>(set => ({
       modalType: 'none',
       originType: 'main',
       selectedVehicle: undefined,
+      dispatchId: null,
     }),
 
   goTo: type => set({ modalType: type }),

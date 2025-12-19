@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -17,6 +18,7 @@ import CommonTextarea from '../common/CommonTextarea';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useDispatchList } from '../../hooks/dispatch/useDispatchList';
 import { mapDispatchItemToVM } from '../../utils/dispatchRequestMapping';
+import { useConfirmDispatch } from '../../hooks/contracts/useConfirmDispatch';
 
 interface Props {
   onBack: () => void;
@@ -31,7 +33,11 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const { closeModal } = useContractModalStore();
 
-  const { data, isLoading } = useDispatchList();
+  const { mutateAsync: confirmDispatch, isPending: isConfirming } =
+    useConfirmDispatch();
+
+  const { data, isLoading: isDispatchListLoading } = useDispatchList();
+
   const dispatchRequests =
     data?.dispatchList
       .filter(item => item.dispatchStatus === 'REQUESTED')
@@ -60,7 +66,16 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
   }, [vehicle.id]);
 
   const handleConfirm = async () => {
+    if (!selectedRequest) return;
+
     try {
+      await confirmDispatch({
+        carId: vehicle.id,
+        dispatchId: selectedRequest.id,
+        message,
+        autoSave,
+      });
+
       if (autoSave) {
         await AsyncStorage.setItem('dispatch_autosave', 'true');
         await AsyncStorage.setItem('dispatch_message', message);
@@ -68,9 +83,10 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
         await AsyncStorage.removeItem('dispatch_autosave');
         await AsyncStorage.removeItem('dispatch_message');
       }
+
       setSendModalVisible(true);
     } catch (e) {
-      console.warn('자동저장 처리 실패:', e);
+      console.warn('배차 확정 실패:', e);
       setSendModalVisible(true);
     }
   };
@@ -108,7 +124,11 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               </View>
 
               <View style={{ marginTop: 16 }} />
-              {dispatchRequests.length === 0 ? (
+              {isDispatchListLoading ? (
+                <View style={s.loadingBox}>
+                  <ActivityIndicator size="small" color={colors.PRIMARY_50} />
+                </View>
+              ) : dispatchRequests.length === 0 ? (
                 <Text style={s.emptyText}>배차 요청건이 없습니다.</Text>
               ) : (
                 dispatchRequests.map(req =>
@@ -203,8 +223,19 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               </Pressable>
 
               <View style={s.footer}>
-                <Pressable style={s.sendBtn} onPress={handleConfirm}>
+                <Pressable
+                  style={[s.sendBtn, isConfirming && { opacity: 0 }]}
+                  onPress={handleConfirm}
+                  disabled={isConfirming}
+                >
                   <Text style={s.sendBtnText}>배차 확정</Text>
+                  {isConfirming && (
+                    <ActivityIndicator
+                      size="small"
+                      color={colors.WHITE}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  )}
                 </Pressable>
               </View>
             </>
@@ -271,6 +302,11 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
+  },
+  loadingBox: {
+    marginTop: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   emptyText: {
     fontSize: 13,

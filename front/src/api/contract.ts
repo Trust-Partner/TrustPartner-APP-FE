@@ -1,5 +1,31 @@
 import axiosInstance from './axiosInstance';
 
+// 배차 확정
+export interface ConfirmDispatchRequest {
+  carId: number;
+  dispatchId: number;
+  message?: string;
+  autoSave?: boolean;
+}
+
+export interface ConfirmDispatchResponse {
+  staffId: string;
+  staffName: string;
+  carId: number;
+  dispatchId: number;
+  message: string;
+  dispatchStatus: string;
+  autoSave: boolean;
+}
+
+export const confirmDispatch = async (
+  payload: ConfirmDispatchRequest,
+): Promise<ConfirmDispatchResponse> => {
+  const res = await axiosInstance.post('/cars/v1/dispatch/confirm', payload);
+
+  return res.data.data;
+};
+
 export type ContractType =
   | 'GENERAL_CONTRACT'
   | 'INSURANCE_CONTRACT'
