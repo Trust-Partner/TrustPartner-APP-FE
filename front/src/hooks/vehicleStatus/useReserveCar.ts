@@ -8,7 +8,8 @@ export const useReserveCar = () => {
     mutationFn: reserveCar,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['dispatchCarsByGrade'],
+        queryKey: ['vehicleStatus', 'dispatchCarsByGrade'],
+        exact: false,
       });
     },
   });
