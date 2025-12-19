@@ -15,6 +15,8 @@ import { colors } from '../../constants/colors';
 import CommonModal from '../common/CommonModal';
 import { HIT_SLOP } from '../../constants/touch';
 import { DispatchDetail } from '../../types/dispatch';
+import { useReserveCar } from '../../hooks/vehicleStatus/useReserveCar';
+import { useAuthStore } from '../../states/useAuthStore';
 
 interface Props {
   visible: boolean;
@@ -39,6 +41,10 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
     message: '',
   });
 
+  const user = useAuthStore(s => s.user);
+  const staffId = user?.kind === 'ADMIN' ? user.staffId : null;
+  const { mutateAsync: reserveCarMutate, isPending } = useReserveCar();
+
   const times = [
     '09:00',
     '09:30',
@@ -58,17 +64,12 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
     '16:30',
   ];
 
-  const handleConfirm = () => {
-    if (isBooking) {
-      if (!company || !carModel || !location) {
-        setResultModal({
-          visible: true,
-          title: '입력 필요',
-          message: '요청업체, 렌트차종, 배차장소를 모두 입력해주세요',
-        });
-        return;
-      }
+  const handleConfirm = async () => {
+    if (!staffId) return;
 
+    let dispatchDateTime: string;
+
+    if (isBooking) {
       if (!date || !time) {
         setResultModal({
           visible: true,
@@ -78,22 +79,41 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
         return;
       }
 
-      const payload = { company, carModel, location, date, time };
-      console.log('예약 요청 데이터:', payload);
+      dispatchDateTime = new Date(`${date}T${time}:00`).toISOString();
+    } else {
+      dispatchDateTime = new Date().toISOString();
+    }
+
+    try {
+      await reserveCarMutate({
+        staffId,
+        carId: vehicle.id,
+        isReserved: isBooking,
+        dispatchDateTime,
+        ...(isBooking && {
+          reserveRequest: {
+            requestCompany: company,
+            rentalType: carModel,
+            dispatchLocation: location,
+          },
+        }),
+      });
 
       setResultModal({
         visible: true,
-        title: '예약 완료',
-        message: `예약이 완료되었습니다\n(${date} ${time})`,
+        title: isBooking ? '예약 완료' : '찜 완료',
+        message: isBooking
+          ? `예약이 완료되었습니다\n(${date} ${time})`
+          : '차량 찜이 완료되었습니다',
       });
-      return;
+    } catch (e) {
+      console.log('reserveCar error:', e);
+      setResultModal({
+        visible: true,
+        title: '요청 실패',
+        message: '처리 중 오류가 발생했습니다',
+      });
     }
-
-    setResultModal({
-      visible: true,
-      title: '찜 완료',
-      message: '차량 찜이 완료되었습니다',
-    });
   };
 
   const handleSelectDate = (d: any) => {
