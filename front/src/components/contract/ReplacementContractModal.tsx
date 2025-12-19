@@ -18,7 +18,6 @@ import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
 import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
@@ -113,14 +112,6 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
   const handleSendContract = () => setSendModalVisible(true);
 
-  // 교체요청건 목록: 배차요청 중 교체건
-  const replacementRequests = mockDispatchRequests.filter(
-    req => req.isReplacement,
-  );
-
-  // 선택된 교체요청건 저장용
-  const [selectedRequest, setSelectedRequest] = useState<any>(null);
-
   return (
     <Modal
       isVisible
@@ -138,398 +129,250 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
               style={ms.close}
             />
           </Pressable>
+          <View style={ms.headerRow}>
+            <Text style={ms.title}>교체계약서 작성</Text>
+          </View>
 
-          {step === 1 && !selectedRequest && (
+          <View style={ms.vehicleInfo}>
+            <Text style={ms.vehicleTag}>{vehicle.model}</Text>
+            <Text style={ms.vehicleTag}>{vehicle.number}</Text>
+          </View>
+
+          <View style={ms.stepDots}>
+            {[1, 2, 3, 4].map(i => (
+              <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
+            ))}
+          </View>
+
+          {step === 1 && (
             <>
-              <View style={ms.headerRow}>
-                <Text style={ms.title}>교체계약서 요청건 선택</Text>
-              </View>
+              <CommonInput
+                placeholder="고객 성함"
+                value={formData.customerName}
+                onChangeText={v => updateField('customerName', v)}
+              />
+              <CommonInput
+                placeholder="* 고객 연락처"
+                value={formData.phone}
+                onChangeText={v => updateField('phone', v)}
+              />
+              <CommonInput
+                placeholder="고객 주소"
+                value={formData.address}
+                onChangeText={v => updateField('address', v)}
+              />
+            </>
+          )}
 
-              <View style={ms.vehicleInfo}>
-                <Text style={ms.vehicleTag}>{vehicle.model}</Text>
-                <Text style={ms.vehicleTag}>{vehicle.year}연식</Text>
-                <Text style={ms.vehicleTag}>{vehicle.number}</Text>
-              </View>
+          {step === 2 && (
+            <>
+              <CommonInput
+                placeholder="고객 차종"
+                value={formData.customerCarModel}
+                onChangeText={v => updateField('customerCarModel', v)}
+              />
+              <CommonInput
+                placeholder="고객 차량번호"
+                value={formData.customerCarNumber}
+                onChangeText={v => updateField('customerCarNumber', v)}
+              />
+              <CommonInput
+                placeholder="고객 배기량"
+                value={formData.customerDisplacement}
+                onChangeText={v => updateField('customerDisplacement', v)}
+              />
+              <CommonInput
+                placeholder="보험사"
+                value={formData.insuranceCompany}
+                onChangeText={v => updateField('insuranceCompany', v)}
+              />
+              <CommonInput
+                placeholder="접수번호"
+                value={formData.reportNumber}
+                onChangeText={v => updateField('reportNumber', v)}
+              />
+              <CommonSearchDropdown
+                placeholder="(요청업체)"
+                selectedValue={formData.requestCompany}
+                onSelect={(v, isCustom) =>
+                  updateField('requestCompany', isCustom ? `${v} (기타)` : v)
+                }
+                onSearch={async q =>
+                  ['한라렌트카', '한독렌트카', '한양공업사'].filter(i =>
+                    i.includes(q),
+                  )
+                }
+              />
+              <CommonSearchDropdown
+                placeholder="(입고공업사)"
+                selectedValue={formData.garageCompany}
+                onSelect={(v, isCustom) =>
+                  updateField('garageCompany', isCustom ? `${v} (기타)` : v)
+                }
+                onSearch={async q =>
+                  ['ESA모터스', '성지공업사', '기아서비스'].filter(i =>
+                    i.includes(q),
+                  )
+                }
+              />
+            </>
+          )}
 
-              <View style={{ marginTop: 16 }} />
-              {replacementRequests.length === 0 ? (
-                <Text
-                  style={{
-                    fontSize: 13,
-                    textAlign: 'center',
-                    color: colors.GRAY_50,
-                    marginTop: 8,
-                  }}
+          {step === 3 && (
+            <>
+              <View style={ms.photoContainer}>
+                <View
+                  style={ms.photoGrid}
+                  onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
                 >
-                  교체요청건이 없습니다.
-                </Text>
-              ) : (
-                replacementRequests.map(req => (
-                  <Pressable
-                    key={req.id}
-                    onPress={() => {
-                      setSelectedRequest(req);
-                      updateField('selectedDispatch', req);
-                      nextStep();
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'stretch',
-                      justifyContent: 'space-between',
-                      borderRadius: 4,
-                      borderWidth: 1,
-                      borderColor: colors.GRAY_10,
-                      backgroundColor: colors.WHITE,
-                      paddingVertical: 8,
-                      paddingHorizontal: 16,
-                      marginTop: 8,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <View
-                        style={{
-                          width: 2,
-                          height: '100%',
-                          backgroundColor: colors.PRIMARY_50,
-                          borderRadius: 1,
-                          marginRight: 8,
-                          alignSelf: 'stretch',
-                          marginLeft: -8,
-                        }}
-                      />
-
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginTop: -4,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: colors.GRAY_60,
-                            fontWeight: '500',
-                            lineHeight: 16.8,
-                            marginRight: 8,
-                          }}
-                        >
-                          {req.company}
-                        </Text>
-                        <View
-                          style={{
-                            borderWidth: 1,
-                            borderColor: colors.GRAY_10,
-                            borderRadius: 50,
-                            paddingHorizontal: 10,
-                            paddingVertical: 2,
-                            marginTop: 2,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              fontSize: 11,
-                              color: colors.GRAY_60,
-                              fontWeight: '400',
-                              lineHeight: 15.4,
-                            }}
-                          >
-                            {req.model}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-
-                    <View
-                      style={{
-                        backgroundColor: colors.YELLOW_00,
-                        borderRadius: 10,
-                        paddingHorizontal: 8,
-                        paddingVertical: 2,
-                        marginTop: -2,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 11,
-                          fontWeight: '400',
-                          color: colors.GRAY_60,
-                          lineHeight: 15.4,
-                        }}
-                      >
-                        교체건
-                      </Text>
-                    </View>
-                  </Pressable>
-                ))
-              )}
-            </>
-          )}
-
-          {step > 1 && (
-            <>
-              <View style={ms.headerRow}>
-                <Text style={ms.title}>교체계약서 작성</Text>
-              </View>
-
-              <View style={ms.vehicleInfo}>
-                <Text style={ms.vehicleTag}>{vehicle.model}</Text>
-                <Text style={ms.vehicleTag}>{vehicle.number}</Text>
-              </View>
-
-              <View style={ms.stepDots}>
-                {[2, 3, 4, 5].map(i => (
-                  <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
-                ))}
-              </View>
-
-              {step === 2 && (
-                <>
-                  <CommonInput
-                    placeholder="고객 성함"
-                    value={formData.customerName}
-                    onChangeText={v => updateField('customerName', v)}
-                  />
-                  <CommonInput
-                    placeholder="* 고객 연락처"
-                    value={formData.phone}
-                    onChangeText={v => updateField('phone', v)}
-                  />
-                  <CommonInput
-                    placeholder="고객 주소"
-                    value={formData.address}
-                    onChangeText={v => updateField('address', v)}
-                  />
-                </>
-              )}
-
-              {step === 3 && (
-                <>
-                  <CommonInput
-                    placeholder="고객 차종"
-                    value={formData.customerCarModel}
-                    onChangeText={v => updateField('customerCarModel', v)}
-                  />
-                  <CommonInput
-                    placeholder="고객 차량번호"
-                    value={formData.customerCarNumber}
-                    onChangeText={v => updateField('customerCarNumber', v)}
-                  />
-                  <CommonInput
-                    placeholder="고객 배기량"
-                    value={formData.customerDisplacement}
-                    onChangeText={v => updateField('customerDisplacement', v)}
-                  />
-                  <CommonInput
-                    placeholder="보험사"
-                    value={formData.insuranceCompany}
-                    onChangeText={v => updateField('insuranceCompany', v)}
-                  />
-                  <CommonInput
-                    placeholder="접수번호"
-                    value={formData.reportNumber}
-                    onChangeText={v => updateField('reportNumber', v)}
-                  />
-                  <CommonSearchDropdown
-                    placeholder="(요청업체)"
-                    selectedValue={formData.requestCompany}
-                    onSelect={(v, isCustom) =>
-                      updateField(
-                        'requestCompany',
-                        isCustom ? `${v} (기타)` : v,
-                      )
-                    }
-                    onSearch={async q =>
-                      ['한라렌트카', '한독렌트카', '한양공업사'].filter(i =>
-                        i.includes(q),
-                      )
-                    }
-                  />
-                  <CommonSearchDropdown
-                    placeholder="(입고공업사)"
-                    selectedValue={formData.garageCompany}
-                    onSelect={(v, isCustom) =>
-                      updateField('garageCompany', isCustom ? `${v} (기타)` : v)
-                    }
-                    onSearch={async q =>
-                      ['ESA모터스', '성지공업사', '기아서비스'].filter(i =>
-                        i.includes(q),
-                      )
-                    }
-                  />
-                </>
-              )}
-
-              {step === 4 && (
-                <>
-                  <View style={ms.photoContainer}>
-                    <View
-                      style={ms.photoGrid}
-                      onLayout={e =>
-                        setContainerWidth(e.nativeEvent.layout.width)
-                      }
-                    >
-                      {[
-                        ...photos,
-                        ...(photos.length < 9 ? [{ isAddButton: true }] : []),
-                      ].map((item: any, i) =>
-                        item.isAddButton ? (
-                          <Pressable
-                            key={`add-${i}`}
-                            style={[
-                              ms.photoAddBtn,
-                              { width: itemSize, height: itemSize },
-                            ]}
-                            onPress={handleAddPhoto}
-                          >
-                            <View style={ms.addIconCircle}>
-                              <Image
-                                source={require('../../assets/common/plus.png')}
-                                style={ms.addIcon}
-                              />
-                            </View>
-                            <Text style={ms.addText}>사진추가</Text>
-                          </Pressable>
-                        ) : (
-                          <Pressable
-                            key={i}
-                            onPress={() => handleReplacePhoto(i)}
-                            style={[
-                              ms.photoItem,
-                              { width: itemSize, height: itemSize },
-                            ]}
-                            hitSlop={HIT_SLOP.COMPACT}
-                          >
-                            <Image
-                              source={{ uri: item.uri }}
-                              style={ms.photoThumb}
-                              resizeMode="cover"
-                            />
-                            <Pressable
-                              style={ms.removeOverlay}
-                              onPress={() => removePhoto(i)}
-                            >
-                              <Image
-                                source={require('../../assets/common/close.png')}
-                                style={ms.removeIcon}
-                              />
-                            </Pressable>
-                          </Pressable>
-                        ),
-                      )}
-                    </View>
-                    <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
-                  </View>
-                  <CommonAmountInput
-                    placeholder="유류량 입력"
-                    value={formData.fuel}
-                    onChangeText={v => updateField('fuel', v)}
-                    unit="km"
-                  />
-                </>
-              )}
-
-              {step === 5 && (
-                <>
-                  <View style={ms.signatureBox}>
-                    <Text style={ms.subTitle}>고객 서명란</Text>
-                    <View style={ms.signatureWrapper}>
-                      {!isSigning &&
-                        (!formData.signature ||
-                          formData.signature.length === 0) && (
-                          <Text style={ms.signaturePlaceholder}>
-                            서명해주세요
-                          </Text>
-                        )}
-                      <SignatureScreen
-                        key={signatureKey}
-                        ref={sigRef}
-                        onOK={handleSignature}
-                        onEnd={() => {
-                          sigRef.current?.readSignature?.();
-                          setIsSigning(false);
-                        }}
-                        onBegin={() => setIsSigning(true)}
-                        dataURL={formData.signature}
-                        autoClear={false}
-                        webStyle={signatureStyle}
-                      />
-                    </View>
-                    <Pressable style={ms.clearBtn} onPress={handleClear}>
-                      <Text style={ms.clearText}>지우기</Text>
-                    </Pressable>
-                  </View>
-                </>
-              )}
-
-              <View style={ms.footer}>
-                {step === 5 ? (
-                  <>
-                    <Pressable
-                      style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
-                      disabled={!isComplete}
-                      onPress={handleSendContract}
-                    >
-                      <Text
+                  {[
+                    ...photos,
+                    ...(photos.length < 9 ? [{ isAddButton: true }] : []),
+                  ].map((item: any, i) =>
+                    item.isAddButton ? (
+                      <Pressable
+                        key={`add-${i}`}
                         style={[
-                          ms.sendBtnText,
-                          !isComplete && { color: colors.GRAY_40 },
+                          ms.photoAddBtn,
+                          { width: itemSize, height: itemSize },
                         ]}
+                        onPress={handleAddPhoto}
                       >
-                        교체계약서 카카오톡 전송하기
-                      </Text>
-                    </Pressable>
-                    <View style={ms.footerRow}>
+                        <View style={ms.addIconCircle}>
+                          <Image
+                            source={require('../../assets/common/plus.png')}
+                            style={ms.addIcon}
+                          />
+                        </View>
+                        <Text style={ms.addText}>사진추가</Text>
+                      </Pressable>
+                    ) : (
                       <Pressable
-                        style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                        onPress={prevStep}
+                        key={i}
+                        onPress={() => handleReplacePhoto(i)}
+                        style={[
+                          ms.photoItem,
+                          { width: itemSize, height: itemSize },
+                        ]}
+                        hitSlop={HIT_SLOP.COMPACT}
                       >
                         <Image
-                          source={require('../../assets/common/left_arrow.png')}
-                          style={ms.prevIcon}
+                          source={{ uri: item.uri }}
+                          style={ms.photoThumb}
+                          resizeMode="cover"
                         />
-                        <Text style={[ms.footerBtnText, ms.prevText]}>
-                          이전
-                        </Text>
+                        <Pressable
+                          style={ms.removeOverlay}
+                          onPress={() => removePhoto(i)}
+                        >
+                          <Image
+                            source={require('../../assets/common/close.png')}
+                            style={ms.removeIcon}
+                          />
+                        </Pressable>
                       </Pressable>
-                    </View>
-                  </>
-                ) : (
-                  <View style={ms.footerRow}>
-                    {step > 2 && (
-                      <Pressable
-                        style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                        onPress={prevStep}
-                      >
-                        <Image
-                          source={require('../../assets/common/left_arrow.png')}
-                          style={ms.prevIcon}
-                        />
-                        <Text style={[ms.footerBtnText, ms.prevText]}>
-                          이전
-                        </Text>
-                      </Pressable>
+                    ),
+                  )}
+                </View>
+                <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
+              </View>
+              <CommonAmountInput
+                placeholder="유류량 입력"
+                value={formData.fuel}
+                onChangeText={v => updateField('fuel', v)}
+                unit="km"
+              />
+            </>
+          )}
+
+          {step === 4 && (
+            <>
+              <View style={ms.signatureBox}>
+                <Text style={ms.subTitle}>고객 서명란</Text>
+                <View style={ms.signatureWrapper}>
+                  {!isSigning &&
+                    (!formData.signature ||
+                      formData.signature.length === 0) && (
+                      <Text style={ms.signaturePlaceholder}>서명해주세요</Text>
                     )}
-                    <Pressable
-                      style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                      onPress={nextStep}
-                    >
-                      <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
-                      <Image
-                        source={require('../../assets/common/right_arrow.png')}
-                        style={ms.nextIcon}
-                      />
-                    </Pressable>
-                  </View>
-                )}
+                  <SignatureScreen
+                    key={signatureKey}
+                    ref={sigRef}
+                    onOK={handleSignature}
+                    onEnd={() => {
+                      sigRef.current?.readSignature?.();
+                      setIsSigning(false);
+                    }}
+                    onBegin={() => setIsSigning(true)}
+                    dataURL={formData.signature}
+                    autoClear={false}
+                    webStyle={signatureStyle}
+                  />
+                </View>
+                <Pressable style={ms.clearBtn} onPress={handleClear}>
+                  <Text style={ms.clearText}>지우기</Text>
+                </Pressable>
               </View>
             </>
           )}
+
+          <View style={ms.footer}>
+            {step === 4 ? (
+              <>
+                <Pressable
+                  style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
+                  disabled={!isComplete}
+                  onPress={handleSendContract}
+                >
+                  <Text
+                    style={[
+                      ms.sendBtnText,
+                      !isComplete && { color: colors.GRAY_40 },
+                    ]}
+                  >
+                    교체계약서 카카오톡 전송하기
+                  </Text>
+                </Pressable>
+                <View style={ms.footerRow}>
+                  <Pressable
+                    style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
+                    onPress={prevStep}
+                  >
+                    <Image
+                      source={require('../../assets/common/left_arrow.png')}
+                      style={ms.prevIcon}
+                    />
+                    <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                  </Pressable>
+                </View>
+              </>
+            ) : (
+              <View style={ms.footerRow}>
+                {step > 1 && (
+                  <Pressable
+                    style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
+                    onPress={prevStep}
+                  >
+                    <Image
+                      source={require('../../assets/common/left_arrow.png')}
+                      style={ms.prevIcon}
+                    />
+                    <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                  </Pressable>
+                )}
+                <Pressable
+                  style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
+                  onPress={nextStep}
+                >
+                  <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
+                  <Image
+                    source={require('../../assets/common/right_arrow.png')}
+                    style={ms.nextIcon}
+                  />
+                </Pressable>
+              </View>
+            )}
+          </View>
         </View>
 
         <CommonModal
