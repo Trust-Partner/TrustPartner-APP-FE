@@ -57,7 +57,14 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const { closeModal } = useContractModalStore();
 
-  /** 서명 처리 */
+  // 파트너 검색
+  const searchPartners = async (query: string) => {
+    if (!query.trim()) return [];
+    const list = await fetchSimplePartners(query);
+    return list.map(p => p.partnerName);
+  };
+
+  // 서명 처리
   const handleSignature = (signature: string) => {
     if (!signature) return;
     updateField('signature', signature);
@@ -69,7 +76,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     setSignatureKey(prev => prev + 1);
   };
 
-  /** 갤러리 권한 */
+  // 갤러리 권한
   const requestGalleryPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'android') {
       try {
@@ -197,11 +204,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 onSelect={(v, isCustom) =>
                   updateField('requestCompany', isCustom ? `${v} (기타)` : v)
                 }
-                onSearch={async q =>
-                  ['한라렌트카', '한독렌트카', '한양공업사'].filter(i =>
-                    i.includes(q),
-                  )
-                }
+                onSearch={searchPartners}
               />
               <CommonSearchDropdown
                 placeholder="(입고공업사)"
@@ -209,11 +212,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 onSelect={(v, isCustom) =>
                   updateField('garageCompany', isCustom ? `${v} (기타)` : v)
                 }
-                onSearch={async q =>
-                  ['ESA모터스', '성지공업사', '기아서비스'].filter(i =>
-                    i.includes(q),
-                  )
-                }
+                onSearch={searchPartners}
               />
             </>
           )}
@@ -394,3 +393,4 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
 
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
+import { fetchSimplePartners } from '../../api/partners';
