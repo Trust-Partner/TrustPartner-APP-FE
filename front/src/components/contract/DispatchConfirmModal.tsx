@@ -15,6 +15,8 @@ import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import CommonTextarea from '../common/CommonTextarea';
 import { ContractVehicleBase } from '../../types/contractVehicle';
+import { useDispatchList } from '../../hooks/dispatch/useDispatchList';
+import { mapDispatchItemToVM } from '../../utils/dispatchRequestMapping';
 
 interface Props {
   onBack: () => void;
@@ -29,10 +31,11 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const { closeModal } = useContractModalStore();
 
-  // 교체건이 아닌 배차요청건만
-  const dispatchRequests = mockDispatchRequests.filter(
-    req => !req.isReplacement,
-  );
+  const { data, isLoading } = useDispatchList();
+  const dispatchRequests =
+    data?.dispatchList
+      .filter(item => item.dispatchStatus === 'REQUESTED')
+      .map(mapDispatchItemToVM) ?? [];
 
   useEffect(() => {
     (async () => {
@@ -108,28 +111,56 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               {dispatchRequests.length === 0 ? (
                 <Text style={s.emptyText}>배차 요청건이 없습니다.</Text>
               ) : (
-                dispatchRequests.map(req => (
-                  <Pressable
-                    key={req.id}
-                    onPress={() => {
-                      setSelectedRequest(req);
-                      setStep(2);
-                    }}
-                    style={s.requestCard}
-                  >
-                    <View style={s.requestLeft}>
-                      <View style={s.leftLine} />
-                      <View style={s.companyRow}>
-                        <Text style={s.companyText}>{req.company}</Text>
-                        <View style={s.badge}>
-                          <Text style={s.badgeText}>{req.model}</Text>
-                          <Text style={s.badgeText}>{req.year}</Text>
-                          <Text style={s.badgeText}>{req.displacement}</Text>
+                dispatchRequests.map(req =>
+                  req.isReplacement ? (
+                    <Pressable
+                      key={req.id}
+                      onPress={() => {
+                        setSelectedRequest(req);
+                        setStep(2);
+                      }}
+                      style={s.replaceRequestCard}
+                    >
+                      <View style={s.replaceLeft}>
+                        <View style={s.replaceLine} />
+
+                        <View style={s.replaceCompanyRow}>
+                          <Text style={s.replaceCompanyText}>
+                            {req.company}
+                          </Text>
+                          <View style={s.replaceModelBadge}>
+                            <Text style={s.replaceModelText}>{req.model}</Text>
+                          </View>
                         </View>
                       </View>
-                    </View>
-                  </Pressable>
-                ))
+
+                      <View style={s.replaceBadge}>
+                        <Text style={s.replaceBadgeText}>교체건</Text>
+                      </View>
+                    </Pressable>
+                  ) : (
+                    <Pressable
+                      key={req.id}
+                      onPress={() => {
+                        setSelectedRequest(req);
+                        setStep(2);
+                      }}
+                      style={s.requestCard}
+                    >
+                      <View style={s.requestLeft}>
+                        <View style={s.leftLine} />
+                        <View style={s.companyRow}>
+                          <Text style={s.companyText}>{req.company}</Text>
+                          <View style={s.badge}>
+                            <Text style={s.badgeText}>{req.model}</Text>
+                            <Text style={s.badgeText}>{req.year}</Text>
+                            <Text style={s.badgeText}>{req.displacement}</Text>
+                          </View>
+                        </View>
+                      </View>
+                    </Pressable>
+                  ),
+                )
               )}
             </>
           )}
@@ -246,6 +277,70 @@ const s = StyleSheet.create({
     textAlign: 'center',
     color: colors.GRAY_50,
     marginTop: 8,
+  },
+  replaceRequestCard: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    backgroundColor: colors.WHITE,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginTop: 8,
+  },
+  replaceLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  replaceLine: {
+    width: 2,
+    height: '100%',
+    backgroundColor: colors.PRIMARY_50,
+    borderRadius: 1,
+    marginRight: 8,
+    alignSelf: 'stretch',
+    marginLeft: -8,
+  },
+  replaceCompanyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: -4,
+  },
+  replaceCompanyText: {
+    fontSize: 12,
+    color: colors.GRAY_60,
+    fontWeight: '500',
+    lineHeight: 16.8,
+    marginRight: 8,
+  },
+  replaceModelBadge: {
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    marginTop: 2,
+  },
+  replaceModelText: {
+    fontSize: 11,
+    color: colors.GRAY_60,
+    fontWeight: '400',
+    lineHeight: 15.4,
+  },
+  replaceBadge: {
+    backgroundColor: colors.YELLOW_00,
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    marginTop: -2,
+  },
+  replaceBadgeText: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_60,
+    lineHeight: 15.4,
   },
   requestCard: {
     flexDirection: 'row',
