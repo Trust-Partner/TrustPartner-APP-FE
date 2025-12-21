@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -18,11 +18,20 @@ import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import CommonSearchDropdown from '../common/CommonSearchDropdown';
+import CommonSearchDropdown, {
+  CommonSearchDropdownRef,
+} from '../common/CommonSearchDropdown';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { fetchSimplePartners } from '../../api/partners';
+import { useCreateContract } from '../../hooks/contracts/useCreateContract';
+import {
+  fetchContractUploadUrls,
+  saveInsuranceContract,
+} from '../../api/contract';
+import { uploadToS3 } from '../../utils/uploadToS3';
+import { base64ToFile } from '../../utils/base64ToFile';
 
 interface Props {
   onBack: () => void;
@@ -30,22 +39,49 @@ interface Props {
 }
 
 export default function InsuranceContractModal({ onBack, vehicle }: Props) {
-  if (!vehicle) return null;
+  const { getDispatchId, closeModal } = useContractModalStore();
+  const dispatchId = getDispatchId(vehicle.id);
 
-  const requiredFields = ['phone', 'requestCompany', 'garageCompany'];
+  /** ================= contractId ================= */
+  const contractIdRef = useRef<number | null>(null);
+  const { mutateAsync: createContract } = useCreateContract();
+
+  const ensureContractId = async () => {
+    console.log('[ensureContractId] enter');
+
+    if (contractIdRef.current) {
+      console.log('[ensureContractId] reuse:', contractIdRef.current);
+      return contractIdRef.current;
+    }
+
+    console.log('[ensureContractId] before createContract');
+
+    const res = await createContract({
+      carDispatchId: dispatchId ?? null,
+      contractType: 'INSURANCE_CONTRACT',
+    });
+
+    const contractId = res.contractId ?? res.generalContractId;
+    // res.insuranceContractId;
+
+    console.log('[ensureContractId] resolved contractId:', contractId);
+
+    if (!contractId) {
+      throw new Error('contractId is undefined');
+    }
+
+    contractIdRef.current = contractId;
+    return contractId;
+  };
+
+  /** ================= form ================= */
+  const requiredFields = ['phone', 'requestCompany', 'repairShop'];
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
 
-  useEffect(() => {
-    const initialMissing = requiredFields.filter(k => !formData[k]);
-    setMissingFields(initialMissing);
-    setIsComplete(initialMissing.length === 0);
-  }, []);
-
   const {
     updateField,
-    saveDraftData,
     step,
     nextStep,
     prevStep,
@@ -57,81 +93,154 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     signatureStyle,
   } = useContractForm('insurance', vehicle.id.toString(), updated => {
     setFormData(updated);
-    const mf = requiredFields.filter(k => !updated[k] || updated[k] === '');
+    const mf = requiredFields.filter(k => !updated[k]);
     setMissingFields(mf);
     setIsComplete(mf.length === 0);
   });
 
-  const [isSigning, setIsSigning] = useState(false);
-  const [signatureKey, setSignatureKey] = useState(0);
+  /** ================= 사진 UI ================= */
   const [containerWidth, setContainerWidth] = useState(0);
   const itemSize = (containerWidth - 24) / 3;
-  const [sendModalVisible, setSendModalVisible] = useState(false);
-  const { closeModal } = useContractModalStore();
 
-  // 파트너 검색
-  const searchPartners = async (query: string) => {
-    if (!query.trim()) return [];
-    const list = await fetchSimplePartners(query);
-    return list.map(p => p.partnerName);
-  };
+  /** ================= 서명 ================= */
+  const [isSigning, setIsSigning] = useState(false);
+  const [signatureKey, setSignatureKey] = useState(0);
 
-  // 서명 처리
   const handleSignature = (signature: string) => {
-    if (!signature) return;
     updateField('signature', signature);
-    setSignatureKey(prev => prev + 1);
+    setSignatureKey(p => p + 1);
   };
+
   const handleClear = () => {
     updateField('signature', '');
     sigRef.current?.clearSignature?.();
-    setSignatureKey(prev => prev + 1);
+    setSignatureKey(p => p + 1);
   };
 
-  //   갤러리 권한
-  const requestGalleryPermission = async (): Promise<boolean> => {
-    if (Platform.OS === 'android') {
-      try {
-        const permission =
-          Platform.Version >= 33
-            ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-            : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+  /** ================= 업로드 ================= */
+  const uploadFiles = async (contractId: number) => {
+    const uploadUrls = await fetchContractUploadUrls(contractId);
 
-        const granted = await PermissionsAndroid.request(permission);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(
-            '권한 거부됨',
-            '사진을 추가하려면 갤러리 권한이 필요합니다.',
-          );
-          return false;
-        }
-        return true;
-      } catch (err) {
-        console.warn('권한 요청 오류:', err);
-        return false;
+    const photoKeys: string[] = [];
+    let uploadIndex = 0;
+
+    for (const photo of photos) {
+      if (photo.source === 'remote') {
+        photoKeys.push(photo.key);
+        continue;
       }
+
+      const uploadInfo = uploadUrls.contractPhotos[uploadIndex];
+      if (!uploadInfo || !photo.asset.uri) break;
+
+      await uploadToS3(uploadInfo.uploadUrl, {
+        uri: photo.asset.uri,
+        type: photo.asset.type ?? 'image/jpeg',
+      });
+
+      photoKeys.push(uploadInfo.fileKey);
+      uploadIndex++;
     }
-    return true;
+
+    let signatureKey = '';
+    if (formData.signature && uploadUrls.signaturePhoto) {
+      const file = base64ToFile(formData.signature, 'signature.png');
+      await uploadToS3(uploadUrls.signaturePhoto.uploadUrl, file);
+      signatureKey = uploadUrls.signaturePhoto.fileKey;
+    }
+
+    return { photoKeys, signatureKey };
+  };
+
+  /** ================= 저장 ================= */
+  const saveFlow = async (isDraft: boolean) => {
+    const contractId = await ensureContractId();
+    console.log('[saveFlow] contractId:', contractId);
+    const { photoKeys, signatureKey } = await uploadFiles(contractId);
+    console.log('[saveFlow] upload done', { photoKeys, signatureKey });
+
+    await saveInsuranceContract(contractId, {
+      customerName: formData.customerName ?? '',
+      customerPhoneNumber: formData.phone ?? '',
+      customerAddress: formData.address ?? '',
+      customerCarType: formData.customerCarType ?? '',
+      customerCarNumber: formData.customerCarNumber ?? '',
+      customerCarDisplacement: formData.customerDisplacement ?? '',
+      insuranceCompanyName: formData.insuranceCompany ?? '',
+      insuranceApplicationNumber: formData.claimNumber ?? '',
+      partnerId: formData.requestCompanyId ?? '',
+      repairShopId: formData.repairShopId ?? '',
+      contractPhotoKeys: photoKeys,
+      customerSignatureKey: signatureKey,
+      fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
+      isDraft,
+    });
+
+    console.log('[saveFlow] saveInsuranceContract success');
+  };
+
+  const handleSaveDraft = async () => {
+    try {
+      commitAllDropdowns();
+      await saveFlow(true);
+      Alert.alert('임시저장 완료');
+    } catch {
+      Alert.alert('임시저장 실패');
+    }
+  };
+
+  const [sendModalVisible, setSendModalVisible] = useState(false);
+
+  const handleSendContract = async () => {
+    try {
+      commitAllDropdowns();
+      await saveFlow(false);
+      setSendModalVisible(true);
+    } catch {
+      Alert.alert('전송 실패');
+    }
+  };
+
+  /** ================= 갤러리 ================= */
+  const requestGalleryPermission = async () => {
+    if (Platform.OS !== 'android') return true;
+    const permission =
+      Platform.Version >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+    const granted = await PermissionsAndroid.request(permission);
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
   };
 
   const handleAddPhoto = async () => {
     if (!(await requestGalleryPermission())) return;
     launchImageLibrary(
       { mediaType: 'photo', selectionLimit: 9 - photos.length },
-      res => {
-        if (res.assets) addPhotos(res.assets);
-      },
+      res => res.assets && addPhotos(res.assets),
     );
   };
 
   const handleReplacePhoto = async (i: number) => {
     if (!(await requestGalleryPermission())) return;
     launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, res => {
-      if (res.assets && res.assets[0]) replacePhoto(i, res.assets[0]);
+      if (res.assets?.[0]) replacePhoto(i, res.assets[0]);
     });
   };
 
-  const handleSendContract = () => setSendModalVisible(true);
+  /** ================= 파트너 ================= */
+  const searchPartners = async (q: string) => {
+    if (!q.trim()) return [];
+    const list = await fetchSimplePartners(q);
+    return list.map(p => p.partnerName);
+  };
+
+  const requestCompanyRef = useRef<CommonSearchDropdownRef>(null);
+  const repairShopRef = useRef<CommonSearchDropdownRef>(null);
+
+  const commitAllDropdowns = () => {
+    requestCompanyRef.current?.commit();
+    repairShopRef.current?.commit();
+  };
 
   return (
     <Modal
@@ -215,19 +324,17 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   onChangeText={v => updateField('claimNumber', v)}
                 />
                 <CommonSearchDropdown
+                  ref={requestCompanyRef}
                   placeholder="* (요청업체)"
-                  selectedValue={formData.requestCompany}
-                  onSelect={(v, isCustom) =>
-                    updateField('requestCompany', isCustom ? `${v} (기타)` : v)
-                  }
+                  selectedValue={formData.requestCompanyId}
+                  onSelect={v => updateField('requestCompany', v)}
                   onSearch={searchPartners}
                 />
                 <CommonSearchDropdown
+                  ref={repairShopRef}
                   placeholder="* (입고공업사)"
-                  selectedValue={formData.garageCompany}
-                  onSelect={(v, isCustom) =>
-                    updateField('repairShop', isCustom ? `${v} (기타)` : v)
-                  }
+                  selectedValue={formData.repairShopId}
+                  onSelect={v => updateField('repairShop', v)}
                   onSearch={searchPartners}
                 />
               </>
@@ -373,7 +480,10 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                 <View style={ms.footerRow}>
                   <Pressable
                     style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                    onPress={prevStep}
+                    onPress={() => {
+                      commitAllDropdowns();
+                      prevStep();
+                    }}
                   >
                     <Image
                       source={require('../../assets/common/left_arrow.png')}
@@ -383,7 +493,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   </Pressable>
                   <Pressable
                     style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                    onPress={saveDraftData}
+                    onPress={handleSaveDraft}
                   >
                     <Text style={[ms.footerBtnText, ms.draftText]}>
                       임시저장
@@ -397,7 +507,10 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   <>
                     <Pressable
                       style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                      onPress={saveDraftData}
+                      onPress={() => {
+                        console.log('[UI] 임시저장 버튼 클릭');
+                        handleSaveDraft();
+                      }}
                     >
                       <Text style={[ms.footerBtnText, ms.draftText]}>
                         임시저장
@@ -405,7 +518,10 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                     <Pressable
                       style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                      onPress={nextStep}
+                      onPress={() => {
+                        commitAllDropdowns();
+                        nextStep();
+                      }}
                     >
                       <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                       <Image
@@ -418,7 +534,10 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   <>
                     <Pressable
                       style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                      onPress={prevStep}
+                      onPress={() => {
+                        commitAllDropdowns();
+                        prevStep();
+                      }}
                     >
                       <Image
                         source={require('../../assets/common/left_arrow.png')}
@@ -428,7 +547,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                     <Pressable
                       style={[ms.footerBtn, ms.draftBtn, { flex: 2 }]}
-                      onPress={saveDraftData}
+                      onPress={handleSaveDraft}
                     >
                       <Text style={[ms.footerBtnText, ms.draftText]}>
                         임시저장
@@ -436,7 +555,10 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                     <Pressable
                       style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                      onPress={nextStep}
+                      onPress={() => {
+                        commitAllDropdowns();
+                        nextStep();
+                      }}
                     >
                       <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
                       <Image

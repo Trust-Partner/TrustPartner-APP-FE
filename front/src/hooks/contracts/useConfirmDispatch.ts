@@ -13,8 +13,8 @@ export const useConfirmDispatch = () => {
   return useMutation<ConfirmDispatchResponse, Error, ConfirmDispatchRequest>({
     mutationFn: confirmDispatch,
 
-    onSuccess: res => {
-      setDispatchId(res.dispatchId);
+    onSuccess: (res, variables) => {
+      setDispatchId(variables.carId, res.dispatchId);
 
       queryClient.invalidateQueries({
         queryKey: ['dispatchList'],

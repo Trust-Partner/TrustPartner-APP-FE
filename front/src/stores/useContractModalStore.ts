@@ -33,8 +33,10 @@ interface ContractModalState {
   selectedVehicle?: ContractVehicleBase | null;
   setSelectedVehicle: (v: ContractVehicleBase | null) => void;
 
-  dispatchId?: number | null;
-  setDispatchId: (id: number | null) => void;
+  dispatchIdByVehicle: Record<number, number | null>;
+  setDispatchId: (vehicleId: number, dispatchId: number | null) => void;
+  getDispatchId: (vehicleId: number) => number | null;
+  clearDispatchId: (vehicleId: number) => void;
 
   openModal: (type: ModalType, originType?: OriginType) => void;
   closeModal: () => void;
@@ -48,10 +50,10 @@ interface ContractModalState {
   loadDraft: (type: string, vehicleId: string) => Promise<DraftData | null>;
 }
 
-export const useContractModalStore = create<ContractModalState>(set => ({
+export const useContractModalStore = create<ContractModalState>((set, get) => ({
   visible: false,
   modalType: 'none',
-  originType: 'main', // 기본은 main
+  originType: 'main',
 
   options: {
     general: true,
@@ -62,12 +64,26 @@ export const useContractModalStore = create<ContractModalState>(set => ({
 
   drafts: {},
   selectedVehicle: undefined,
-
-  dispatchId: null,
-
   setSelectedVehicle: v => set({ selectedVehicle: v }),
 
-  setDispatchId: id => set({ dispatchId: id }),
+  dispatchIdByVehicle: {},
+
+  setDispatchId: (vehicleId, dispatchId) =>
+    set(state => ({
+      dispatchIdByVehicle: {
+        ...state.dispatchIdByVehicle,
+        [vehicleId]: dispatchId,
+      },
+    })),
+
+  getDispatchId: vehicleId => get().dispatchIdByVehicle[vehicleId] ?? null,
+
+  clearDispatchId: vehicleId =>
+    set(state => {
+      const next = { ...state.dispatchIdByVehicle };
+      delete next[vehicleId];
+      return { dispatchIdByVehicle: next };
+    }),
 
   openModal: (type, originType = 'main') =>
     set({
@@ -82,7 +98,6 @@ export const useContractModalStore = create<ContractModalState>(set => ({
       modalType: 'none',
       originType: 'main',
       selectedVehicle: undefined,
-      dispatchId: null,
     }),
 
   goTo: type => set({ modalType: type }),

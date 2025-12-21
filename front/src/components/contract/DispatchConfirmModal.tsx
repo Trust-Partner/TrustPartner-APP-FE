@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Platform,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,7 +32,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
   const [autoSave, setAutoSave] = useState(false);
   const [message, setMessage] = useState('');
   const [sendModalVisible, setSendModalVisible] = useState(false);
-  const { closeModal } = useContractModalStore();
+  const { closeModal, setDispatchId } = useContractModalStore();
 
   const { mutateAsync: confirmDispatch, isPending: isConfirming } =
     useConfirmDispatch();
@@ -66,15 +67,19 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
   }, [vehicle.id]);
 
   const handleConfirm = async () => {
-    if (!selectedRequest) return;
+    if (!selectedRequest || isConfirming) return;
 
     try {
-      await confirmDispatch({
+      const res = await confirmDispatch({
         carId: vehicle.id,
         dispatchId: selectedRequest.id,
         message,
         autoSave,
       });
+
+      setDispatchId(vehicle.id, res.dispatchId);
+
+      setSendModalVisible(true);
 
       if (autoSave) {
         await AsyncStorage.setItem('dispatch_autosave', 'true');
@@ -83,11 +88,13 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
         await AsyncStorage.removeItem('dispatch_autosave');
         await AsyncStorage.removeItem('dispatch_message');
       }
-
-      setSendModalVisible(true);
     } catch (e) {
       console.warn('배차 확정 실패:', e);
-      setSendModalVisible(true);
+
+      Alert.alert(
+        '배차 확정 실패',
+        '배차 확정에 실패했습니다. 잠시 후 다시 시도해주세요.',
+      );
     }
   };
 

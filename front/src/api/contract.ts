@@ -33,11 +33,12 @@ export type ContractType =
 
 // 계약서 최초 생성
 export interface CreateContractRequest {
-  carDispatchId: number;
+  carDispatchId: number | null;
   contractType: ContractType;
 }
 
 export interface CreateContractResponse {
+  generalContractId: number;
   contractId: number;
 }
 
@@ -65,7 +66,9 @@ export interface ContractUploadUrlsResponse {
 export const fetchContractUploadUrls = async (
   contractId: number,
 ): Promise<ContractUploadUrlsResponse> => {
-  const res = await axiosInstance.post(`/contracts/${contractId}/upload-urls`);
+  const res = await axiosInstance.post(
+    `/contracts/v1/${contractId}/upload-urls`,
+  );
   return res.data.data;
 };
 
@@ -92,7 +95,7 @@ export const saveGeneralContract = async (
   payload: SaveGeneralContractRequest,
 ) => {
   const res = await axiosInstance.put(
-    `/contracts/general/${contractId}`,
+    `/contracts/v1/general/${contractId}`,
     payload,
   );
   return res.data.data;
@@ -100,17 +103,21 @@ export const saveGeneralContract = async (
 
 // 보험 계약서 저장
 export interface SaveInsuranceContractRequest {
-  requestCompany: string;
-  repairShop: string;
+  customerName: string;
+  customerPhoneNumber: string;
+  customerAddress: string;
+  customerCarType: string;
+  customerCarNumber: string;
+  customerCarDisplacement: string;
 
   insuranceCompanyName: string;
   insuranceApplicationNumber: string;
-  insuranceManagerName: string;
-  insuranceManagerPhoneNumber: string;
 
-  memo?: string;
+  partnerId: string;
+  repairShopId: string;
 
   contractPhotoKeys: string[];
+  fuelQuantity?: number;
   customerSignatureKey: string;
 
   isDraft: boolean;
@@ -121,8 +128,57 @@ export const saveInsuranceContract = async (
   payload: SaveInsuranceContractRequest,
 ) => {
   const res = await axiosInstance.put(
-    `/contracts/insurance/${contractId}`,
+    `/contracts/v1/insurance/${contractId}`,
     payload,
   );
+  return res.data.data;
+};
+
+// 계약서 조회 및 임시저장 불러오기
+export interface ContractDetailResponse {
+  contractId: number;
+  contractType: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
+
+  fuelQuantity?: number;
+  contractFilePaths: string[];
+  signatureFilePath?: string;
+
+  memo?: string;
+
+  customerDetail?: {
+    customerName?: string;
+    customerPhoneNumber?: string;
+    customerAddress?: string;
+    customerCarType?: string;
+    customerCarNumber?: string;
+    customerCarDisplacement?: string;
+  };
+
+  insuranceDetail?: {
+    insuranceCompanyName?: string;
+    insuranceApplicationNumber?: string;
+    insuranceManagerName?: string;
+    insuranceManagerPhoneNumber?: string;
+    insuranceFaxNumber?: string;
+  };
+
+  partnerInfo?: {
+    partnerId: string;
+    partnerName: string;
+  };
+
+  repairShopInfo?: {
+    partnerId: string;
+    partnerName: string;
+  };
+}
+
+export const fetchContractDetail = async (contractId: number) => {
+  const res = await axiosInstance.get<{
+    code: string;
+    message: string;
+    data: ContractDetailResponse;
+  }>(`/contracts/v1/${contractId}`);
+
   return res.data.data;
 };

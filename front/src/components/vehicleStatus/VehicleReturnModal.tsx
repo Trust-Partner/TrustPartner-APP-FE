@@ -8,6 +8,7 @@ import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { DispatchDetail } from '../../types/dispatch';
 import { useReturnCar } from '../../hooks/vehicleStatus/useReturnCar';
+import { useContractModalStore } from '../../stores/useContractModalStore';
 
 interface Props {
   visible: boolean;
@@ -27,6 +28,7 @@ export default function VehicleReturnModal({
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
+  const { clearDispatchId } = useContractModalStore();
   const { mutateAsync: returnCarMutate, isPending } = useReturnCar();
 
   const handleConfirm = async () => {
@@ -176,6 +178,7 @@ export default function VehicleReturnModal({
           hideCancel
           onConfirm={() => {
             setConfirmVisible(false);
+            clearDispatchId(vehicle.id);
             onClose('returned');
           }}
           onCancel={() => setConfirmVisible(false)}
