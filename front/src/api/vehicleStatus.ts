@@ -109,7 +109,7 @@ export const reserveCar = async (
 // 반납
 export interface ReturnCarRequest {
   carId: number;
-  locationName: 'ESA' | '렉시온';
+  locationId: number;
   needsWash: boolean;
   needsFuel: boolean;
 }
