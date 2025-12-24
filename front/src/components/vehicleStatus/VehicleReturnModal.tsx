@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, Image } from 'react-native';
+import { View, Text, Pressable, Image, Alert } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
@@ -8,6 +8,7 @@ import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { DispatchDetail } from '../../types/dispatch';
 import { useReturnCar } from '../../hooks/vehicleStatus/useReturnCar';
+import { useParkingLocations } from '../../hooks/location/useParkingLocations';
 
 interface Props {
   visible: boolean;
@@ -23,30 +24,35 @@ export default function VehicleReturnModal({
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [confirmVisible, setConfirmVisible] = useState(false);
 
+  const [selectedLocation, setSelectedLocation] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const { data: locations = [] } = useParkingLocations();
   const updateField = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
 
   const { mutateAsync: returnCarMutate, isPending } = useReturnCar();
 
-  const handleConfirm = async () => {
-    if (!formData.location) {
-      return;
-    }
+  const buildReturnPayload = () => ({
+    carId: vehicle.id,
+    locationId: selectedLocation!.id,
+    needsWash: !!formData.needWash,
+    needsFuel: !!formData.fuelLack,
+  });
 
-    const payload = {
-      carId: vehicle.id,
-      locationName: formData.location as 'ESA' | '렉시온',
-      needsWash: formData.needWash ?? false,
-      needsFuel: formData.fuelLack ?? false,
-    };
+  const handleSubmit = () => {
+    if (!selectedLocation) return;
 
-    try {
-      await returnCarMutate(payload);
-      setConfirmVisible(true);
-    } catch (e) {
-      console.log('returnCar error:', e);
-    }
+    returnCarMutate(buildReturnPayload(), {
+      onSuccess: () => {
+        setConfirmVisible(true);
+      },
+      onError: () => {
+        Alert.alert('오류', '차량 반납에 실패했습니다.');
+      },
+    });
   };
 
   return (
@@ -87,9 +93,17 @@ export default function VehicleReturnModal({
           {/* 위치 드롭다운 */}
           <CommonDropdown
             placeholder="위치를 선택하세요"
-            options={['ESA', '렉시온']}
-            selectedValue={formData.location}
-            onSelect={v => updateField('location', v)}
+            options={locations.map(l => l.locationName)}
+            selectedValue={selectedLocation?.name}
+            onSelect={name => {
+              const found = locations.find(l => l.locationName === name);
+              if (!found) return;
+
+              setSelectedLocation({
+                id: found.locationId,
+                name: found.locationName,
+              });
+            }}
           />
 
           {/* 연료부족 / 세차필요 */}
@@ -157,8 +171,17 @@ export default function VehicleReturnModal({
             </Pressable>
 
             <Pressable
-              style={[ms.footerBtn, { backgroundColor: colors.PRIMARY_50 }]}
-              onPress={handleConfirm}
+              disabled={!selectedLocation || isPending}
+              style={[
+                ms.footerBtn,
+                {
+                  backgroundColor:
+                    !selectedLocation || isPending
+                      ? colors.GRAY_15
+                      : colors.PRIMARY_50,
+                },
+              ]}
+              onPress={handleSubmit}
             >
               <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                 확인
