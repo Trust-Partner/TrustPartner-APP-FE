@@ -5,8 +5,11 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
+    "android:install-release": "cd android && ./gradlew installRelease",
+    "android:apk": "cd android && ./gradlew assembleRelease",
+    "android:aab": "cd android && ./gradlew bundleRelease",
     "start": "react-native start",
+    "lint": "eslint .",
     "test": "jest"
   },
   "dependencies": {
