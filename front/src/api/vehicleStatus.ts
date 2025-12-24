@@ -222,3 +222,46 @@ export const getCarsByLocation = async (
   );
   return res.data.data;
 };
+
+/* -------------------------------------------------------------------------- */
+/*                     Status Actions ( 교체 / 회수 )                           */
+/* -------------------------------------------------------------------------- */
+
+export interface ReplaceCarPayload {
+  isReplacement: true;
+  carId: number;
+  locationId: number;
+  partnerId: string;
+  needsWash: boolean;
+  needsFuel: boolean;
+  fuelLevel: number;
+  photoKeys: string[];
+}
+
+export interface ReplaceCarResponse {
+  staffId: string;
+  carId: number;
+  model: string;
+  carNum: string;
+  carGrade: string;
+  fuelLevel: number;
+  year: number;
+  locationId: number;
+  locationName: string;
+  partnerId: string;
+  partnerName: string;
+  needsWash: boolean;
+  needsFuel: boolean;
+  replaceImageUrls: string[];
+}
+
+export const replaceCar = async (
+  payload: ReplaceCarPayload,
+): Promise<ReplaceCarResponse> => {
+  const res = await axiosInstance.post<ApiResponse<ReplaceCarResponse>>(
+    '/cars/v1/status/replace-or-recall',
+    payload,
+  );
+
+  return res.data.data;
+};

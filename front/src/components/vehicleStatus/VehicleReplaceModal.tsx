@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,16 +12,27 @@ import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import CommonModal from '../common/CommonModal';
-import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { useReplaceCar } from '../../hooks/vehicleStatus/useReplaceCar';
+import { ReplaceCarPayload } from '../../api/vehicleStatus';
+import { useParkingLocations } from '../../hooks/location/useParkingLocations';
+import { fetchSimplePartners, SimplePartner } from '../../api/partners';
+
+interface VehicleItem {
+  carId: number;
+  name: string;
+  plateNumber: string;
+}
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  vehicle: VehicleCompanyDetail['vehicles'][number];
+  vehicle: VehicleItem;
+  locationId: number;
 }
 
 export default function VehicleReplaceModal({
@@ -31,13 +42,52 @@ export default function VehicleReplaceModal({
 }: Props) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Record<string, any>>({});
+  const [selectedLocation, setSelectedLocation] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+  const { data: locations = [] } = useParkingLocations();
+  const [partnerOptions, setPartnerOptions] = useState<SimplePartner[]>([]);
+  const [selectedPartner, setSelectedPartner] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   const [photos, setPhotos] = useState<any[]>([]);
   const [containerWidth, setContainerWidth] = useState(0);
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const itemSize = (containerWidth - 24) / 3;
+  const { mutate: replaceCarMutate, isPending } = useReplaceCar();
+  const disabled = !selectedLocation || !selectedPartner || isPending;
 
   const updateField = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  const buildReplacePayload = (): ReplaceCarPayload => ({
+    isReplacement: true,
+    carId: vehicle.carId,
+    locationId: selectedLocation!.id,
+    partnerId: selectedPartner!.id,
+    needsWash: !!formData.needWash,
+    needsFuel: !!formData.fuelLack,
+    fuelLevel: Number(formData.fuel) || 0,
+    photoKeys: [],
+  });
+
+  const searchPartners = async (query: string) => {
+    if (!query.trim()) {
+      setPartnerOptions([]);
+      return [];
+    }
+
+    try {
+      const list = await fetchSimplePartners(query);
+      setPartnerOptions(list);
+      return list.map(p => p.partnerName); // UI에 보여줄 문자열
+    } catch (e) {
+      console.error('partner search error', e);
+      return [];
+    }
   };
 
   /** 갤러리 권한 */
@@ -93,6 +143,19 @@ export default function VehicleReplaceModal({
     setPhotos(prev => prev.filter((_, idx) => idx !== i));
   };
 
+  const handleSubmit = () => {
+    if (!selectedLocation || !selectedPartner) return;
+
+    replaceCarMutate(buildReplacePayload(), {
+      onSuccess: () => {
+        setSendModalVisible(true);
+      },
+      onError: () => {
+        Alert.alert('오류', '차량 교체 요청에 실패했습니다.');
+      },
+    });
+  };
+
   return (
     <Modal
       isVisible={visible}
@@ -137,21 +200,40 @@ export default function VehicleReplaceModal({
                 {/* 위치 선택 - 드롭다운 */}
                 <CommonDropdown
                   placeholder="위치를 선택하세요"
-                  options={['ESA', '렉시온']}
-                  selectedValue={formData.location}
-                  onSelect={v => updateField('location', v)}
+                  options={locations.map(l => l.locationName)}
+                  selectedValue={selectedLocation?.name}
+                  onSelect={name => {
+                    const found = locations.find(l => l.locationName === name);
+                    if (found) {
+                      setSelectedLocation({
+                        id: found.locationId,
+                        name: found.locationName,
+                      });
+                    }
+                  }}
                 />
 
                 {/* 요청업체 선택 - 검색형 */}
                 <CommonSearchDropdown
                   placeholder="요청업체를 선택하세요"
-                  selectedValue={formData.requestCompany}
-                  onSelect={(v, isCustom) =>
-                    updateField('requestCompany', isCustom ? `${v} (기타)` : v)
-                  }
-                  onSearch={async query => {
-                    const mock = ['한라렌트카', '한독렌트카', '한양공업사'];
-                    return mock.filter(item => item.includes(query));
+                  selectedValue={selectedPartner?.name}
+                  onSearch={searchPartners}
+                  onSelect={(name, isCustom) => {
+                    if (isCustom) {
+                      setSelectedPartner(null);
+                      return;
+                    }
+
+                    const found = partnerOptions.find(
+                      p => p.partnerName === name,
+                    );
+
+                    if (!found) return;
+
+                    setSelectedPartner({
+                      id: found.partnerId,
+                      name: found.partnerName,
+                    });
                   }}
                 />
 
@@ -324,12 +406,17 @@ export default function VehicleReplaceModal({
                   <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
                 </Pressable>
                 <Pressable
+                  disabled={disabled}
                   style={[
                     ms.footerBtn,
-
-                    { flex: 2, backgroundColor: colors.PRIMARY_50 },
+                    {
+                      flex: 2,
+                      backgroundColor: disabled
+                        ? colors.GRAY_15
+                        : colors.PRIMARY_50,
+                    },
                   ]}
-                  onPress={() => setSendModalVisible(true)}
+                  onPress={handleSubmit}
                 >
                   <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
                     완료
@@ -357,5 +444,3 @@ export default function VehicleReplaceModal({
     </Modal>
   );
 }
-
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
