@@ -78,3 +78,6 @@ yarn-error.log
 # Env
 .env
 .env.*
+
+# Android signing
+*.jks
