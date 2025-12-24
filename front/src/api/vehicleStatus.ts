@@ -198,6 +198,7 @@ export const getCarStatusByLocation = async (
 
 /** 특정 장소 차량 목록 */
 export interface CarItem {
+  carId: number;
   carModel: string;
   carNum: string;
   updatedAt: string;

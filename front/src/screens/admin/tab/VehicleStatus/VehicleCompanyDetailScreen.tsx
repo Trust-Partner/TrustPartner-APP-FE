@@ -55,7 +55,6 @@ export default function VehicleCompanyDetailScreen() {
   } = useCarStatusByLocation(locationId);
   const { data: carStatusGroups = [] } = useCarsByLocation(locationId, query);
 
-  let seq = 1;
   const mappedVehicles = carStatusGroups.flatMap(group => {
     const status =
       group.carStatus === 'IN_USE'
@@ -65,7 +64,7 @@ export default function VehicleCompanyDetailScreen() {
         : '반납신청';
 
     return group.carListByLocation.map(car => ({
-      id: seq++,
+      carId: car.carId,
       status,
       name: car.carModel,
       plateNumber: car.carNum,
@@ -109,9 +108,9 @@ export default function VehicleCompanyDetailScreen() {
     return `${days}일 ${hours}시간`;
   };
 
-  const handleExpand = (id: number) => {
+  const handleExpand = (carId: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+    setExpanded(prev => ({ ...prev, [carId]: !prev[carId] }));
   };
   console.log(JSON.stringify(carStatusGroups, null, 2));
 
@@ -187,7 +186,7 @@ export default function VehicleCompanyDetailScreen() {
 
         <FlatList
           data={filteredVehicles}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.carId.toString()}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -199,14 +198,14 @@ export default function VehicleCompanyDetailScreen() {
             flexGrow: 1,
           }}
           renderItem={({ item }) => {
-            const isOpen = expanded[item.id];
+            const isOpen = expanded[item.carId];
             const isDispatched = item.status === '배차중';
 
             return (
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('ContractIntegrated', {
-                    contractId: item.id,
+                    contractId: item.carId,
                   })
                 }
               >
@@ -265,7 +264,7 @@ export default function VehicleCompanyDetailScreen() {
                           hitSlop={HIT_SLOP.MEDIUM}
                           onPress={e => {
                             e.stopPropagation();
-                            handleExpand(item.id);
+                            handleExpand(item.carId);
                           }}
                           style={s.arrowWrap}
                         >
@@ -327,6 +326,7 @@ export default function VehicleCompanyDetailScreen() {
             setSelectedVehicle(null);
           }}
           vehicle={selectedVehicle}
+          locationId={locationId}
         />
       )}
 
