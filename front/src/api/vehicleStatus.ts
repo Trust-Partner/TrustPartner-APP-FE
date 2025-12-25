@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import axiosInstance from './axiosInstance';
 
 export interface ApiResponse<T> {
@@ -227,8 +228,8 @@ export const getCarsByLocation = async (
 /*                     Status Actions ( 교체 / 회수 )                           */
 /* -------------------------------------------------------------------------- */
 
-export interface ReplaceCarPayload {
-  isReplacement: true;
+export interface ReplaceOrRecallPayload {
+  isReplacement: boolean; // true: 교체하기, false: 회수하기
   carId: number;
   locationId: number;
   partnerId: string;
@@ -238,7 +239,7 @@ export interface ReplaceCarPayload {
   photoKeys: string[];
 }
 
-export interface ReplaceCarResponse {
+export interface ReplaceOrRecallResponse {
   staffId: string;
   carId: number;
   model: string;
@@ -252,16 +253,53 @@ export interface ReplaceCarResponse {
   partnerName: string;
   needsWash: boolean;
   needsFuel: boolean;
-  replaceImageUrls: string[];
+  imageUrls: string[];
 }
 
-export const replaceCar = async (
-  payload: ReplaceCarPayload,
-): Promise<ReplaceCarResponse> => {
-  const res = await axiosInstance.post<ApiResponse<ReplaceCarResponse>>(
+/** 교체/회수 요청 완료 */
+export const requestReplaceOrRecall = async (
+  payload: ReplaceOrRecallPayload,
+): Promise<ReplaceOrRecallResponse> => {
+  const res = await axiosInstance.post<ApiResponse<ReplaceOrRecallResponse>>(
     '/cars/v1/status/replace-or-recall',
     payload,
   );
-
   return res.data.data;
+};
+
+/** 이미지 업로드용 URL & 키 목록 조회 */
+export interface UploadUrlItem {
+  uploadUrl: string;
+  fileKey: string;
+  expiresAt: string;
+}
+
+export const getReplaceOrRecallUploadUrls = async (
+  carId: number,
+): Promise<UploadUrlItem[]> => {
+  const res = await axiosInstance.get<ApiResponse<UploadUrlItem[]>>(
+    `/cars/v1/status/${carId}/replace-or-recall/upload-urls`,
+  );
+  return res.data.data;
+};
+
+/** S3 이미지 직접 업로드 */
+export const uploadImageToS3 = async (
+  url: string,
+  fileUri: string,
+): Promise<{ status: number; ok: boolean }> => {
+  try {
+    const response = await fetch(fileUri);
+    const blob = await response.blob();
+    const uploadResponse = await fetch(url, {
+      method: 'PUT',
+      body: blob,
+      headers: { 'Content-Type': 'image/jpeg' },
+    });
+    return { status: uploadResponse.status, ok: uploadResponse.ok };
+  } catch (error) {
+    // 운영 환경에서도 업로드 실패 원인은 파악해야 하므로 에러 로그만 유지
+    console.error('[S3 Upload Error]:', error);
+    return { status: 0, ok: false };
+  }
 };
