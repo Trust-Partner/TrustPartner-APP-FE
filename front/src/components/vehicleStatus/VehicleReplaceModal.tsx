@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Alert,
   PermissionsAndroid,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -17,10 +18,9 @@ import CommonDropdown from '../common/CommonDropdown';
 import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
-import { useReplaceCar } from '../../hooks/vehicleStatus/useReplaceCar';
-import { ReplaceCarPayload } from '../../api/vehicleStatus';
 import { useParkingLocations } from '../../hooks/location/useParkingLocations';
 import { fetchSimplePartners, SimplePartner } from '../../api/partners';
+import { useReplaceOrRecall } from '../../hooks/vehicleStatus/useReplaceOrRecall';
 
 interface VehicleItem {
   carId: number;
@@ -56,23 +56,12 @@ export default function VehicleReplaceModal({
   const [containerWidth, setContainerWidth] = useState(0);
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const itemSize = (containerWidth - 24) / 3;
-  const { mutate: replaceCarMutate, isPending } = useReplaceCar();
+  const { mutate: replaceCarMutate, isPending } = useReplaceOrRecall();
   const disabled = !selectedLocation || !selectedPartner || isPending;
 
   const updateField = (key: string, value: any) => {
     setFormData(prev => ({ ...prev, [key]: value }));
   };
-
-  const buildReplacePayload = (): ReplaceCarPayload => ({
-    isReplacement: true,
-    carId: vehicle.carId,
-    locationId: selectedLocation!.id,
-    partnerId: selectedPartner!.id,
-    needsWash: !!formData.needWash,
-    needsFuel: !!formData.fuelLack,
-    fuelLevel: Number(formData.fuel) || 0,
-    photoKeys: [],
-  });
 
   const searchPartners = async (query: string) => {
     if (!query.trim()) {
@@ -83,7 +72,7 @@ export default function VehicleReplaceModal({
     try {
       const list = await fetchSimplePartners(query);
       setPartnerOptions(list);
-      return list.map(p => p.partnerName); // UI에 보여줄 문자열
+      return list.map(p => p.partnerName);
     } catch (e) {
       console.error('partner search error', e);
       return [];
@@ -144,16 +133,28 @@ export default function VehicleReplaceModal({
   };
 
   const handleSubmit = () => {
-    if (!selectedLocation || !selectedPartner) return;
+    if (!selectedLocation || !selectedPartner || isPending) return;
 
-    replaceCarMutate(buildReplacePayload(), {
-      onSuccess: () => {
-        setSendModalVisible(true);
+    // 훅에게 payload 정보와 photos 배열을 객체로 전달합니다.
+    replaceCarMutate(
+      {
+        payload: {
+          isReplacement: true,
+          carId: vehicle.carId,
+          locationId: selectedLocation.id,
+          partnerId: selectedPartner.id,
+          needsWash: !!formData.needWash,
+          needsFuel: !!formData.fuelLack,
+          fuelLevel: Number(formData.fuel) || 0,
+          photoKeys: [], // 훅 내부에서 처리되므로 비워서 보냅니다.
+        },
+        photos: photos, // 실제 선택된 이미지 객체들이 담긴 배열
       },
-      onError: () => {
-        Alert.alert('오류', '차량 교체 요청에 실패했습니다.');
+      {
+        onSuccess: () => setSendModalVisible(true),
+        onError: () => Alert.alert('오류', '차량 교체 요청에 실패했습니다.'),
       },
-    });
+    );
   };
 
   return (
@@ -406,21 +407,44 @@ export default function VehicleReplaceModal({
                   <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
                 </Pressable>
                 <Pressable
-                  disabled={disabled}
+                  disabled={disabled || isPending}
                   style={[
                     ms.footerBtn,
                     {
                       flex: 2,
-                      backgroundColor: disabled
-                        ? colors.GRAY_15
-                        : colors.PRIMARY_50,
+                      backgroundColor:
+                        disabled || isPending
+                          ? colors.GRAY_15
+                          : colors.PRIMARY_50,
                     },
                   ]}
                   onPress={handleSubmit}
                 >
-                  <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
-                    완료
-                  </Text>
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <Text
+                      style={[
+                        ms.footerBtnText,
+                        { color: colors.WHITE },
+                        isPending && { opacity: 0 },
+                      ]}
+                    >
+                      완료
+                    </Text>
+
+                    {isPending && (
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.WHITE}
+                        style={{ position: 'absolute' }}
+                      />
+                    )}
+                  </View>
                 </Pressable>
               </View>
             )}
