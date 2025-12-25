@@ -139,7 +139,7 @@ export default function CommonSearchDropdown({
 
 const s = StyleSheet.create({
   container: {
-    marginBottom: 12,
+    marginBottom: 8,
     position: 'relative',
   },
   input: {
