@@ -7,6 +7,7 @@ import {
   Alert,
   PermissionsAndroid,
   Platform,
+  Keyboard,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -22,7 +23,7 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   vehicle: VehicleCompanyDetail['vehicles'][number];
-  companyName: string; // ✅ 현재 공업사 이름
+  companyName: string;
 }
 
 export default function VehicleGarageWaitModal({
@@ -107,229 +108,238 @@ export default function VehicleGarageWaitModal({
       animationIn="fadeIn"
       animationOut="fadeOut"
       statusBarTranslucent
+      avoidKeyboard
       onBackdropPress={onClose}
     >
       <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={ms.modal}>
-          {/* 닫기 */}
-          <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
-            <Image
-              source={require('../../assets/common/close.png')}
-              style={ms.close}
-            />
-          </Pressable>
+        <Pressable onPress={Keyboard.dismiss}>
+          <View style={ms.modal}>
+            {/* 닫기 */}
+            <Pressable
+              onPress={() => onClose()}
+              hitSlop={HIT_SLOP.MEDIUM}
+              style={ms.closeBtn}
+            >
+              <Image
+                source={require('../../assets/common/close.png')}
+                style={ms.closeIcon}
+              />
+            </Pressable>
 
-          {/* 제목 */}
-          <View style={ms.headerRow}>
-            <Text style={ms.title}>공업사 대기</Text>
-          </View>
+            {/* 제목 */}
+            <View style={ms.headerRow}>
+              <Text style={ms.title}>공업사 대기</Text>
+            </View>
 
-          {/* 차량 정보 */}
-          <View style={ms.vehicleInfo}>
-            <Text style={ms.vehicleTag}>{vehicle.name}</Text>
-            <Text style={ms.vehicleTag}>{vehicle.plateNumber}</Text>
-          </View>
+            {/* 차량 정보 */}
+            <View style={ms.vehicleInfo}>
+              <Text style={ms.vehicleTag}>{vehicle.name}</Text>
+              <Text style={ms.vehicleTag}>{vehicle.plateNumber}</Text>
+            </View>
 
-          {/* 단계 점 */}
-          <View style={ms.stepDots}>
-            {[1, 2].map(i => (
-              <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
-            ))}
-          </View>
+            {/* 단계 점 */}
+            <View style={ms.stepDots}>
+              {[1, 2].map(i => (
+                <View key={i} style={[ms.dot, step === i && ms.dotActive]} />
+              ))}
+            </View>
 
-          {/* 본문 */}
-          <View>
-            {step === 1 && (
-              <>
-                {/* 위치 드롭다운 — 수정 불가 */}
-                <CommonDropdown
-                  placeholder="위치 선택"
-                  options={[companyName]}
-                  selectedValue={companyName}
-                  onSelect={() => {}}
-                  disabled
-                />
+            {/* 본문 */}
+            <View>
+              {step === 1 && (
+                <>
+                  {/* 위치 드롭다운 — 수정 불가 */}
+                  <CommonDropdown
+                    placeholder="위치 선택"
+                    options={[companyName]}
+                    selectedValue={companyName}
+                    onSelect={() => {}}
+                    disabled
+                  />
 
-                {/* 체크리스트 */}
-                {[
-                  { key: 'fuelLack', label: '연료 부족', sub: '70km 미만' },
-                  {
-                    key: 'needWash',
-                    label: '세차 필요',
-                    sub: '다음 배차를 위해 세차를 해야해요',
-                  },
-                ].map(opt => {
-                  const checked = formData[opt.key];
-                  return (
-                    <Pressable
-                      key={opt.key}
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        backgroundColor: colors.PRIMARY_05,
-                        borderRadius: 4,
-                        padding: 8,
-                        marginBottom: 8,
-                      }}
-                      onPress={() => updateField(opt.key, !checked)}
-                    >
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 11,
-                            fontWeight: '400',
-                            color: colors.GRAY_80,
-                          }}
-                        >
-                          {opt.label}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 11,
-                            fontWeight: '400',
-                            color: colors.GRAY_40,
-                          }}
-                        >
-                          {opt.sub}
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          width: 16,
-                          height: 16,
-                          borderWidth: 1,
-                          borderColor: colors.PRIMARY_50,
-                          borderRadius: 4,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          ...(checked && {
-                            backgroundColor: colors.PRIMARY_50,
-                          }),
-                        }}
-                      >
-                        {checked && (
-                          <Image
-                            source={require('../../assets/common/check_white.png')}
-                            style={{ width: 8, height: 6 }}
-                          />
-                        )}
-                      </View>
-                    </Pressable>
-                  );
-                })}
-
-                <CommonAmountInput
-                  placeholder="유류량 입력"
-                  value={formData.fuel}
-                  onChangeText={v => updateField('fuel', v)}
-                  unit="km"
-                />
-              </>
-            )}
-
-            {step === 2 && (
-              <View style={ms.photoContainer}>
-                <View
-                  style={ms.photoGrid}
-                  onLayout={e => setContainerWidth(e.nativeEvent.layout.width)}
-                >
+                  {/* 체크리스트 */}
                   {[
-                    ...photos,
-                    ...(photos.length < 9 ? [{ isAddButton: true }] : []),
-                  ].map((item: any, i) =>
-                    item.isAddButton ? (
+                    { key: 'fuelLack', label: '연료 부족', sub: '70km 미만' },
+                    {
+                      key: 'needWash',
+                      label: '세차 필요',
+                      sub: '다음 배차를 위해 세차를 해야해요',
+                    },
+                  ].map(opt => {
+                    const checked = formData[opt.key];
+                    return (
                       <Pressable
-                        key={`add-${i}`}
-                        style={[
-                          ms.photoAddBtn,
-                          { width: itemSize, height: itemSize },
-                        ]}
-                        onPress={handleAddPhoto}
+                        key={opt.key}
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          backgroundColor: colors.PRIMARY_05,
+                          borderRadius: 4,
+                          padding: 8,
+                          marginBottom: 8,
+                        }}
+                        onPress={() => updateField(opt.key, !checked)}
                       >
-                        <View style={ms.addIconCircle}>
-                          <Image
-                            source={require('../../assets/common/plus.png')}
-                            style={ms.addIcon}
-                          />
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: '400',
+                              color: colors.GRAY_80,
+                            }}
+                          >
+                            {opt.label}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              fontWeight: '400',
+                              color: colors.GRAY_40,
+                            }}
+                          >
+                            {opt.sub}
+                          </Text>
                         </View>
-                        <Text style={ms.addText}>사진추가</Text>
+                        <View
+                          style={{
+                            width: 16,
+                            height: 16,
+                            borderWidth: 1,
+                            borderColor: colors.PRIMARY_50,
+                            borderRadius: 4,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            ...(checked && {
+                              backgroundColor: colors.PRIMARY_50,
+                            }),
+                          }}
+                        >
+                          {checked && (
+                            <Image
+                              source={require('../../assets/common/check_white.png')}
+                              style={{ width: 8, height: 6 }}
+                            />
+                          )}
+                        </View>
                       </Pressable>
-                    ) : (
-                      <Pressable
-                        key={i}
-                        onPress={() => handleReplacePhoto(i)}
-                        style={[
-                          ms.photoItem,
-                          { width: itemSize, height: itemSize },
-                        ]}
-                      >
-                        <Image
-                          source={{ uri: item.uri }}
-                          style={ms.photoThumb}
-                          resizeMode="cover"
-                        />
+                    );
+                  })}
+
+                  <CommonAmountInput
+                    placeholder="유류량 입력"
+                    value={formData.fuel}
+                    onChangeText={v => updateField('fuel', v)}
+                    unit="km"
+                  />
+                </>
+              )}
+
+              {step === 2 && (
+                <View style={ms.photoContainer}>
+                  <View
+                    style={ms.photoGrid}
+                    onLayout={e =>
+                      setContainerWidth(e.nativeEvent.layout.width)
+                    }
+                  >
+                    {[
+                      ...photos,
+                      ...(photos.length < 9 ? [{ isAddButton: true }] : []),
+                    ].map((item: any, i) =>
+                      item.isAddButton ? (
                         <Pressable
-                          style={ms.removeOverlay}
-                          onPress={() => handleRemovePhoto(i)}
-                          hitSlop={HIT_SLOP.COMPACT}
+                          key={`add-${i}`}
+                          style={[
+                            ms.photoAddBtn,
+                            { width: itemSize, height: itemSize },
+                          ]}
+                          onPress={handleAddPhoto}
+                        >
+                          <View style={ms.addIconCircle}>
+                            <Image
+                              source={require('../../assets/common/plus.png')}
+                              style={ms.addIcon}
+                            />
+                          </View>
+                          <Text style={ms.addText}>사진추가</Text>
+                        </Pressable>
+                      ) : (
+                        <Pressable
+                          key={i}
+                          onPress={() => handleReplacePhoto(i)}
+                          style={[
+                            ms.photoItem,
+                            { width: itemSize, height: itemSize },
+                          ]}
                         >
                           <Image
-                            source={require('../../assets/common/close.png')}
-                            style={ms.removeIcon}
+                            source={{ uri: item.uri }}
+                            style={ms.photoThumb}
+                            resizeMode="cover"
                           />
+                          <Pressable
+                            style={ms.removeOverlay}
+                            onPress={() => handleRemovePhoto(i)}
+                            hitSlop={HIT_SLOP.COMPACT}
+                          >
+                            <Image
+                              source={require('../../assets/common/close.png')}
+                              style={ms.removeIcon}
+                            />
+                          </Pressable>
                         </Pressable>
-                      </Pressable>
-                    ),
-                  )}
+                      ),
+                    )}
+                  </View>
+                  <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
                 </View>
-                <Text style={ms.subText}>{photos.length}/9장 업로드됨</Text>
-              </View>
-            )}
-          </View>
+              )}
+            </View>
 
-          {/* 하단 버튼 */}
-          <View style={ms.footer}>
-            {step === 1 ? (
-              <View style={ms.footerRow}>
-                <Pressable
-                  style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                  onPress={() => setStep(2)}
-                >
-                  <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
-                  <Image
-                    source={require('../../assets/common/right_arrow.png')}
-                    style={ms.nextIcon}
-                  />
-                </Pressable>
-              </View>
-            ) : (
-              <View style={ms.footerRow}>
-                <Pressable
-                  style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                  onPress={() => setStep(1)}
-                >
-                  <Image
-                    source={require('../../assets/common/left_arrow.png')}
-                    style={ms.prevIcon}
-                  />
-                  <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
-                </Pressable>
-                <Pressable
-                  style={[
-                    ms.footerBtn,
-                    { flex: 2, backgroundColor: colors.PRIMARY_50 },
-                  ]}
-                  onPress={() => setSendModalVisible(true)}
-                >
-                  <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
-                    완료
-                  </Text>
-                </Pressable>
-              </View>
-            )}
+            {/* 하단 버튼 */}
+            <View style={ms.footer}>
+              {step === 1 ? (
+                <View style={[ms.footerRow, { justifyContent: 'flex-end' }]}>
+                  <Pressable
+                    style={[ms.footerBtn, ms.nextBtn, { flex: 0 }]}
+                    onPress={() => setStep(2)}
+                  >
+                    <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
+                    <Image
+                      source={require('../../assets/common/right_arrow.png')}
+                      style={ms.nextIcon}
+                    />
+                  </Pressable>
+                </View>
+              ) : (
+                <View style={ms.footerRow}>
+                  <Pressable
+                    style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
+                    onPress={() => setStep(1)}
+                  >
+                    <Image
+                      source={require('../../assets/common/left_arrow.png')}
+                      style={ms.prevIcon}
+                    />
+                    <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      ms.footerBtn,
+                      { flex: 2, backgroundColor: colors.PRIMARY_50 },
+                    ]}
+                    onPress={() => setSendModalVisible(true)}
+                  >
+                    <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
+                      완료
+                    </Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
+        </Pressable>
 
         {/* 완료 안내 모달 */}
         <CommonModal
