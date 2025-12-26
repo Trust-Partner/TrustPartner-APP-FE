@@ -80,7 +80,7 @@ const s = StyleSheet.create({
   },
   placeholder: {
     position: 'absolute',
-    paddingLeft: 14,
+    paddingLeft: 8,
     color: colors.GRAY_50,
     fontSize: 11,
     fontWeight: '400',
@@ -90,7 +90,7 @@ const s = StyleSheet.create({
     fontSize: 11,
     color: colors.GRAY_50,
     includeFontPadding: false,
-    paddingVertical: Platform.OS === 'android' ? 4 : 8,
+    paddingVertical: Platform.OS === 'android' ? 2 : 8,
     textAlignVertical: 'center',
     paddingRight: 25,
     marginTop: -1,
