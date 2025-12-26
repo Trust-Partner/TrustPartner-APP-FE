@@ -17,6 +17,7 @@ import CommonTextarea from '../common/CommonTextarea';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useDispatchList } from '../../hooks/dispatch/useDispatchList';
 import { mapDispatchItemToVM } from '../../utils/dispatchRequestMapping';
+import { HIT_SLOP } from '../../constants/touch';
 
 interface Props {
   onBack: () => void;
@@ -87,10 +88,14 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <View style={s.modal}>
           {/* 닫기 버튼 */}
-          <Pressable onPress={onBack}>
+          <Pressable
+            onPress={onBack}
+            hitSlop={HIT_SLOP.MEDIUM}
+            style={s.closeBtn}
+          >
             <Image
               source={require('../../assets/common/close.png')}
-              style={s.close}
+              style={s.closeIcon}
             />
           </Pressable>
 
@@ -239,8 +244,15 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     alignSelf: 'center',
   },
-  close: {
+  closeBtn: {
     alignSelf: 'flex-end',
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    resizeMode: 'contain',
+    marginRight: -8,
+  },
+  closeIcon: {
     width: 16,
     height: 16,
     tintColor: colors.GRAY_60,

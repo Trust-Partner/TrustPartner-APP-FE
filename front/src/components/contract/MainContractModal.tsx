@@ -49,10 +49,14 @@ export default function MainContractModal({
       onBackdropPress={onClose}
     >
       <View style={s.modal}>
-        <Pressable onPress={onClose} hitSlop={HIT_SLOP.MEDIUM}>
+        <Pressable
+          onPress={onClose}
+          hitSlop={HIT_SLOP.MEDIUM}
+          style={s.closeBtn}
+        >
           <Image
             source={require('../../assets/common/close.png')}
-            style={s.close}
+            style={s.closeIcon}
           />
         </Pressable>
 
@@ -144,13 +148,18 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     alignSelf: 'center',
   },
-  close: {
+  closeBtn: {
     alignSelf: 'flex-end',
     width: 16,
     height: 16,
-    tintColor: colors.GRAY_60,
+    justifyContent: 'center',
     resizeMode: 'contain',
     marginRight: -8,
+  },
+  closeIcon: {
+    width: 16,
+    height: 16,
+    tintColor: colors.GRAY_60,
   },
   headerRow: {
     flexDirection: 'row',
