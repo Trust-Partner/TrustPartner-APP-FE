@@ -11,8 +11,15 @@ export const modalLayoutStyles = StyleSheet.create({
     paddingHorizontal: 16,
     alignSelf: 'center',
   },
-  close: {
+  closeBtn: {
     alignSelf: 'flex-end',
+    width: 16,
+    height: 16,
+    justifyContent: 'center',
+    resizeMode: 'contain',
+    marginRight: -8,
+  },
+  closeIcon: {
     width: 16,
     height: 16,
     tintColor: colors.GRAY_60,

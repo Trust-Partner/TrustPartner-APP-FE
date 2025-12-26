@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { Calendar } from 'react-native-calendars';
@@ -29,6 +30,7 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
   const [date, setDate] = useState<string | null>(null);
   const [time, setTime] = useState<string | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
+  const scrollRef = useRef<ScrollView>(null);
 
   // 입력 필드 상태
   const [company, setCompany] = useState('');
@@ -119,6 +121,10 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
   const handleSelectDate = (d: any) => {
     setDate(d.dateString);
     setTime(null); // 날짜 변경 시 시간 초기화
+
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
   };
 
   const handleSelectTime = (t: string) => {
@@ -225,72 +231,89 @@ export default function BookmarkModal({ visible, onClose, vehicle }: Props) {
       animationIn="fadeIn"
       animationOut="fadeOut"
       statusBarTranslucent
-      onBackdropPress={() => onClose()}
+      avoidKeyboard
+      onBackdropPress={isPending ? undefined : onClose}
     >
-      <View style={s.modal}>
-        {/* 닫기 버튼 */}
-        <Pressable onPress={() => onClose()} hitSlop={HIT_SLOP.MEDIUM}>
-          <Image
-            source={require('../../assets/common/close.png')}
-            style={s.close}
-          />
-        </Pressable>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={s.title}>해당 차량을 찜해둘까요?</Text>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Pressable
+          style={{ flex: 1, justifyContent: 'center' }}
+          onPress={Keyboard.dismiss}
+          accessible={false}
+        >
+          <View style={s.modal}>
+            {/* 닫기 버튼 */}
+            <Pressable
+              onPress={() => onClose()}
+              hitSlop={HIT_SLOP.MEDIUM}
+              style={s.closeBtn}
+            >
+              <Image
+                source={require('../../assets/common/close.png')}
+                style={s.closeIcon}
+              />
+            </Pressable>
+            <ScrollView
+              ref={scrollRef}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <Text style={s.title}>해당 차량을 찜해둘까요?</Text>
 
-          <View style={s.badgeRow}>
-            <Text style={s.badge}>{vehicle.model}</Text>
-            <Text style={s.badge}>{vehicle.number}</Text>
+              <View style={s.badgeRow}>
+                <Text style={s.badge}>{vehicle.model}</Text>
+                <Text style={s.badge}>{vehicle.number}</Text>
+              </View>
+
+              {/* 예약일정 체크 */}
+              <Pressable
+                style={s.checkboxRow}
+                onPress={() => setIsBooking(!isBooking)}
+              >
+                <View style={[s.checkbox, isBooking && s.checked]}>
+                  {isBooking && (
+                    <Image
+                      source={require('../../assets/common/check_white.png')}
+                      style={{ width: 8, height: 6 }}
+                    />
+                  )}
+                </View>
+                <Text style={s.label}>예약일정을 등록할게요</Text>
+              </Pressable>
+
+              {isBooking && renderBookingForm()}
+            </ScrollView>
+
+            <View style={s.btnRow}>
+              <Pressable style={s.cancelBtn} onPress={() => onClose()}>
+                <Text style={s.cancelText}>취소</Text>
+              </Pressable>
+              <Pressable style={s.confirmBtn} onPress={handleConfirm}>
+                <Text style={s.confirmText}>확인</Text>
+              </Pressable>
+            </View>
           </View>
 
-          {/* 예약일정 체크 */}
-          <Pressable
-            style={s.checkboxRow}
-            onPress={() => setIsBooking(!isBooking)}
-          >
-            <View style={[s.checkbox, isBooking && s.checked]}>
-              {isBooking && (
-                <Image
-                  source={require('../../assets/common/check_white.png')}
-                  style={{ width: 8, height: 6 }}
-                />
-              )}
-            </View>
-            <Text style={s.label}>예약일정을 등록할게요</Text>
-          </Pressable>
+          <CommonModal
+            visible={resultModal.visible}
+            title={resultModal.title}
+            message={resultModal.message}
+            confirmText="확인"
+            hideCancel
+            onConfirm={() => {
+              if (resultModal.title.includes('입력 필요')) {
+                setResultModal({ visible: false, title: '', message: '' });
+                return;
+              }
 
-          {isBooking && renderBookingForm()}
-        </ScrollView>
-
-        <View style={s.btnRow}>
-          <Pressable style={s.cancelBtn} onPress={() => onClose()}>
-            <Text style={s.cancelText}>취소</Text>
-          </Pressable>
-          <Pressable style={s.confirmBtn} onPress={handleConfirm}>
-            <Text style={s.confirmText}>확인</Text>
-          </Pressable>
-        </View>
+              setResultModal({ visible: false, title: '', message: '' });
+              onClose(isBooking ? 'booked' : 'bookmarked');
+            }}
+            onCancel={() =>
+              setResultModal({ visible: false, title: '', message: '' })
+            }
+          />
+        </Pressable>
       </View>
-
-      <CommonModal
-        visible={resultModal.visible}
-        title={resultModal.title}
-        message={resultModal.message}
-        confirmText="확인"
-        hideCancel
-        onConfirm={() => {
-          if (resultModal.title.includes('입력 필요')) {
-            setResultModal({ visible: false, title: '', message: '' });
-            return;
-          }
-
-          setResultModal({ visible: false, title: '', message: '' });
-          onClose(isBooking ? 'booked' : 'bookmarked');
-        }}
-        onCancel={() =>
-          setResultModal({ visible: false, title: '', message: '' })
-        }
-      />
     </Modal>
   );
 }
@@ -306,13 +329,18 @@ const s = StyleSheet.create({
     alignSelf: 'center',
     maxHeight: '90%',
   },
-  close: {
+  closeBtn: {
     alignSelf: 'flex-end',
     width: 16,
     height: 16,
-    tintColor: colors.GRAY_60,
+    justifyContent: 'center',
     resizeMode: 'contain',
     marginRight: -8,
+  },
+  closeIcon: {
+    width: 16,
+    height: 16,
+    tintColor: colors.GRAY_60,
   },
   title: {
     fontSize: 16,
