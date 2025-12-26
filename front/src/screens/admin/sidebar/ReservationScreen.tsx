@@ -12,15 +12,17 @@ import {
 import { Calendar } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { colors } from '../../../constants/colors';
-import { reservationMock } from '../../../mock/reservationMock';
+import { Reservation, reservationMock } from '../../../mock/reservationMock';
 import CommonModal from '../../../components/common/CommonModal';
 import AppHeader from '../../../components/common/AppHeader';
+import ReservationEditModal from '../../../components/reservation/ReservationEditModal';
 
 export default function ReservationDrawerScreen() {
   const today = dayjs().format('YYYY-MM-DD');
   const [selectedDate, setSelectedDate] = useState(today);
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
+  const [editTarget, setEditTarget] = useState<Reservation | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -197,7 +199,7 @@ export default function ReservationDrawerScreen() {
                         <View style={s.detailHeaderRow}>
                           <Text style={s.detailText}>메모</Text>
                           <View style={s.detailRow}>
-                            <Pressable>
+                            <Pressable onPress={() => setEditTarget(item)}>
                               <Image
                                 source={require('../../../assets/admin-reservation/edit.png')}
                                 style={s.smallIcon}
@@ -236,6 +238,21 @@ export default function ReservationDrawerScreen() {
             </View>
           )}
         </View>
+
+        <ReservationEditModal
+          visible={!!editTarget}
+          reservation={editTarget}
+          onClose={() => setEditTarget(null)}
+          onConfirm={updated => {
+            setReservationList(prev =>
+              prev.map(item =>
+                item.id === editTarget?.id ? { ...item, ...updated } : item,
+              ),
+            );
+            setEditTarget(null);
+          }}
+        />
+
         <CommonModal
           visible={showDeleteModal}
           title="예약 삭제"
