@@ -7,6 +7,8 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+// ADMIN(Manager)
+
 /* -------------------------------------------------------------------------- */
 /*                               Dispatch (배차)                              */
 /* -------------------------------------------------------------------------- */
@@ -302,4 +304,59 @@ export const uploadImageToS3 = async (
     console.error('[S3 Upload Error]:', error);
     return { status: 0, ok: false };
   }
+};
+
+// USER(Partner)
+
+/** 차량 상태 */
+export type PartnerCarStatus = 'AVAILABLE' | 'IN_USE' | 'RETURN_REQUESTED';
+
+/** 상태별 차량 수 응답 */
+export interface PartnerCarStatusSummary {
+  inUseNum: number;
+  waitingNum: number;
+  returnRequestedNum: number;
+  allNum: number;
+}
+
+/** 차량 리스트 아이템 */
+export interface PartnerCarItem {
+  carId: number;
+  carStatus: PartnerCarStatus;
+  model: string;
+  carNum: string;
+  updatedAt: string;
+  timeAfterUpdate: string;
+  immediateDispatchable: boolean;
+  locationName: string;
+}
+
+/** 차량 리스트 응답 */
+export interface PartnerCarListResponse {
+  carStatus: PartnerCarStatus | null;
+  carList: PartnerCarItem[];
+}
+
+/** 거래처 상태별 차량 수 조회 */
+export const getPartnerCarStatusSummary =
+  async (): Promise<PartnerCarStatusSummary> => {
+    const res = await axiosInstance.get<ApiResponse<PartnerCarStatusSummary>>(
+      '/cars/v1/partners/status',
+    );
+
+    return res.data.data;
+  };
+
+/** 거래처 차량 리스트 조회 (status optional) */
+export const getPartnerCars = async (
+  carStatus?: PartnerCarStatus,
+): Promise<PartnerCarListResponse> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerCarListResponse>>(
+    '/cars/v1/partners',
+    {
+      params: carStatus ? { carStatus } : undefined,
+    },
+  );
+
+  return res.data.data;
 };

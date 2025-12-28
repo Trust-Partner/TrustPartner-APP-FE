@@ -10,18 +10,52 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../../constants/colors';
-import {
-  vehicleCompanyDetailMock,
-  VehicleCompanyDetail,
-} from '../../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { HIT_SLOP } from '../../../constants/touch';
 import VehicleGarageWaitModal from '../../../components/vehicleStatus/VehicleGarageWaitModal';
 import { useContractModalStore } from '../../../stores/useContractModalStore';
 import ContractModalManager from '../../../components/contract/ContractModalManager';
 import { ContractVehicleBase } from '../../../types/contractVehicle';
 import VehicleReturnRequestModal from '../../../components/vehicleStatus/VehicleReturnRequestModal';
+import { usePartnerCars } from '../../../hooks/vehicleStatus/usePartnerCars';
+import { usePartnerCarStatusSummary } from '../../../hooks/vehicleStatus/usePartnerCarStatusSummary';
+import { PartnerCarItem } from '../../../api/vehicleStatus';
+import { useAuthStore } from '../../../states/useAuthStore';
 
-type Vehicle = VehicleCompanyDetail['vehicles'][number];
+type VehicleStatusLabel = '배차중' | '대기중' | '반납신청';
+
+type Vehicle = {
+  id: number;
+  name: string;
+  plateNumber: string;
+  status: VehicleStatusLabel;
+  lastUpdate: string;
+  duration: string;
+  location?: string;
+  isGarage: boolean;
+};
+
+const statusMap = {
+  전체: undefined,
+  배차중: 'IN_USE',
+  대기중: 'AVAILABLE',
+  반납신청: 'RETURN_REQUESTED',
+} as const;
+
+const mapPartnerCarToVehicle = (car: PartnerCarItem): Vehicle => ({
+  id: car.carId,
+  name: car.model,
+  plateNumber: car.carNum,
+  status:
+    car.carStatus === 'IN_USE'
+      ? '배차중'
+      : car.carStatus === 'AVAILABLE'
+      ? '대기중'
+      : '반납신청',
+  lastUpdate: car.updatedAt,
+  duration: car.timeAfterUpdate,
+  location: car.locationName,
+  isGarage: car.immediateDispatchable,
+});
 
 export default function VehicleStatusScreen() {
   const navigation = useNavigation<any>();
@@ -31,9 +65,16 @@ export default function VehicleStatusScreen() {
     '전체' | '배차중' | '대기중' | '반납신청'
   >('전체');
 
+  const userName = useAuthStore(s => s.user?.name);
+  const apiStatus = statusMap[activeStatus];
+
+  const { data: summary } = usePartnerCarStatusSummary();
+  const { data: carListData } = usePartnerCars(apiStatus);
+
+  const vehicles = carListData?.carList.map(mapPartnerCarToVehicle) ?? [];
+
   const [garageModalVisible, setGarageModalVisible] = useState(false);
   const [returnModalVisible, setReturnModalVisible] = useState(false);
-
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
 
   const { openModal, setSelectedVehicle: setContractVehicle } =
@@ -43,17 +84,11 @@ export default function VehicleStatusScreen() {
     id: v.id,
     model: v.name,
     number: v.plateNumber,
-    location: v.location ?? '',
-    status: v.status,
+    location: v.location,
+    reserverName: null,
     isGarage: v.isGarage,
+    status: v.status,
   });
-
-  const company = vehicleCompanyDetailMock[0];
-
-  const filteredVehicles =
-    company?.vehicles?.filter(v =>
-      activeStatus === '전체' ? true : v.status === activeStatus,
-    ) ?? [];
 
   const toggleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -68,22 +103,22 @@ export default function VehicleStatusScreen() {
           [
             {
               label: '배차중',
-              value: company.summary.dispatched,
+              value: summary?.inUseNum ?? 0,
               color: colors.YELLOW_50,
             },
             {
               label: '대기중',
-              value: company.summary.waiting,
+              value: summary?.waitingNum ?? 0,
               color: colors.PRIMARY_50,
             },
             {
               label: '반납신청',
-              value: company.summary.returning,
+              value: summary?.returnRequestedNum ?? 0,
               color: colors.RED_50,
             },
             {
               label: '전체',
-              value: company.summary.total,
+              value: summary?.allNum ?? 0,
               color: colors.GRAY_90,
             },
           ] as const
@@ -105,7 +140,7 @@ export default function VehicleStatusScreen() {
 
       {/* 차량 리스트 */}
       <FlatList
-        data={filteredVehicles}
+        data={vehicles}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -114,7 +149,7 @@ export default function VehicleStatusScreen() {
           const isOpen = expanded[item.id];
 
           // ===== 상태별 플래그 =====
-          const isAtMyCompany = item.location === company.companyName; // 대기중 + 내 회사
+          const isAtMyCompany = item.location === userName; // 대기중 + 내 회사
           const isParked = item.status === '대기중' && !isAtMyCompany; // 대기중 + 주차장/타회사
           const isDispatchedRequestCompany =
             item.status === '배차중' && !item.isGarage; // 배차중 + 요청업체
@@ -294,7 +329,7 @@ export default function VehicleStatusScreen() {
           visible={garageModalVisible}
           onClose={() => setGarageModalVisible(false)}
           vehicle={selectedVehicle}
-          companyName={company.companyName}
+          companyName={userName ?? ''}
         />
       )}
 
