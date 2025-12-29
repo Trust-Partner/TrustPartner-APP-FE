@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -10,18 +10,43 @@ import {
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../../constants/colors';
-import { contactListMock } from '../../../mock/contactMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import AppHeader from '../../../components/common/AppHeader';
 import { HIT_SLOP } from '../../../constants/touch';
+import { usePartnerInquiry } from '../../../hooks/inquiry/usePartnerInquiry';
+import { useGeneralManagerInquiry } from '../../../hooks/inquiry/useGeneralManagerInquiry';
+import { useAuthStore } from '../../../states/useAuthStore';
 
 export default function InquiryScreen() {
   const [toastMsg, setToastMsg] = useState('');
+
+  const user = useAuthStore(s => s.user);
+  if (!user || user.kind !== 'USER') {
+    return null;
+  }
+
+  const partnerQuery = usePartnerInquiry(user.partnerId);
+  const managerQuery = useGeneralManagerInquiry();
 
   const handleCopy = (text: string) => {
     Clipboard.setString(text);
     setToastMsg('전화번호가 복사되었습니다.');
   };
+
+  const contactList = useMemo(() => {
+    if (!partnerQuery.data || !managerQuery.data) return [];
+
+    return [
+      {
+        ...partnerQuery.data,
+        subTitle: '배회차 관련 문의',
+      },
+      {
+        ...managerQuery.data,
+        subTitle: '앱 사용 및 정산금 관련 문의',
+      },
+    ];
+  }, [partnerQuery.data, managerQuery.data]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -32,7 +57,6 @@ export default function InquiryScreen() {
 
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
         <View style={s.container}>
-          {/* 연락처 안내 박스 */}
           <View style={s.card}>
             <View style={s.cardHeader}>
               <Image
@@ -42,7 +66,7 @@ export default function InquiryScreen() {
               <Text style={s.title}>연락처 안내</Text>
             </View>
 
-            {contactListMock.map(item => (
+            {contactList.map(item => (
               <View key={item.id} style={s.contactBox}>
                 <View style={s.contactRow}>
                   <Image
@@ -50,15 +74,18 @@ export default function InquiryScreen() {
                     style={s.personIcon}
                   />
 
-                  {/* 오른쪽 텍스트 전체 블록 */}
                   <View style={{ flex: 1 }}>
-                    <Text style={s.contactTitle}>{item.title}</Text>
-                    <Text style={s.contactName}>{item.name}</Text>
+                    <Text style={s.contactTitle}>
+                      {item.title} | {item.subTitle}
+                    </Text>
+
+                    <Text style={s.contactName}>{item.staffName}</Text>
+
                     <View style={s.phoneRow}>
-                      <Text style={s.contactPhone}>{item.phone}</Text>
+                      <Text style={s.contactPhone}>{item.phoneNumber}</Text>
                       <Pressable
                         hitSlop={HIT_SLOP.SAFE_VERTICAL}
-                        onPress={() => handleCopy(item.phone)}
+                        onPress={() => handleCopy(item.phoneNumber)}
                       >
                         <Image
                           source={require('../../../assets/common/copy.png')}
@@ -71,7 +98,6 @@ export default function InquiryScreen() {
               </View>
             ))}
 
-            {/* 하단 안내 문구 */}
             <View style={s.noticeBox}>
               <Text style={s.noticeTitle}>24시간 언제나 열려있습니다.</Text>
               <Text style={s.noticeText}>
