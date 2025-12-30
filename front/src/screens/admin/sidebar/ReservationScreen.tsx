@@ -8,33 +8,96 @@ import {
   Image,
   Platform,
   Pressable,
+  Alert,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { colors } from '../../../constants/colors';
-import { reservationMock } from '../../../mock/reservationMock';
 import CommonModal from '../../../components/common/CommonModal';
 import AppHeader from '../../../components/common/AppHeader';
+import ReservationEditModal from '../../../components/reservation/ReservationEditModal';
+
+import { useReservationByDate } from '../../../hooks/reservation/useReservationByDate';
+import { useReservationCalendar } from '../../../hooks/reservation/useReservationCalendar';
+import { useReservationStatics } from '../../../hooks/reservation/useReservationStatics';
+import { useDeleteReservation } from '../../../hooks/reservation/useDeleteReservation';
+import { useUpdateReservation } from '../../../hooks/reservation/useUpdateReservation';
 
 export default function ReservationDrawerScreen() {
   const today = dayjs().format('YYYY-MM-DD');
   const [selectedDate, setSelectedDate] = useState(today);
-  const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
+  const [expanded, setExpanded] = useState<Record<number, boolean>>({});
 
+  const [editTarget, setEditTarget] = useState<any | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const { todayLeft, totalLeft } = reservationMock.summary;
-  const [reservationList, setReservationList] = useState(reservationMock.list);
+  /** 예약 통계 */
+  const { data: statics } = useReservationStatics();
 
-  const filteredList = reservationList.filter(r => r.date === selectedDate);
+  const updateMutation = useUpdateReservation();
+  const deleteMutation = useDeleteReservation();
+
+  /** 캘린더 (월 단위) */
+  const monthStart = dayjs(selectedDate).startOf('month').format('YYYY-MM-DD');
+  const monthEnd = dayjs(selectedDate).endOf('month').format('YYYY-MM-DD');
+
+  const { data: calendarMap } = useReservationCalendar({
+    startDate: monthStart,
+    endDate: monthEnd,
+  });
+
+  /** 선택 날짜 예약 목록 */
+  const { data: reservationByDate } = useReservationByDate(selectedDate);
+
+  const reservationList =
+    reservationByDate?.carReserves.map(item => ({
+      id: item.reserveId,
+      date: dayjs(item.dispatchDateTime).format('YYYY-MM-DD'),
+      time: dayjs(item.dispatchDateTime).format('HH:mm'),
+      carName: item.carModel,
+      manager: item.reserverName,
+      requester: item.requestCompany,
+      rentalCompany: item.rentalType,
+      dispatchLocation: item.dispatchLocation,
+    })) ?? [];
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(prev => ({
       ...prev,
-      [id]: !prev[id], // 클릭된 항목만 toggle
+      [id]: !prev[id],
     }));
+  };
+
+  const handleConfirmEdit = (payload: {
+    requester: string;
+    rentalCompany: string;
+    dispatchLocation: string;
+  }) => {
+    if (!editTarget) return;
+
+    updateMutation.mutate(
+      {
+        reserveId: editTarget.id,
+        payload: {
+          requestCompany: payload.requester,
+          rentalType: payload.rentalCompany,
+          dispatchLocation: payload.dispatchLocation,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditTarget(null);
+        },
+        onError: (error: any) => {
+          const message =
+            error?.response?.data?.message ?? '예약 수정에 실패했습니다';
+
+          Alert.alert('예약 수정 실패', message);
+        },
+      },
+    );
   };
 
   const handlePressDelete = (id: number) => {
@@ -43,11 +106,20 @@ export default function ReservationDrawerScreen() {
   };
 
   const handleConfirmDelete = () => {
-    if (deleteTarget !== null) {
-      setReservationList(prev => prev.filter(r => r.id !== deleteTarget));
-    }
-    setShowDeleteModal(false);
-    setDeleteTarget(null);
+    if (!deleteTarget) return;
+
+    deleteMutation.mutate(deleteTarget, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+        setDeleteTarget(null);
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message ?? '예약 삭제에 실패했습니다';
+
+        Alert.alert('예약 삭제 실패', message);
+      },
+    });
   };
 
   return (
@@ -56,14 +128,16 @@ export default function ReservationDrawerScreen() {
         canGoBack
         centerContent={<Text style={s.header}>예약관리</Text>}
       />
+
       <View style={s.container}>
+        {/* 요약 */}
         <View style={s.summaryBox}>
           <View style={s.summaryItem}>
-            <Text style={s.summaryValue}>{todayLeft}</Text>
+            <Text style={s.summaryValue}>{statics?.todayCount ?? 0}</Text>
             <Text style={s.summaryLabel}>오늘 남은 예약</Text>
           </View>
           <View style={s.summaryItem}>
-            <Text style={s.summaryValue}>{totalLeft}</Text>
+            <Text style={s.summaryValue}>{statics?.totalCount ?? 0}</Text>
             <Text style={s.summaryLabel}>전체 남은 예약</Text>
           </View>
         </View>
@@ -74,37 +148,29 @@ export default function ReservationDrawerScreen() {
           disableAllTouchEventsForDisabledDays={false}
           markingType="custom"
           style={s.calendar}
-          theme={{
-            arrowColor: colors.PRIMARY_50,
-          }}
+          theme={{ arrowColor: colors.PRIMARY_50 }}
           dayComponent={({ date, state }) => {
             if (!date) return null;
 
             const isSelected = date.dateString === selectedDate;
             const isToday = date.dateString === today;
-            const isReserved = reservationList.some(
-              r => r.date === date.dateString,
-            );
+            const isReserved = !!calendarMap?.[date.dateString];
             const isOtherMonth = state === 'disabled';
 
-            // 배경색
             let bgColor = 'transparent';
             if (isSelected) bgColor = colors.PRIMARY_50;
             else if (isReserved)
               bgColor = isOtherMonth ? colors.PRIMARY_05 : colors.PRIMARY_10;
 
-            // 테두리색 (오늘)
             const borderColor = isToday ? colors.PRIMARY_40 : 'transparent';
             const borderWidth = isToday ? 1 : 0;
 
-            // 글자색
             const textColor = isOtherMonth
               ? colors.GRAY_20
               : isSelected
               ? colors.WHITE
               : colors.GRAY_90;
 
-            // 점색
             const dotColor = isOtherMonth
               ? colors.PRIMARY_30
               : isSelected
@@ -126,7 +192,6 @@ export default function ReservationDrawerScreen() {
                 }}
               >
                 <Text style={{ color: textColor }}>{date.day}</Text>
-
                 {isReserved && (
                   <View
                     style={{
@@ -142,7 +207,7 @@ export default function ReservationDrawerScreen() {
           }}
         />
 
-        {/* 예약 현황 리스트 */}
+        {/* 예약 리스트 */}
         <View style={s.cardContainer}>
           <View style={s.cardContainerHeader}>
             <View style={s.headerRow}>
@@ -154,12 +219,13 @@ export default function ReservationDrawerScreen() {
             </View>
             <Text style={s.headerDate}>
               {dayjs(selectedDate).format('M월 D일')} 예약 목록 (
-              {filteredList.length}건)
+              {reservationList.length}건)
             </Text>
           </View>
-          {filteredList.length > 0 ? (
+
+          {reservationList.length > 0 ? (
             <FlatList
-              data={filteredList}
+              data={reservationList}
               keyExtractor={item => item.id.toString()}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) => {
@@ -197,7 +263,7 @@ export default function ReservationDrawerScreen() {
                         <View style={s.detailHeaderRow}>
                           <Text style={s.detailText}>메모</Text>
                           <View style={s.detailRow}>
-                            <Pressable>
+                            <Pressable onPress={() => setEditTarget(item)}>
                               <Image
                                 source={require('../../../assets/admin-reservation/edit.png')}
                                 style={s.smallIcon}
@@ -213,6 +279,7 @@ export default function ReservationDrawerScreen() {
                             </Pressable>
                           </View>
                         </View>
+
                         <Text style={s.detailText}>
                           요청업체: {item.requester}
                         </Text>
@@ -236,6 +303,16 @@ export default function ReservationDrawerScreen() {
             </View>
           )}
         </View>
+
+        {/* 수정 모달 */}
+        <ReservationEditModal
+          visible={!!editTarget}
+          reservation={editTarget}
+          onClose={() => setEditTarget(null)}
+          onConfirm={handleConfirmEdit}
+        />
+
+        {/* 삭제 모달 */}
         <CommonModal
           visible={showDeleteModal}
           title="예약 삭제"
