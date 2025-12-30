@@ -93,7 +93,7 @@ export const getCarFeesByGrade = async (
   gradeId: number,
 ): Promise<CarFeeResponse> => {
   const res = await axiosInstance.get<ApiResponse<CarFeeResponse>>(
-    `/car-fees//v1/${gradeId}`,
+    `/car-fees/v1/${gradeId}`,
   );
   return res.data.data;
 };
