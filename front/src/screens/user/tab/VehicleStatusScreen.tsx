@@ -23,7 +23,7 @@ import { useAuthStore } from '../../../states/useAuthStore';
 
 type VehicleStatusLabel = '배차중' | '대기중' | '반납신청';
 
-type Vehicle = {
+export type Vehicle = {
   id: number;
   name: string;
   plateNumber: string;
@@ -31,7 +31,7 @@ type Vehicle = {
   lastUpdate: string;
   duration: string;
   location?: string;
-  isGarage: boolean;
+  immediateDispatchable: boolean;
 };
 
 const statusMap = {
@@ -54,7 +54,7 @@ const mapPartnerCarToVehicle = (car: PartnerCarItem): Vehicle => ({
   lastUpdate: car.updatedAt,
   duration: car.timeAfterUpdate,
   location: car.locationName,
-  isGarage: car.immediateDispatchable,
+  immediateDispatchable: car.immediateDispatchable,
 });
 
 export default function VehicleStatusScreen() {
@@ -86,7 +86,6 @@ export default function VehicleStatusScreen() {
     number: v.plateNumber,
     location: v.location,
     reserverName: null,
-    isGarage: v.isGarage,
     status: v.status,
   });
 
@@ -148,20 +147,48 @@ export default function VehicleStatusScreen() {
         renderItem={({ item }) => {
           const isOpen = expanded[item.id];
 
-          // ===== 상태별 플래그 =====
-          const isAtMyCompany = item.location === userName; // 대기중 + 내 회사
-          const isParked = item.status === '대기중' && !isAtMyCompany; // 대기중 + 주차장/타회사
-          const isDispatchedRequestCompany =
-            item.status === '배차중' && !item.isGarage; // 배차중 + 요청업체
+          /** 현재 로그인한 계저의 거래처가 차량이 위치한 곳인지 */
+          const isAtMyCompany = item.location === userName;
 
-          // ===== 화살표 표시 여부 =====
+          /* ================= 배차중 ================= */
+          /** 배차중 + 해당 거래처가 입고공업사인 경우 */
+          const isInUseAtMyCompany = item.status === '배차중' && isAtMyCompany;
+
+          /** 배차중 + 해당 거래처가 요청업체인 경우 */
+          const isInUseRequestCompany =
+            item.status === '배차중' && !isAtMyCompany;
+
+          /* ================= 대기중 ================= */
+          /** 대기중 + 바로 배차 가능한 상태 (해당 거래처에 주차됨) */
+          const isAvailableAndDispatchable =
+            item.status === '대기중' && item.immediateDispatchable;
+
+          /** 대기중 + 다른 장소(주차장/타 거래처)에 주차된 상태 */
+          const isAvailableButNotHere =
+            item.status === '대기중' && !item.immediateDispatchable;
+
+          /* ================= 반납신청 ================= */
+          const isReturnRequested = item.status === '반납신청';
+
+          /* ================= UI 표시 조건 ================= */
+          /** 화살표 표시 조건
+            - 배차중 + 입고공업사
+            - 대기중 + 바로배차 가능
+            - 반납신청
+           */
           const showArrow =
-            (item.status === '배차중' && item.isGarage) ||
-            (item.status === '대기중' && isAtMyCompany) ||
-            item.status === '반납신청';
+            isInUseAtMyCompany ||
+            isAvailableAndDispatchable ||
+            isReturnRequested;
 
-          // 버튼 표시 여부
+          /** 하단 버튼 영역 표시 여부 (화살표 펼침 상태일 때만) */
           const showButtons = isOpen && showArrow;
+
+          /** 위치 텍스트 표시 조건
+            - 배차중 + 요청업체
+            - 대기중 + 다른 장소에 주차된 경우
+           */
+          const showLocation = isInUseRequestCompany || isAvailableButNotHere;
 
           return (
             <Pressable
@@ -198,7 +225,7 @@ export default function VehicleStatusScreen() {
                     </View>
 
                     <View style={s.rightWrap}>
-                      {isParked || isDispatchedRequestCompany ? (
+                      {showLocation ? (
                         <View style={s.locationWrap}>
                           <Image
                             source={require('../../../assets/common/location.png')}
@@ -254,8 +281,8 @@ export default function VehicleStatusScreen() {
                   {/* 버튼 영역 */}
                   {showButtons && (
                     <View style={s.buttonRow}>
-                      {/* 배차중 */}
-                      {item.status === '배차중' && item.isGarage && (
+                      {/* 배차중 + 입고공업사 */}
+                      {isInUseAtMyCompany && (
                         <>
                           <Pressable
                             style={[s.actionBtn, s.grayBtn]}
@@ -279,8 +306,8 @@ export default function VehicleStatusScreen() {
                         </>
                       )}
 
-                      {/* 대기중 + 내 회사 */}
-                      {item.status === '대기중' && isAtMyCompany && (
+                      {/* 대기중 + 바로배차 가능 */}
+                      {isAvailableAndDispatchable && (
                         <>
                           <Pressable
                             style={[s.actionBtn, s.grayBtn]}
@@ -307,7 +334,7 @@ export default function VehicleStatusScreen() {
                       )}
 
                       {/* 반납신청 */}
-                      {item.status === '반납신청' && (
+                      {isReturnRequested && (
                         <Pressable style={[s.actionBtn, s.redBtn]}>
                           <Text style={s.actionText}>반납취소</Text>
                         </Pressable>
