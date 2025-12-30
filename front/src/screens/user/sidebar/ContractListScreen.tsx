@@ -12,11 +12,11 @@ import {
 import { Calendar } from 'react-native-calendars';
 import dayjs from 'dayjs';
 import { colors } from '../../../constants/colors';
-import { contractListMock } from '../../../mock/contractListMock';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../navigations/root/RootNavigator';
 import AppHeader from '../../../components/common/AppHeader';
+import { useContractList } from '../../../hooks/contracts/useContractList';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -33,6 +33,11 @@ export default function ContractListScreen() {
     endDate: null,
   });
 
+  const { data: contractList = [] } = useContractList({
+    startDate: range.startDate,
+    endDate: range.endDate,
+  });
+
   const handleDaySelect = (day: any) => {
     const selected = day.dateString;
     if (openPicker === 'start') {
@@ -43,19 +48,23 @@ export default function ContractListScreen() {
     setOpenPicker(null);
   };
 
-  const filteredList = contractListMock.filter(item => {
+  const filteredList = contractList.filter(item => {
+    const customerName = item.customerName ?? '';
+    const model = item.model ?? '';
+    const carNum = item.carNum ?? '';
+
     const matchSearch =
-      item.customerName.includes(search) ||
-      item.carName.includes(search) ||
-      item.carNumber.includes(search);
+      customerName.includes(search) ||
+      model.includes(search) ||
+      carNum.includes(search);
 
     const matchDate =
       (!range.startDate ||
-        dayjs(item.startDate).isAfter(
+        dayjs(item.dispatchTime).isAfter(
           dayjs(range.startDate).subtract(1, 'day'),
         )) &&
       (!range.endDate ||
-        dayjs(item.endDate).isBefore(dayjs(range.endDate).add(1, 'day')));
+        dayjs(item.dispatchTime).isBefore(dayjs(range.endDate).add(1, 'day')));
 
     return matchSearch && matchDate;
   });
@@ -147,11 +156,13 @@ export default function ContractListScreen() {
         <View style={s.cardContainer}>
           <FlatList
             data={filteredList}
-            keyExtractor={item => item.id.toString()}
+            // keyExtractor={item => item.id.toString()} // response값에 contractId 추가될 시 사용
+            keyExtractor={(_, index) => index.toString()}
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              <Pressable onPress={() => handlePressContract(item.id)}>
+              // <Pressable onPress={() => handlePressContract(item.id)}> // response값에 contractId 추가될 시 사용
+              <Pressable onPress={() => handlePressContract(14)}>
                 <View style={s.card}>
                   <View style={s.cardRow}>
                     <Image
@@ -166,7 +177,9 @@ export default function ContractListScreen() {
                       source={require('../../../assets/admin-contract/calender.png')}
                       style={s.iconSmall}
                     />
-                    <Text style={s.cardDateText}>{item.startDate}</Text>
+                    <Text style={s.cardDateText}>
+                      {dayjs(item.dispatchTime).format('YYYY-MM-DD')}
+                    </Text>
                   </View>
 
                   <View style={s.carBox}>
@@ -175,8 +188,8 @@ export default function ContractListScreen() {
                       style={s.iconCar}
                     />
                     <View style={s.textRow}>
-                      <Text style={s.carName}>{item.carName}</Text>
-                      <Text style={s.carNumber}>{item.carNumber}</Text>
+                      <Text style={s.carName}>{item.model}</Text>
+                      <Text style={s.carNumber}>{item.carNum}</Text>
                     </View>
                   </View>
                 </View>
@@ -207,13 +220,13 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_20,
     borderRadius: 4,
     paddingHorizontal: 8,
-    paddingVertical: Platform.OS === 'android' ? 0 : 8,
+    paddingVertical: Platform.OS === 'android' ? 2 : 8,
     marginBottom: 8,
   },
   searchIcon: {
     width: 12,
     height: 12,
-    marginRight: 8,
+    marginRight: 4,
   },
   input: {
     flex: 1,
