@@ -6,12 +6,12 @@ import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonModal from '../common/CommonModal';
 import { HIT_SLOP } from '../../constants/touch';
-import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
+import { Vehicle } from '../../screens/user/tab/VehicleStatusScreen';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  vehicle: VehicleCompanyDetail['vehicles'][number];
+  vehicle: Vehicle;
   staffId: number;
   onSubmitSuccess?: () => void;
 }
