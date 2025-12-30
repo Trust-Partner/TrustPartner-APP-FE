@@ -12,17 +12,17 @@ import {
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import CommonModal from '../common/CommonModal';
-import { VehicleCompanyDetail } from '../../mock/vehicleStatus/vehicleCompanyDetailMock';
 import { colors } from '../../constants/colors';
 import CommonDropdown from '../common/CommonDropdown';
 import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { Vehicle } from '../../screens/user/tab/VehicleStatusScreen';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  vehicle: VehicleCompanyDetail['vehicles'][number];
+  vehicle: Vehicle;
   companyName: string;
 }
 
