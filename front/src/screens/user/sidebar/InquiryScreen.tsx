@@ -16,6 +16,7 @@ import { HIT_SLOP } from '../../../constants/touch';
 import { usePartnerInquiry } from '../../../hooks/inquiry/usePartnerInquiry';
 import { useGeneralManagerInquiry } from '../../../hooks/inquiry/useGeneralManagerInquiry';
 import { useAuthStore } from '../../../states/useAuthStore';
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber';
 
 export default function InquiryScreen() {
   const [toastMsg, setToastMsg] = useState('');
@@ -82,7 +83,9 @@ export default function InquiryScreen() {
                     <Text style={s.contactName}>{item.staffName}</Text>
 
                     <View style={s.phoneRow}>
-                      <Text style={s.contactPhone}>{item.phoneNumber}</Text>
+                      <Text style={s.contactPhone}>
+                        {formatPhoneNumber(item.phoneNumber)}
+                      </Text>
                       <Pressable
                         hitSlop={HIT_SLOP.SAFE_VERTICAL}
                         onPress={() => handleCopy(item.phoneNumber)}

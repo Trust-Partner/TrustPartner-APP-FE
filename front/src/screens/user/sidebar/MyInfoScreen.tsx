@@ -11,6 +11,7 @@ import {
 import { colors } from '../../../constants/colors';
 import AppHeader from '../../../components/common/AppHeader';
 import { usePartnerMe } from '../../../hooks/mypage/usePartnerMe';
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber';
 
 export default function MyInfoScreen() {
   const { data, isLoading, isError } = usePartnerMe();
@@ -84,7 +85,7 @@ export default function MyInfoScreen() {
 
           <View style={s.infoRow}>
             <Text style={s.label}>휴대폰 번호</Text>
-            <Text style={s.value}>{info.phoneNumber}</Text>
+            <Text style={s.value}>{formatPhoneNumber(info.phoneNumber)}</Text>
           </View>
         </View>
       </ScrollView>
