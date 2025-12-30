@@ -15,6 +15,7 @@ import { partnerList, partnerStats } from '../../../mock/partnerMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import { HIT_SLOP } from '../../../constants/touch';
 import AppHeader from '../../../components/common/AppHeader';
+import PartnerFilterBox from '../../../components/partner/PartnerFilterBox';
 
 export default function PartnerManageScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
@@ -25,6 +26,19 @@ export default function PartnerManageScreen() {
   const [toastMsg, setToastMsg] = useState('');
 
   const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
+
+  const companyListMock = [
+    '한라',
+    '대성',
+    '한독',
+    '모든자동차',
+    '노원현대',
+    '홍명',
+    '시온',
+    '동우',
+  ];
+  const [selectedCompanies, setSelectedCompanies] =
+    useState<string[]>(companyListMock);
 
   const yearOptions = [2025, 2024, 2023, 2022];
   const totalSales = partnerStats.reduce((sum, i) => sum + i.sales, 0);
@@ -65,7 +79,12 @@ export default function PartnerManageScreen() {
               </View>
 
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  position: 'relative',
+                }}
               >
                 <Pressable
                   style={s.iconBtn}
@@ -79,6 +98,16 @@ export default function PartnerManageScreen() {
                     style={{ width: 12, height: 12, tintColor: colors.GRAY_50 }}
                   />
                 </Pressable>
+
+                {openFilter && (
+                  <View style={s.filterDropdown}>
+                    <PartnerFilterBox
+                      companies={companyListMock}
+                      selected={selectedCompanies}
+                      onChange={setSelectedCompanies}
+                    />
+                  </View>
+                )}
 
                 <View style={{ position: 'relative' }}>
                   <Pressable
@@ -364,6 +393,13 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 6,
     paddingHorizontal: 8,
+  },
+  filterDropdown: {
+    position: 'absolute',
+    top: 32,
+    right: 0,
+    zIndex: 100,
+    elevation: 5,
   },
   selectBox: {
     flexDirection: 'row',
