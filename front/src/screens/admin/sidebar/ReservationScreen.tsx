@@ -8,6 +8,7 @@ import {
   Image,
   Platform,
   Pressable,
+  Alert,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import dayjs from 'dayjs';
@@ -19,6 +20,8 @@ import ReservationEditModal from '../../../components/reservation/ReservationEdi
 import { useReservationByDate } from '../../../hooks/reservation/useReservationByDate';
 import { useReservationCalendar } from '../../../hooks/reservation/useReservationCalendar';
 import { useReservationStatics } from '../../../hooks/reservation/useReservationStatics';
+import { useDeleteReservation } from '../../../hooks/reservation/useDeleteReservation';
+import { useUpdateReservation } from '../../../hooks/reservation/useUpdateReservation';
 
 export default function ReservationDrawerScreen() {
   const today = dayjs().format('YYYY-MM-DD');
@@ -31,6 +34,9 @@ export default function ReservationDrawerScreen() {
 
   /** 예약 통계 */
   const { data: statics } = useReservationStatics();
+
+  const updateMutation = useUpdateReservation();
+  const deleteMutation = useDeleteReservation();
 
   /** 캘린더 (월 단위) */
   const monthStart = dayjs(selectedDate).startOf('month').format('YYYY-MM-DD');
@@ -64,14 +70,56 @@ export default function ReservationDrawerScreen() {
     }));
   };
 
+  const handleConfirmEdit = (payload: {
+    requester: string;
+    rentalCompany: string;
+    dispatchLocation: string;
+  }) => {
+    if (!editTarget) return;
+
+    updateMutation.mutate(
+      {
+        reserveId: editTarget.id,
+        payload: {
+          requestCompany: payload.requester,
+          rentalType: payload.rentalCompany,
+          dispatchLocation: payload.dispatchLocation,
+        },
+      },
+      {
+        onSuccess: () => {
+          setEditTarget(null);
+        },
+        onError: (error: any) => {
+          const message =
+            error?.response?.data?.message ?? '예약 수정에 실패했습니다';
+
+          Alert.alert('예약 수정 실패', message);
+        },
+      },
+    );
+  };
+
   const handlePressDelete = (id: number) => {
     setDeleteTarget(id);
     setShowDeleteModal(true);
   };
 
   const handleConfirmDelete = () => {
-    setShowDeleteModal(false);
-    setDeleteTarget(null);
+    if (!deleteTarget) return;
+
+    deleteMutation.mutate(deleteTarget, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+        setDeleteTarget(null);
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message ?? '예약 삭제에 실패했습니다';
+
+        Alert.alert('예약 삭제 실패', message);
+      },
+    });
   };
 
   return (
@@ -261,7 +309,7 @@ export default function ReservationDrawerScreen() {
           visible={!!editTarget}
           reservation={editTarget}
           onClose={() => setEditTarget(null)}
-          onConfirm={() => setEditTarget(null)}
+          onConfirm={handleConfirmEdit}
         />
 
         {/* 삭제 모달 */}

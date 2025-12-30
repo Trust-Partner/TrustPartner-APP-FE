@@ -7,7 +7,7 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-/* 1. 예약 통계 */
+/* 예약 통계 */
 export interface ReservationStatics {
   todayCount: number;
   totalCount: number;
@@ -20,7 +20,7 @@ export const getReservationStatics = async (): Promise<ReservationStatics> => {
   return res.data.data;
 };
 
-/* 2. 캘린더 예약 조회 */
+/* 캘린더 예약 조회 */
 export type ReservationCalendarResponse = Record<string, number>;
 
 export const getReservationCalendar = async (
@@ -34,7 +34,7 @@ export const getReservationCalendar = async (
   return res.data.data;
 };
 
-/* 3. 날짜별 예약 조회 */
+/* 날짜별 예약 조회 */
 export interface ReservationItem {
   reserveId: number;
   dispatchDateTime: string;
@@ -56,6 +56,32 @@ export const getReservationByDate = async (
   const res = await axiosInstance.get<ApiResponse<ReservationByDateResponse>>(
     '/cars/v1/reserve/date',
     { params: { date } },
+  );
+  return res.data.data;
+};
+
+/** 예약 수정 */
+export interface UpdateReservationPayload {
+  requestCompany: string;
+  rentalType: string;
+  dispatchLocation: string;
+}
+
+export const updateReservation = async (
+  reserveId: number,
+  payload: UpdateReservationPayload,
+) => {
+  const res = await axiosInstance.put<ApiResponse<any>>(
+    `/cars/v1/reserve/${reserveId}`,
+    payload,
+  );
+  return res.data.data;
+};
+
+/** 예약 삭제 */
+export const deleteReservation = async (reserveId: number) => {
+  const res = await axiosInstance.delete<ApiResponse<{}>>(
+    `/cars/v1/reserve/${reserveId}`,
   );
   return res.data.data;
 };
