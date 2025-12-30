@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,34 +11,60 @@ import {
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../../constants/colors';
-import { partnerList, partnerStats } from '../../../mock/partnerMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import { HIT_SLOP } from '../../../constants/touch';
 import AppHeader from '../../../components/common/AppHeader';
+import PartnerFilterBox from '../../../components/partner/PartnerFilterBox';
+import { useAllSimplePartners } from '../../../hooks/partners/useAllSimplePartners';
+import { useMonthlyRevenueStatistics } from '../../../hooks/billings/useMonthlyRevenueStatistics';
+import { useAvailableRevenueYears } from '../../../hooks/billings/useAvailableRevenueYears';
+import { useStaffPartners } from '../../../hooks/partners/useStaffPartners';
 
 export default function PartnerManageScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [openYear, setOpenYear] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
   const [search, setSearch] = useState('');
   const [toastMsg, setToastMsg] = useState('');
 
-  const [openStates, setOpenStates] = useState<{ [key: number]: boolean }>({});
+  const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
 
-  const yearOptions = [2025, 2024, 2023, 2022];
-  const totalSales = partnerStats.reduce((sum, i) => sum + i.sales, 0);
-  const totalCount = partnerStats.reduce((sum, i) => sum + i.count, 0);
+  const { data: partners, isLoading } = useAllSimplePartners();
+  const { data: years } = useAvailableRevenueYears();
 
-  const toggleOpen = (id: number) => {
-    setOpenStates(prev => ({ ...prev, [id]: !prev[id] }));
+  const [appliedPartnerIds, setAppliedPartnerIds] = useState<string[] | null>(
+    null,
+  );
+  const yearOptions = years ?? [];
+
+  useEffect(() => {
+    if (years && years.length > 0 && selectedYear === null) {
+      setSelectedYear(years[0]);
+    }
+  }, [years, selectedYear]);
+
+  const { data: revenueData, isLoading: revenueLoading } =
+    useMonthlyRevenueStatistics({
+      year: selectedYear!,
+      partnerIds: appliedPartnerIds,
+    });
+
+  const toggleOpen = (partnerId: string) => {
+    setOpenStates(prev => ({
+      ...prev,
+      [partnerId]: !prev[partnerId],
+    }));
   };
 
-  const filteredPartners = partnerList.filter(p =>
-    search.trim() === ''
-      ? true
-      : p.name.toLowerCase().includes(search.trim().toLowerCase()),
-  );
+  const { data: staffPartners, isLoading: staffLoading } = useStaffPartners();
+
+  const filteredPartners =
+    staffPartners?.filter(p =>
+      search.trim() === ''
+        ? true
+        : p.partnerName.toLowerCase().includes(search.trim().toLowerCase()),
+    ) ?? [];
 
   const handleCopy = (text: string, label: string) => {
     Clipboard.setString(text);
@@ -65,7 +91,12 @@ export default function PartnerManageScreen() {
               </View>
 
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  position: 'relative',
+                }}
               >
                 <Pressable
                   style={s.iconBtn}
@@ -79,6 +110,19 @@ export default function PartnerManageScreen() {
                     style={{ width: 12, height: 12, tintColor: colors.GRAY_50 }}
                   />
                 </Pressable>
+
+                {openFilter && partners && (
+                  <View style={s.filterDropdown}>
+                    <PartnerFilterBox
+                      partners={partners}
+                      initialSelectedIds={appliedPartnerIds}
+                      onApply={ids => {
+                        setAppliedPartnerIds(ids);
+                        setOpenFilter(false);
+                      }}
+                    />
+                  </View>
+                )}
 
                 <View style={{ position: 'relative' }}>
                   <Pressable
@@ -150,19 +194,13 @@ export default function PartnerManageScreen() {
             </View>
             <View style={s.topDivider} />
 
-            {partnerStats.map((item, idx) => (
-              <View
-                key={idx}
-                style={[
-                  s.row,
-                  idx === partnerStats.length - 1 && { borderBottomWidth: 0 },
-                ]}
-              >
+            {revenueData?.statistics.map(item => (
+              <View key={item.month} style={s.row}>
                 <Text style={s.cell}>{item.month}</Text>
                 <Text style={s.cell}>
                   {tab === 'sales'
-                    ? `₩ ${item.sales.toLocaleString('ko-KR')}`
-                    : `${item.count}건`}
+                    ? `₩ ${item.revenue.toLocaleString('ko-KR')}`
+                    : `${item.dispatchCount}건`}
                 </Text>
               </View>
             ))}
@@ -171,8 +209,10 @@ export default function PartnerManageScreen() {
               <Text style={[s.cell, s.boldMonth]}>합계</Text>
               <Text style={[s.cell, s.boldCell]}>
                 {tab === 'sales'
-                  ? `₩ ${totalSales.toLocaleString('ko-KR')}`
-                  : `${totalCount}건`}
+                  ? `₩ ${
+                      revenueData?.total.revenue.toLocaleString('ko-KR') ?? 0
+                    }`
+                  : `${revenueData?.total.dispatchCount ?? 0}건`}
               </Text>
             </View>
           </View>
@@ -215,10 +255,10 @@ export default function PartnerManageScreen() {
                 nestedScrollEnabled={true}
               >
                 {filteredPartners.map(item => (
-                  <View key={item.id} style={s.partnerBox}>
+                  <View key={item.partnerId} style={s.partnerBox}>
                     <Pressable
                       style={s.partnerTop}
-                      onPress={() => toggleOpen(item.id)}
+                      onPress={() => toggleOpen(item.partnerId)}
                     >
                       <View
                         style={{ flexDirection: 'row', alignItems: 'center' }}
@@ -232,7 +272,7 @@ export default function PartnerManageScreen() {
                             marginRight: 6,
                           }}
                         />
-                        <Text style={s.partnerName}>{item.name}</Text>
+                        <Text style={s.partnerName}>{item.partnerName}</Text>
                       </View>
 
                       <View
@@ -244,14 +284,15 @@ export default function PartnerManageScreen() {
                       >
                         <View style={s.gradeBadge}>
                           <Text style={s.gradeText}>
-                            {item.grade} | {item.share}%
+                            {item.gradeInfo.gradeName} |{' '}
+                            {item.gradeInfo.discountRate}%
                           </Text>
                         </View>
                         <Image
                           source={require('../../../assets/common/down_arrow.png')}
                           style={[
                             s.arrowSmall,
-                            openStates[item.id] && {
+                            openStates[item.partnerId] && {
                               transform: [{ rotate: '180deg' }],
                             },
                           ]}
@@ -259,7 +300,7 @@ export default function PartnerManageScreen() {
                       </View>
                     </Pressable>
 
-                    {openStates[item.id] && (
+                    {openStates[item.partnerId] && (
                       <View style={s.detailBox}>
                         {/* 연락처 */}
                         <View style={s.detailRow}>
@@ -267,9 +308,13 @@ export default function PartnerManageScreen() {
                             source={require('../../../assets/admin-partner/phone.png')}
                             style={s.detailIcon}
                           />
-                          <Text style={s.detailText}>연락처: {item.phone}</Text>
+                          <Text style={s.detailText}>
+                            연락처: {item.phoneNumber}
+                          </Text>
                           <Pressable
-                            onPress={() => handleCopy(item.phone, '연락처')}
+                            onPress={() =>
+                              handleCopy(item.phoneNumber, '연락처')
+                            }
                             hitSlop={HIT_SLOP.SAFE_VERTICAL}
                           >
                             <Image
@@ -304,7 +349,7 @@ export default function PartnerManageScreen() {
                             style={s.detailIcon}
                           />
                           <Text style={s.detailText}>
-                            담당자: {item.manager}
+                            담당자: {item.teamLeaderName}
                           </Text>
                         </View>
                       </View>
@@ -364,6 +409,26 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: 6,
     paddingHorizontal: 8,
+  },
+  filterDropdown: {
+    position: 'absolute',
+    top: 32,
+    right: 0,
+    zIndex: 100,
+    elevation: 5,
+  },
+  applyButton: {
+    marginTop: 8,
+    backgroundColor: colors.PRIMARY_50,
+    borderRadius: 4,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+
+  applyButtonText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.WHITE,
   },
   selectBox: {
     flexDirection: 'row',
