@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +19,7 @@ import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useDispatchList } from '../../hooks/dispatch/useDispatchList';
 import { mapDispatchItemToVM } from '../../utils/dispatchRequestMapping';
 import { HIT_SLOP } from '../../constants/touch';
+import { useContractDispatchConfirm } from '../../hooks/contracts/useContractDispatchConfirm';
 
 interface Props {
   onBack: () => void;
@@ -37,6 +39,7 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
     data?.dispatchList
       .filter(item => item.dispatchStatus === 'REQUESTED')
       .map(mapDispatchItemToVM) ?? [];
+  const confirmMutation = useContractDispatchConfirm();
 
   useEffect(() => {
     (async () => {
@@ -60,8 +63,27 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
     })();
   }, [vehicle.id]);
 
+  // const handleConfirm = async () => {
+  //   try {
+  //     if (autoSave) {
+  //       await AsyncStorage.setItem('dispatch_autosave', 'true');
+  //       await AsyncStorage.setItem('dispatch_message', message);
+  //     } else {
+  //       await AsyncStorage.removeItem('dispatch_autosave');
+  //       await AsyncStorage.removeItem('dispatch_message');
+  //     }
+  //     setSendModalVisible(true);
+  //   } catch (e) {
+  //     console.warn('자동저장 처리 실패:', e);
+  //     setSendModalVisible(true);
+  //   }
+  // };
+
   const handleConfirm = async () => {
+    if (!selectedRequest) return;
+
     try {
+      // 1️⃣ 자동 저장 처리
       if (autoSave) {
         await AsyncStorage.setItem('dispatch_autosave', 'true');
         await AsyncStorage.setItem('dispatch_message', message);
@@ -69,10 +91,27 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
         await AsyncStorage.removeItem('dispatch_autosave');
         await AsyncStorage.removeItem('dispatch_message');
       }
-      setSendModalVisible(true);
+
+      // 2️⃣ 배차 확정 API 호출
+      confirmMutation.mutate(
+        {
+          carId: vehicle.id,
+          dispatchId: selectedRequest.id,
+          message,
+          autoSave,
+        },
+        {
+          onSuccess: () => {
+            // 성공 시 완료 모달
+            setSendModalVisible(true);
+          },
+          onError: e => {
+            console.warn('배차 확정 실패:', e);
+          },
+        },
+      );
     } catch (e) {
-      console.warn('자동저장 처리 실패:', e);
-      setSendModalVisible(true);
+      console.warn('배차 확정 처리 실패:', e);
     }
   };
 
@@ -208,8 +247,32 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
               </Pressable>
 
               <View style={s.footer}>
-                <Pressable style={s.sendBtn} onPress={handleConfirm}>
-                  <Text style={s.sendBtnText}>배차 확정</Text>
+                <Pressable
+                  style={[
+                    s.sendBtn,
+                    confirmMutation.isPending && { opacity: 0.6 },
+                  ]}
+                  onPress={handleConfirm}
+                  disabled={confirmMutation.isPending}
+                >
+                  <View style={s.sendBtnContent}>
+                    <Text
+                      style={[
+                        s.sendBtnText,
+                        confirmMutation.isPending && { opacity: 0 },
+                      ]}
+                    >
+                      배차 확정
+                    </Text>
+
+                    {confirmMutation.isPending && (
+                      <ActivityIndicator
+                        size="small"
+                        color={colors.WHITE}
+                        style={StyleSheet.absoluteFill}
+                      />
+                    )}
+                  </View>
                 </Pressable>
               </View>
             </>
@@ -450,6 +513,10 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
     padding: 8,
+    alignItems: 'center',
+  },
+  sendBtnContent: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
   sendBtnText: {
