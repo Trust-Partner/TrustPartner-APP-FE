@@ -8,6 +8,8 @@ import {
   Pressable,
   Image,
   Platform,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import { mockAdminDashboard } from '../../../mock/adminDashboard';
@@ -18,13 +20,67 @@ import CalendarIcon from '../../../assets/admin-home/calendar.png';
 import CarIcon from '../../../assets/admin-home/car.png';
 import WarningIcon from '../../../assets/admin-home/warning.png';
 import ReturnIcon from '../../../assets/admin-home/return.png';
+import dayjs from 'dayjs';
+import { useAdminHome } from '../../../hooks/home/useAdminHome';
 
 export default function AdminHomeScreen() {
-  const { summary, alerts: initialAlerts } = mockAdminDashboard;
   const navigation = useNavigation<any>();
+
+  const date = dayjs().format('YYYY-MM-DD');
+  const { data, isLoading, refetch, isFetching } = useAdminHome(date);
+
+  const { alerts: initialAlerts } = mockAdminDashboard;
+  const [alerts, setAlerts] = useState(initialAlerts);
 
   const topIcons = [RotationIcon, CalendarIcon];
   const middleIcons = [CarIcon, WarningIcon, ReturnIcon];
+
+  if (isLoading || !data) {
+    return (
+      <View style={s.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+      </View>
+    );
+  }
+
+  const summary = {
+    top: [
+      { label: '회전율', value: `${data.rotationRate}%` },
+      { label: '이번달', value: `${data.monthlyDispatchCount}건` },
+    ],
+    middle: [
+      { label: '배차중', value: data.inUseCarCount },
+      { label: '대기중', value: data.availableCarCount },
+      { label: '배차건', value: data.monthlyDispatchCount },
+    ],
+    bottom: [
+      {
+        label: '배차요청건',
+        value: data.dispatchRequestCount,
+        sub: '대기중',
+      },
+      {
+        label: '반납신청',
+        value: data.returnRequestCarCount,
+        sub: '요청',
+      },
+      {
+        label: '세차/주유',
+        value: data.washFuelLocationCount,
+        sub: '대기',
+      },
+      {
+        label: '지급확정',
+        value: data.billingPendingCount,
+        sub: '미확정',
+      },
+      {
+        label: '예약관리',
+        value: data.RemainingReservationCount,
+        sub: '잔여',
+      },
+    ],
+  };
 
   const handleCardPress = (label: string) => {
     switch (label) {
@@ -59,14 +115,18 @@ export default function AdminHomeScreen() {
     }
   };
 
-  const [alerts, setAlerts] = useState(initialAlerts);
-
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
   };
 
   return (
-    <ScrollView style={s.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={s.container}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+      }
+    >
       <View style={s.section}>
         <Text style={s.sectionTitle}>실시간 상황판</Text>
         <View style={{ marginBottom: 8 }} />
@@ -198,6 +258,12 @@ export default function AdminHomeScreen() {
 }
 
 const s = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.GRAY_00,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
