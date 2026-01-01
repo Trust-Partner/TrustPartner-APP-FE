@@ -53,21 +53,21 @@ export default function UserHomeScreen() {
   const summary = {
     top: [
       {
-        label: '이번달 매출',
+        label: '이번달 수익',
         value: data ? `${data.totalMonthRevenue.toLocaleString()}원` : '-',
       },
       {
-        label: '전체 차량 수',
+        label: '전체차량',
         value: data ? `${data.allCarNum}대` : '-',
       },
     ],
     middle: [
       {
-        label: '이번달 배차 건수',
+        label: '이번달 배차건수',
         value: data ? `${data.monthlyDispatchCount}건` : '-',
       },
       {
-        label: '정산율',
+        label: '지급비율',
         value: data ? `${data.paymentRate * 100}%` : '-',
       },
     ],
