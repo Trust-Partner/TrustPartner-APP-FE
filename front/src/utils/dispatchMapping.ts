@@ -1,21 +1,25 @@
-import { DispatchCarItem } from '../api/vehicleStatus';
 import { DispatchDetail } from '../types/dispatch';
+import { DispatchCarApiItem } from '../api/vehicleStatus';
 
-// 배차하기 - 차급별 차량
-// API 응답 → UI에서 사용하는 DispatchDetail 변환
 export const mapDispatchCarItemToDetail = (
-  car: DispatchCarItem,
-): DispatchDetail => {
-  return {
-    id: car.carId,
-    model: car.model,
-    year: String(car.year),
-    number: car.carNum,
-    location: car.locationName,
-    washed: !car.needsWash,
-    isConfirmed: car.likedOrConfirmed,
-    isBookmarked: car.likedOrConfirmed,
-    isInWashArea: car.locationName === 'ESA' || car.locationName === '렉시온',
-    reserverName: car.reservationName,
-  };
-};
+  item: DispatchCarApiItem,
+): DispatchDetail => ({
+  id: item.carId,
+  model: item.model,
+  year: item.year,
+  number: item.carNum,
+  location: item.locationName,
+
+  washed: !item.needsWash,
+  isInWashArea: item.needsWash,
+
+  isBookmarked: item.isLiked,
+  isConfirmed: item.isConfirmed,
+
+  reserverName: item.reservationName,
+
+  carDispatchId: item.carDispatchId,
+  draftingContract: item.draftingContract,
+  contractType: item.contractType,
+  contractId: item.contractId,
+});

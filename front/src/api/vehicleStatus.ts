@@ -1,4 +1,3 @@
-import { Platform } from 'react-native';
 import axiosInstance from './axiosInstance';
 
 export interface ApiResponse<T> {
@@ -42,16 +41,26 @@ export const getDispatchCarGrades = async (
 
 export type FuelType = 'GASOLINE' | 'DIESEL' | 'ELECTRIC';
 
-/** 차급별 차량 */
-export interface DispatchCarItem {
+export type ContractType = 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
+
+export interface DispatchCarApiItem {
   carId: number;
   model: string;
   year: number;
   carNum: string;
   locationName: string;
   needsWash: boolean;
-  likedOrConfirmed: boolean;
+
+  isLiked: boolean;
+  isConfirmed: boolean;
+
+  carDispatchId: number | null;
+  draftingContract: boolean;
+  contractType: ContractType | null;
+  contractId: number | null;
+
   reservationName: string | null;
+
   fuelLevel: number | null;
   fuelType: FuelType;
 }
@@ -60,7 +69,7 @@ export interface DispatchCarsByGradeResponse {
   gradeId: number;
   gradeName: string;
   count: number;
-  cars: DispatchCarItem[];
+  cars: DispatchCarApiItem[];
 }
 
 export const getDispatchCarsByGrade = async (

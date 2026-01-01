@@ -56,9 +56,15 @@ export default function DispatchGroupDetailScreen({ route }: any) {
     location: v.location,
     year: v.year,
     washed: v.washed,
+
     isConfirmed: v.isConfirmed,
     isBookmarked: v.isBookmarked,
     reserverName: v.reserverName,
+
+    carDispatchId: v.carDispatchId,
+    draftingContract: v.draftingContract,
+    contractType: v.contractType,
+    contractId: v.contractId,
   });
 
   const handleSelectVehicle = (item: DispatchDetail) => {
