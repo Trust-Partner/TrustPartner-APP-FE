@@ -7,7 +7,7 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-/** 어드민 홈 실시간 상황판 응답 data */
+// 어드민 홈
 export interface AdminHomeDashboard {
   rotationRate: number; // 회전율
   month: string;
@@ -25,16 +25,37 @@ export interface AdminHomeDashboard {
 }
 
 export interface FetchAdminHomeParams {
-  date: string; // YYYY-MM-DD
+  date: string;
 }
 
-/** 어드민 홈 실시간 상황판 조회 */
 export const getAdminHome = async (
   date: string,
 ): Promise<AdminHomeDashboard> => {
   const res = await axiosInstance.get<ApiResponse<AdminHomeDashboard>>(
     '/staffs/v1/home',
     { params: { date } },
+  );
+
+  return res.data.data;
+};
+
+// 유저 홈
+export interface UserHomeResponse {
+  totalMonthRevenue: number;
+  allCarNum: number;
+  monthlyDispatchCount: number;
+  paymentRate: number;
+}
+
+export const getUserHome = async (
+  userId: string,
+  date: string,
+): Promise<UserHomeResponse> => {
+  const res = await axiosInstance.get<ApiResponse<UserHomeResponse>>(
+    '/partner/v1/home',
+    {
+      params: { userId, date },
+    },
   );
 
   return res.data.data;
