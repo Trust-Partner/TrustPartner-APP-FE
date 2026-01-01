@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from '../axiosInstance';
 
 export type ContractType =
   | 'GENERAL_CONTRACT'
@@ -12,7 +12,7 @@ export interface CreateContractRequest {
 }
 
 export interface CreateContractResponse {
-  contractId: number;
+  generalContractId: number;
 }
 
 export const createContract = async (
@@ -36,67 +36,49 @@ export interface ContractUploadUrlsResponse {
   signaturePhoto: UploadUrlInfo;
 }
 
+// 보험/일반/교체 계약서 이미지 업로드 URL 발급
 export const fetchContractUploadUrls = async (
   contractId: number,
 ): Promise<ContractUploadUrlsResponse> => {
-  const res = await axiosInstance.post(`/contracts/${contractId}/upload-urls`);
-  return res.data.data;
-};
-
-// 일반 계약서 저장
-export interface SaveGeneralContractRequest {
-  customerName: string;
-  customerPhoneNumber: string;
-  customerAddress: string;
-
-  paymentMethod: 'ACCOUNT_TRANSFER' | 'CARD';
-  paymentAmount: number;
-
-  memo?: string;
-
-  contractPhotoKeys: string[];
-  customerSignatureKey: string;
-
-  fuelQuantity?: number;
-  isDraft: boolean;
-}
-
-export const saveGeneralContract = async (
-  contractId: number,
-  payload: SaveGeneralContractRequest,
-) => {
-  const res = await axiosInstance.put(
-    `/contracts/general/${contractId}`,
-    payload,
+  const res = await axiosInstance.post(
+    `/contracts/v1/${contractId}/upload-urls`,
   );
+
   return res.data.data;
 };
 
 // 보험 계약서 저장
 export interface SaveInsuranceContractRequest {
-  requestCompany: string;
-  repairShop: string;
+  // 고객 정보
+  customerName: string;
+  customerPhoneNumber: string;
+  customerAddress: string;
 
+  // 고객 차량 정보
+  customerCarType: string;
+  customerCarNumber: string;
+  customerCarDisplacement: string;
+
+  // 보험 정보
   insuranceCompanyName: string;
   insuranceApplicationNumber: string;
-  insuranceManagerName: string;
-  insuranceManagerPhoneNumber: string;
 
-  memo?: string;
+  // 거래처 / 입고 공업사
+  partnerId: string;
+  repairShopId: string;
 
+  // 첨부
   contractPhotoKeys: string[];
   customerSignatureKey: string;
 
+  // 기타
+  fuelQuantity: number;
   isDraft: boolean;
 }
 
 export const saveInsuranceContract = async (
   contractId: number,
   payload: SaveInsuranceContractRequest,
-) => {
-  const res = await axiosInstance.put(
-    `/contracts/insurance/${contractId}`,
-    payload,
-  );
-  return res.data.data;
+): Promise<void> => {
+  await axiosInstance.put(`/contracts/v1/insurance/${contractId}`, payload);
 };
