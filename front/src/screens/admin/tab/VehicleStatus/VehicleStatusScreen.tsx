@@ -248,7 +248,9 @@ function DispatchSection({
               <Text style={[s.badge, s.badgeGreen]}>
                 {item.likedOrConfirmedCount}
               </Text>
-              <Text style={[s.badge, s.badgeBlue]}>{item.availableCount}</Text>
+              <Text style={[s.badge, s.badgeBlue]}>
+                {item.availableCount - item.likedOrConfirmedCount}
+              </Text>
               <Image
                 source={require('../../../../assets/common/right_arrow.png')}
                 style={s.arrowIcon}
