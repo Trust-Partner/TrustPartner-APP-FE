@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { colors } from '../../../../constants/colors';
 import AppHeader from '../../../../components/common/AppHeader';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AdminVehicleStatusStackParamList } from '../../../../navigations/admin/stacks/tabs/AdminVehicleStatusStack';
 import { useVehicleSearchStore } from '../../../../stores/useVehicleSearchStore';
@@ -65,6 +65,15 @@ export default function VehicleStatusScreen() {
   if (!hasMountedRef.current && !isContentLoading) {
     hasMountedRef.current = true;
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatchGrades.refetch();
+      statusSummary.refetch();
+      statusLocations.refetch();
+    }, [carType, query]),
+  );
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View style={{ flex: 1 }}>
@@ -214,7 +223,7 @@ function DispatchSection({
         keyExtractor={item => item.gradeId.toString()}
         columnWrapperStyle={{ justifyContent: 'space-between' }}
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+          <RefreshControl refreshing={false} onRefresh={refetch} />
         }
         contentContainerStyle={{ flexGrow: 1 }}
         renderItem={({ item }) => (
