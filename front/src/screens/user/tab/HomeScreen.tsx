@@ -8,26 +8,78 @@ import {
   Pressable,
   Image,
   Platform,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
-import { mockUserDashboard } from '../../../mock/userDashboard';
 import { useNavigation } from '@react-navigation/native';
+import dayjs from 'dayjs';
+
+import { useUserHome } from '../../../hooks/home/useUserHome';
+import { useAuthStore } from '../../../states/useAuthStore';
+import { mockUserDashboard } from '../../../mock/userDashboard';
+
+const LoadingView = () => (
+  <View style={s.loading}>
+    <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+  </View>
+);
 
 export default function UserHomeScreen() {
-  const { summary, request, alerts: initialAlerts } = mockUserDashboard;
   const navigation = useNavigation<any>();
+
+  const user = useAuthStore(s => s.user);
+
+  if (!user || user.kind !== 'USER') {
+    return <LoadingView />;
+  }
+
+  const userId = user.partnerId;
+  const date = dayjs().format('YYYY-MM-DD');
+
+  const { data, isLoading, refetch, isFetching } = useUserHome(userId, date);
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
+
+  const { request, alerts: initialAlerts } = mockUserDashboard;
   const [alerts, setAlerts] = useState(initialAlerts);
 
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
   };
 
+  const summary = {
+    top: [
+      {
+        label: '이번달 수익',
+        value: data ? `${data.totalMonthRevenue.toLocaleString()}원` : '-',
+      },
+      {
+        label: '전체차량',
+        value: data ? `${data.allCarNum}대` : '-',
+      },
+    ],
+    middle: [
+      {
+        label: '이번달 배차건수',
+        value: data ? `${data.monthlyDispatchCount}건` : '-',
+      },
+      {
+        label: '지급비율',
+        value: data ? `${data.paymentRate * 100}%` : '-',
+      },
+    ],
+  };
+
   return (
     <ScrollView
       style={s.container}
       showsVerticalScrollIndicator={false}
-      bounces={false}
-      alwaysBounceVertical={false}
+      refreshControl={
+        <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+      }
     >
       <Text style={s.sectionTitle}>이번달 현황</Text>
 
@@ -96,7 +148,6 @@ export default function UserHomeScreen() {
         ]}
         onPress={() => navigation.navigate('DispatchRequests')}
       >
-        {/* 파란색 원 배경 추가 */}
         <View style={s.requestIconCircle}>
           <Image
             source={require('../../../assets/user-home/file.png')}
@@ -120,7 +171,7 @@ export default function UserHomeScreen() {
         <FlatList
           data={alerts}
           keyExtractor={item => item.id.toString()}
-          nestedScrollEnabled={true}
+          nestedScrollEnabled
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 8 }} />}
           renderItem={({ item }) => (
@@ -142,6 +193,7 @@ export default function UserHomeScreen() {
           }
         />
       </View>
+
       <View style={{ marginBottom: 20 }} />
     </ScrollView>
   );
@@ -152,6 +204,12 @@ const s = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.GRAY_00,
     padding: 16,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.GRAY_00,
   },
   sectionTitle: {
     fontSize: 16,
