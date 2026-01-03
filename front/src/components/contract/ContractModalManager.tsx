@@ -6,7 +6,11 @@ import InsuranceContractModal from './InsuranceContractModal';
 import MainContractModal from './MainContractModal';
 import ReplacementContractModal from './ReplacementContractModal';
 
-export default function ContractModalManager() {
+export default function ContractModalManager({
+  onCloseComplete,
+}: {
+  onCloseComplete?: () => void;
+}) {
   const { visible, modalType, closeModal, goTo, selectedVehicle, originType } =
     useContractModalStore();
 
@@ -17,14 +21,18 @@ export default function ContractModalManager() {
     else closeModal();
   };
 
+  const handleClose = () => {
+    closeModal();
+    onCloseComplete?.();
+  };
+
   switch (modalType) {
     case 'main':
       return (
         selectedVehicle && (
           <MainContractModal
             visible={visible}
-            onSelect={goTo}
-            onClose={closeModal}
+            onClose={handleClose}
             vehicle={selectedVehicle}
           />
         )
