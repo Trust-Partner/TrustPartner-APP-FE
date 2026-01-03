@@ -35,37 +35,70 @@ export const createContract = async (
   return contractId;
 };
 
-// 보험 계약서 저장 (임시 / 최종 공용)
+// 이미지 업로드 URL 발급
+export interface ContractUploadSlot {
+  fileKey: string;
+  uploadUrl: string;
+}
+
+export interface GetContractUploadUrlsResponse {
+  contractPhotos: ContractUploadSlot[];
+  signaturePhoto: ContractUploadSlot;
+}
+
+export const getContractUploadUrls = async (
+  contractId: number,
+): Promise<GetContractUploadUrlsResponse> => {
+  const res = await axiosInstance.post<
+    ApiResponse<{
+      contractPhotos: { fileKey: string; uploadUrl: string }[];
+      signaturePhoto: { fileKey: string; uploadUrl: string };
+    }>
+  >(`/contracts/v1/${contractId}/upload-urls`);
+
+  const data = res.data.data;
+
+  return {
+    contractPhotos: data.contractPhotos.map(p => ({
+      fileKey: p.fileKey,
+      uploadUrl: p.uploadUrl,
+    })),
+    signaturePhoto: {
+      fileKey: data.signaturePhoto.fileKey,
+      uploadUrl: data.signaturePhoto.uploadUrl,
+    },
+  };
+};
+
+// 보험 계약서 임시저장 / 최종 저장
 export interface SaveInsuranceContractRequest {
-  // TODO
+  customerName?: string;
+  customerPhoneNumber?: string;
+  customerAddress?: string;
+  customerCarType?: string;
+  customerCarNumber?: string;
+  customerCarDisplacement?: string;
+
+  insuranceCompanyName?: string;
+  insuranceApplicationNumber?: string;
+
+  partnerId?: string;
+  repairShopId?: string;
+
+  contractPhotoKeys?: string[];
+  fuelQuantity?: number;
+  customerSignatureKey?: string;
+
+  /** true = 임시저장, false = 최종 저장 */
+  isDraft: boolean;
 }
 
 export const saveInsuranceContract = async (
   contractId: number,
   body: SaveInsuranceContractRequest,
-) => {
-  await axiosInstance.put(`/contracts/v1/insurance/${contractId}`, body);
-};
-
-// 업로드 URL 발급
-export interface UploadUrlRequest {
-  fileName: string;
-  contentType: string;
-}
-
-export interface UploadUrlResponse {
-  uploadUrl: string;
-  fileUrl: string;
-}
-
-export const getContractUploadUrls = async (
-  contractId: number,
-  body: UploadUrlRequest[],
-): Promise<UploadUrlResponse[]> => {
-  const res = await axiosInstance.post<ApiResponse<UploadUrlResponse[]>>(
-    `/contracts/v1/${contractId}/upload-urls`,
+): Promise<void> => {
+  await axiosInstance.put<ApiResponse<void>>(
+    `/contracts/v1/insurance/${contractId}`,
     body,
   );
-
-  return res.data.data;
 };

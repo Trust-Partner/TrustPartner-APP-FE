@@ -14,7 +14,7 @@ import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
 import CommonInput from '../common/CommonInput';
 import CommonAmountInput from '../common/CommonAmountInput';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
@@ -24,29 +24,73 @@ import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { fetchSimplePartners } from '../../api/partners';
+import { useSaveInsuranceContract } from '../../hooks/contracts/useSaveInsuranceContract';
 
 interface Props {
   onBack: () => void;
   vehicle: ContractVehicleBase;
 }
 
+interface InsuranceContractFormData {
+  customerName?: string;
+  phone?: string;
+  address?: string;
+
+  customerCarType?: string;
+  customerCarNumber?: string;
+  customerDisplacement?: string;
+
+  insuranceCompany?: string;
+  claimNumber?: string;
+
+  requestCompanyId?: string;
+  requestCompanyName?: string;
+
+  garageCompanyId?: string;
+  garageCompanyName?: string;
+
+  fuel?: string;
+  signature?: string;
+}
+
 export default function InsuranceContractModal({ onBack, vehicle }: Props) {
   if (!vehicle) return null;
 
-  const requiredFields = ['phone', 'requestCompany', 'garageCompany'];
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const requiredFields: (keyof InsuranceContractFormData)[] = [
+    'phone',
+    'requestCompanyId',
+    'garageCompanyId',
+  ];
+  const [formData, setFormData] = useState<InsuranceContractFormData>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
 
-  useEffect(() => {
-    const initialMissing = requiredFields.filter(k => !formData[k]);
-    setMissingFields(initialMissing);
-    setIsComplete(initialMissing.length === 0);
-  }, []);
+  const { mutateAsync: saveContract, isPending } = useSaveInsuranceContract();
+
+  const buildPayload = (isDraft: boolean) => ({
+    customerName: formData.customerName,
+    customerPhoneNumber: formData.phone,
+    customerAddress: formData.address,
+    customerCarType: formData.customerCarType,
+    customerCarNumber: formData.customerCarNumber,
+    customerCarDisplacement: formData.customerDisplacement,
+
+    insuranceCompanyName: formData.insuranceCompany,
+    insuranceApplicationNumber: formData.claimNumber,
+
+    partnerId: formData.requestCompanyId,
+    repairShopId: formData.garageCompanyId,
+
+    fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
+
+    isDraft,
+  });
+
+  const mapAssetsToUris = (assets: Asset[]) =>
+    assets.filter(a => !!a.uri).map(a => ({ uri: a.uri! }));
 
   const {
     updateField,
-    saveDraftData,
     step,
     nextStep,
     prevStep,
@@ -73,8 +117,13 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
   // 파트너 검색
   const searchPartners = async (query: string) => {
     if (!query.trim()) return [];
+
     const list = await fetchSimplePartners(query);
-    return list.map(p => p.partnerName);
+
+    return list.map(p => ({
+      label: p.partnerName,
+      value: p.partnerId,
+    }));
   };
 
   // 서명 처리
@@ -89,7 +138,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     setSignatureKey(prev => prev + 1);
   };
 
-  //   갤러리 권한
+  // 갤러리 권한
   const requestGalleryPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'android') {
       try {
@@ -132,7 +181,39 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     });
   };
 
-  const handleSendContract = () => setSendModalVisible(true);
+  const handleSaveDraft = async () => {
+    try {
+      await saveContract({
+        contractId: vehicle.contractId!,
+        payload: buildPayload(true),
+        contractPhotos: mapAssetsToUris(photos),
+        signaturePhoto: formData.signature
+          ? { uri: formData.signature }
+          : undefined,
+      });
+
+      Alert.alert('임시저장 완료', '계약서가 임시저장되었습니다.');
+    } catch (e) {
+      Alert.alert('저장 실패', '임시저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleSendContract = async () => {
+    try {
+      await saveContract({
+        contractId: vehicle.contractId!,
+        payload: buildPayload(false),
+        contractPhotos: mapAssetsToUris(photos),
+        signaturePhoto: formData.signature
+          ? { uri: formData.signature }
+          : undefined,
+      });
+
+      setSendModalVisible(true);
+    } catch (e) {
+      Alert.alert('전송 실패', '계약서 전송 중 오류가 발생했습니다.');
+    }
+  };
 
   return (
     <Modal
@@ -223,22 +304,22 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   />
                   <CommonSearchDropdown
                     placeholder="* (요청업체)"
-                    selectedValue={formData.requestCompany}
-                    onSelect={(v, isCustom) =>
-                      updateField(
-                        'requestCompany',
-                        isCustom ? `${v} (기타)` : v,
-                      )
-                    }
+                    selectedValue={formData.requestCompanyName}
                     onSearch={searchPartners}
+                    onSelect={(item, isCustom) => {
+                      updateField('requestCompanyName', item.label);
+                      updateField('requestCompanyId', item.value);
+                    }}
                   />
+
                   <CommonSearchDropdown
                     placeholder="* (입고공업사)"
-                    selectedValue={formData.garageCompany}
-                    onSelect={(v, isCustom) =>
-                      updateField('repairShop', isCustom ? `${v} (기타)` : v)
-                    }
+                    selectedValue={formData.garageCompanyName}
                     onSearch={searchPartners}
+                    onSelect={(item, isCustom) => {
+                      updateField('garageCompanyName', item.label);
+                      updateField('garageCompanyId', item.value);
+                    }}
                   />
                 </>
               )}
@@ -306,7 +387,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   <CommonAmountInput
                     placeholder="유류량 입력"
                     value={formData.fuel}
-                    onChangeText={v => updateField('fuel', v)}
+                    onValueChange={v => updateField('fuel', v)}
                     unit="km"
                   />
                 </>
@@ -393,7 +474,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                     <Pressable
                       style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                      onPress={saveDraftData}
+                      onPress={handleSaveDraft}
                     >
                       <Text style={[ms.footerBtnText, ms.draftText]}>
                         임시저장
@@ -407,7 +488,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                     <>
                       <Pressable
                         style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                        onPress={saveDraftData}
+                        onPress={handleSaveDraft}
                       >
                         <Text style={[ms.footerBtnText, ms.draftText]}>
                           임시저장
@@ -442,7 +523,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                       </Pressable>
                       <Pressable
                         style={[ms.footerBtn, ms.draftBtn, { flex: 2 }]}
-                        onPress={saveDraftData}
+                        onPress={handleSaveDraft}
                       >
                         <Text style={[ms.footerBtnText, ms.draftText]}>
                           임시저장
@@ -467,7 +548,6 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
             </View>
           </View>
         </Pressable>
-
         <CommonModal
           visible={sendModalVisible}
           title="보험계약서 작성"
