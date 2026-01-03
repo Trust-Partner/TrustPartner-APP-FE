@@ -185,7 +185,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
         </View>
       </View>
 
-      <ContractModalManager />
+      <ContractModalManager onCloseComplete={refetch} />
 
       {bookmarkVisible && bookmarkTarget && (
         <BookmarkModal
