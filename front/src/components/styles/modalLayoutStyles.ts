@@ -287,6 +287,10 @@ export const modalLayoutStyles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
   },
+  buttonContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   draftBtn: {
     borderWidth: 1,
     borderColor: colors.PRIMARY_50,
