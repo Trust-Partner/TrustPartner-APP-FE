@@ -1,15 +1,8 @@
 export const CONTRACT_FIELD_LABELS: Record<string, string> = {
-  customerName: '운전자',
   phone: '연락처',
-  address: '주소',
-  accidentCar: '사고차량',
-  insurance: '보험사',
-  reportNumber: '접수번호',
-  repairShop: '정비소',
-  fuel: '연료량',
-  payment: '결제방법',
-  amount: '금액',
-  signature: '서명',
+  requestCompanyId: '요청 업체',
+  garageCompanyId: '입고 공업사',
+
   requestCompany: '요청업체',
   garageCompany: '입고공업사',
 };
