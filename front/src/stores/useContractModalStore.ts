@@ -33,6 +33,8 @@ interface ContractModalState {
   selectedVehicle?: ContractVehicleBase | null;
   setSelectedVehicle: (v: ContractVehicleBase | null) => void;
 
+  updateSelectedVehicle: (patch: Partial<ContractVehicleBase>) => void;
+
   openModal: (type: ModalType, originType?: OriginType) => void;
   closeModal: () => void;
   goTo: (type: ModalType) => void;
@@ -61,6 +63,13 @@ export const useContractModalStore = create<ContractModalState>(set => ({
   selectedVehicle: undefined,
 
   setSelectedVehicle: v => set({ selectedVehicle: v }),
+
+  updateSelectedVehicle: patch =>
+    set(state => ({
+      selectedVehicle: state.selectedVehicle
+        ? { ...state.selectedVehicle, ...patch }
+        : state.selectedVehicle,
+    })),
 
   openModal: (type, originType = 'main') =>
     set({
