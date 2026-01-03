@@ -11,11 +11,16 @@ import {
 } from 'react-native';
 import { colors } from '../../constants/colors';
 
+interface DropdownItem {
+  label: string;
+  value: string;
+}
+
 interface Props {
   placeholder: string;
-  selectedValue?: string;
-  onSelect: (value: string, isCustom?: boolean) => void;
-  onSearch: (query: string) => Promise<string[]>;
+  selectedValue?: string; // label
+  onSelect: (item: DropdownItem, isCustom?: boolean) => void;
+  onSearch: (query: string) => Promise<DropdownItem[]>;
 }
 
 export default function CommonSearchDropdown({
@@ -25,10 +30,14 @@ export default function CommonSearchDropdown({
   onSearch,
 }: Props) {
   const [query, setQuery] = useState(selectedValue || '');
-  const [results, setResults] = useState<string[]>([]);
+  const [results, setResults] = useState<DropdownItem[]>([]);
   const [focused, setFocused] = useState(false);
   const [showTag, setShowTag] = useState(false);
   const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setQuery(selectedValue || '');
+  }, [selectedValue]);
 
   useEffect(() => {
     if (query.trim().length === 0) {
@@ -41,7 +50,8 @@ export default function CommonSearchDropdown({
       try {
         const res = await onSearch(query);
         setResults(res);
-        const isCustom = !res.includes(query.trim());
+
+        const isCustom = !res.some(r => r.label === query.trim());
         setShowTag(isCustom);
       } catch (e) {
         console.warn('검색 실패:', e);
@@ -51,24 +61,31 @@ export default function CommonSearchDropdown({
     return () => clearTimeout(delay);
   }, [query]);
 
-  const handleSelect = (val: string) => {
-    setQuery(val);
+  const handleSelect = (item: DropdownItem) => {
+    setQuery(item.label);
     setShowTag(false);
     setFocused(false);
-    onSelect(val, false);
+    onSelect(item, false);
 
     inputRef.current?.blur();
     Keyboard.dismiss();
   };
 
   const handleBlur = () => {
-    if (query.trim().length > 0) {
-      const isCustom = !results.includes(query.trim());
-      setShowTag(isCustom);
-      onSelect(query.trim(), isCustom);
-    } else {
-      setShowTag(false);
+    if (query.trim().length === 0) {
+      setFocused(false);
+      return;
     }
+
+    const matched = results.find(r => r.label === query.trim());
+
+    if (matched) {
+      onSelect(matched, false);
+    } else {
+      // 직접 입력 (기타)
+      onSelect({ label: query.trim(), value: query.trim() }, true);
+    }
+
     setFocused(false);
   };
 
@@ -114,14 +131,14 @@ export default function CommonSearchDropdown({
       </View>
 
       {focused && results.length > 0 && (
-        <View style={s.dropdown}>
+        <View style={s.dropdown} pointerEvents="auto">
           <FlatList
             data={results}
-            keyExtractor={(item, idx) => item + idx}
+            keyExtractor={item => item.value}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
               <Pressable style={s.option} onPress={() => handleSelect(item)}>
-                <Text style={s.optionText}>{item}</Text>
+                <Text style={s.optionText}>{item.label}</Text>
               </Pressable>
             )}
           />
@@ -162,6 +179,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     marginTop: 4,
     maxHeight: 180,
+    zIndex: 10, // iOS
+    elevation: 10,
   },
   option: {
     padding: 8,

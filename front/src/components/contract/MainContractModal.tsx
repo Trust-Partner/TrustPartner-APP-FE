@@ -6,25 +6,25 @@ import {
   Image,
   StyleSheet,
   Platform,
+  Alert,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { HIT_SLOP } from '../../constants/touch';
 import { ContractVehicleBase } from '../../types/contractVehicle';
+import { useContractModalStore } from '../../stores/useContractModalStore';
+import { useCreateContract } from '../../hooks/contracts/useCreateContract';
+import { ContractType } from '../../api/contracts/contract';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onSelect: (
-    type: 'general' | 'insurance' | 'replacement' | 'dispatch',
-  ) => void;
   vehicle: ContractVehicleBase;
 }
 
 export default function MainContractModal({
   visible,
   onClose,
-  onSelect,
   vehicle,
 }: Props) {
   const {
@@ -38,6 +38,63 @@ export default function MainContractModal({
   } = vehicle;
 
   const isRestricted = isBookmarked || isConfirmed;
+
+  const { selectedVehicle, goTo, updateSelectedVehicle } =
+    useContractModalStore();
+
+  const { mutateAsync: createContract, isPending } = useCreateContract();
+  const handleSelect = async (
+    type: 'general' | 'insurance' | 'replacement' | 'dispatch',
+  ) => {
+    const vehicle = selectedVehicle!;
+    if (!vehicle) return;
+
+    // 중복 클릭 방지
+    if (isPending) return;
+
+    // 배차 확정
+    if (type === 'dispatch') {
+      goTo('dispatch');
+      return;
+    }
+
+    // 교체 계약서 (생성 API 다름 → 여기선 생성 안 함)
+    if (type === 'replacement') {
+      goTo('replacement');
+      return;
+    }
+
+    // 일반 / 보험 계약서만 생성 책임
+    const contractType: ContractType =
+      type === 'general' ? 'GENERAL_CONTRACT' : 'INSURANCE_CONTRACT';
+
+    // 이미 있으면 재사용
+    if (vehicle.contractType === contractType && vehicle.contractId) {
+      goTo(type);
+      return;
+    }
+
+    // 없으면 생성
+    try {
+      const contractId = await createContract({
+        carDispatchId: vehicle.carDispatchId!,
+        contractType,
+      });
+
+      updateSelectedVehicle({
+        contractType,
+        contractId,
+        draftingContract: true,
+      });
+
+      goTo(type);
+    } catch (error) {
+      Alert.alert(
+        '계약서 생성 실패',
+        '계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+      );
+    }
+  };
 
   return (
     <Modal
@@ -90,24 +147,28 @@ export default function MainContractModal({
           <ContractButton
             label="일반계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isRestricted}
-            onPress={() => onSelect('general')}
+            disabled={isRestricted || isPending}
+            onPress={() => handleSelect('general')}
           />
+
           <ContractButton
             label="보험계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            onPress={() => onSelect('insurance')}
+            disabled={isPending}
+            onPress={() => handleSelect('insurance')}
           />
+
           <ContractButton
             label="교체계약서 작성"
             icon={require('../../assets/common/replace.png')}
-            onPress={() => onSelect('replacement')}
+            onPress={() => handleSelect('replacement')}
           />
+
           <ContractButton
             label="배차 확정"
             icon={require('../../assets/common/check.png')}
             disabled={isRestricted}
-            onPress={() => onSelect('dispatch')}
+            onPress={() => handleSelect('dispatch')}
           />
         </View>
       </View>
