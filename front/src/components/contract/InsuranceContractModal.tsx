@@ -9,6 +9,7 @@ import {
   Platform,
   Keyboard,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
@@ -145,6 +146,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
 
   const isDraftFetching =
     !!vehicle.contractId && isDraftLoading && !isDraftApplied;
+  const isActionDisabled = isPending || isDraftFetching;
 
   const [isSigning, setIsSigning] = useState(false);
   const [signatureKey, setSignatureKey] = useState(0);
@@ -498,18 +500,34 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
               {step === 4 ? (
                 <>
                   <Pressable
-                    style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
-                    disabled={!isComplete}
+                    style={[
+                      ms.sendBtn,
+                      (!isComplete || isPending) && ms.sendBtnDisabled,
+                    ]}
+                    disabled={!isComplete || isPending}
                     onPress={handleSendContract}
                   >
-                    <Text
-                      style={[
-                        ms.sendBtnText,
-                        !isComplete && { color: colors.GRAY_40 },
-                      ]}
-                    >
-                      보험계약서 카카오톡 전송하기
-                    </Text>
+                    <View style={ms.buttonContent}>
+                      <Text
+                        style={[
+                          ms.sendBtnText,
+                          (!isComplete || isPending) && {
+                            color: colors.GRAY_40,
+                          },
+                          isPending && { opacity: 0 },
+                        ]}
+                      >
+                        보험계약서 카카오톡 전송하기
+                      </Text>
+
+                      {isPending && (
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.WHITE}
+                          style={StyleSheet.absoluteFill}
+                        />
+                      )}
+                    </View>
                   </Pressable>
                   <View style={ms.footerRow}>
                     <Pressable
@@ -523,12 +541,34 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                       <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
                     </Pressable>
                     <Pressable
-                      style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
+                      style={[
+                        ms.footerBtn,
+                        ms.draftBtn,
+                        { flex: 3 },
+                        isActionDisabled && { opacity: 0.6 },
+                      ]}
+                      disabled={isActionDisabled}
                       onPress={handleSaveDraft}
                     >
-                      <Text style={[ms.footerBtnText, ms.draftText]}>
-                        임시저장
-                      </Text>
+                      <View style={ms.buttonContent}>
+                        <Text
+                          style={[
+                            ms.footerBtnText,
+                            ms.draftText,
+                            isPending && { opacity: 0 },
+                          ]}
+                        >
+                          임시저장
+                        </Text>
+
+                        {isPending && (
+                          <ActivityIndicator
+                            size="small"
+                            color={colors.PRIMARY_50}
+                            style={StyleSheet.absoluteFill}
+                          />
+                        )}
+                      </View>
                     </Pressable>
                   </View>
                 </>
@@ -537,12 +577,34 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   {step === 1 ? (
                     <>
                       <Pressable
-                        style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
+                        style={[
+                          ms.footerBtn,
+                          ms.draftBtn,
+                          { flex: 3 },
+                          isActionDisabled && { opacity: 0.6 },
+                        ]}
+                        disabled={isActionDisabled}
                         onPress={handleSaveDraft}
                       >
-                        <Text style={[ms.footerBtnText, ms.draftText]}>
-                          임시저장
-                        </Text>
+                        <View style={ms.buttonContent}>
+                          <Text
+                            style={[
+                              ms.footerBtnText,
+                              ms.draftText,
+                              isPending && { opacity: 0 },
+                            ]}
+                          >
+                            임시저장
+                          </Text>
+
+                          {isPending && (
+                            <ActivityIndicator
+                              size="small"
+                              color={colors.PRIMARY_50}
+                              style={StyleSheet.absoluteFill}
+                            />
+                          )}
+                        </View>
                       </Pressable>
                       <Pressable
                         style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
@@ -572,12 +634,34 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                         </Text>
                       </Pressable>
                       <Pressable
-                        style={[ms.footerBtn, ms.draftBtn, { flex: 2 }]}
+                        style={[
+                          ms.footerBtn,
+                          ms.draftBtn,
+                          { flex: 3 },
+                          isActionDisabled && { opacity: 0.6 },
+                        ]}
+                        disabled={isActionDisabled}
                         onPress={handleSaveDraft}
                       >
-                        <Text style={[ms.footerBtnText, ms.draftText]}>
-                          임시저장
-                        </Text>
+                        <View style={ms.buttonContent}>
+                          <Text
+                            style={[
+                              ms.footerBtnText,
+                              ms.draftText,
+                              isPending && { opacity: 0 },
+                            ]}
+                          >
+                            임시저장
+                          </Text>
+
+                          {isPending && (
+                            <ActivityIndicator
+                              size="small"
+                              color={colors.PRIMARY_50}
+                              style={StyleSheet.absoluteFill}
+                            />
+                          )}
+                        </View>
                       </Pressable>
                       <Pressable
                         style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
