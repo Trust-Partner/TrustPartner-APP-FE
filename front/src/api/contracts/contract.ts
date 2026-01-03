@@ -102,3 +102,46 @@ export const saveInsuranceContract = async (
     body,
   );
 };
+
+// 임시저장 불러오기
+export interface GetContractDetailResponse {
+  contractId: number;
+  contractType: ContractType;
+  fuelQuantity?: number;
+  contractFilePaths?: string[];
+  signatureFilePath?: string;
+
+  customerDetail?: {
+    customerName?: string;
+    customerPhoneNumber?: string;
+    customerAddress?: string;
+    customerCarType?: string;
+    customerCarNumber?: string;
+    customerCarDisplacement?: string;
+  };
+
+  insuranceDetail?: {
+    insuranceCompanyName?: string;
+    insuranceApplicationNumber?: string;
+  };
+
+  partnerInfo?: {
+    partnerId?: string;
+    partnerName?: string;
+  };
+
+  repairShopInfo?: {
+    partnerId?: string;
+    partnerName?: string;
+  };
+}
+
+export const getInsuranceContractDraft = async (
+  contractId: number,
+): Promise<GetContractDetailResponse> => {
+  const res = await axiosInstance.get<ApiResponse<GetContractDetailResponse>>(
+    `/contracts/v1/${contractId}`,
+  );
+
+  return res.data.data;
+};

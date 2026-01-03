@@ -11,6 +11,22 @@ export const modalLayoutStyles = StyleSheet.create({
     paddingHorizontal: 16,
     alignSelf: 'center',
   },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 100,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 8,
+    fontSize: 12,
+    color: colors.GRAY_60,
+  },
   closeBtn: {
     alignSelf: 'flex-end',
     width: 16,

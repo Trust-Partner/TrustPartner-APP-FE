@@ -8,6 +8,7 @@ import {
   PermissionsAndroid,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
@@ -25,6 +26,8 @@ import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { fetchSimplePartners } from '../../api/partners';
 import { useSaveInsuranceContract } from '../../hooks/contracts/useSaveInsuranceContract';
+import { useInsuranceContractDraft } from '../../hooks/contracts/useInsuranceContractDraft';
+import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
 
 interface Props {
   onBack: () => void;
@@ -64,6 +67,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
   const [formData, setFormData] = useState<InsuranceContractFormData>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [isDraftApplied, setIsDraftApplied] = useState(false);
 
   const { mutateAsync: saveContract, isPending } = useSaveInsuranceContract();
 
@@ -106,6 +110,41 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     setMissingFields(mf);
     setIsComplete(mf.length === 0);
   });
+
+  const { data: draft, isLoading: isDraftLoading } = useInsuranceContractDraft(
+    vehicle.contractId!,
+  );
+
+  useEffect(() => {
+    if (!draft || isDraftApplied) return;
+
+    updateField('customerName', draft.customer.name);
+    updateField('phone', draft.customer.phone);
+    updateField('address', draft.customer.address);
+
+    updateField('customerCarType', draft.customer.carType);
+    updateField('customerCarNumber', draft.customer.carNumber);
+    updateField('customerDisplacement', draft.customer.carDisplacement);
+
+    updateField('insuranceCompany', draft.insurance.companyName);
+    updateField('claimNumber', draft.insurance.applicationNumber);
+
+    updateField('requestCompanyId', draft.partner.id);
+    updateField('requestCompanyName', draft.partner.name);
+
+    updateField('garageCompanyId', draft.repairShop.id);
+    updateField('garageCompanyName', draft.repairShop.name);
+
+    updateField(
+      'fuel',
+      draft.fuelQuantity ? String(draft.fuelQuantity) : undefined,
+    );
+
+    setIsDraftApplied(true);
+  }, [draft]);
+
+  const isDraftFetching =
+    !!vehicle.contractId && isDraftLoading && !isDraftApplied;
 
   const [isSigning, setIsSigning] = useState(false);
   const [signatureKey, setSignatureKey] = useState(0);
@@ -228,6 +267,13 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Pressable onPress={Keyboard.dismiss}>
           <View style={ms.modal}>
+            {isDraftFetching && (
+              <View style={ms.loadingOverlay}>
+                <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+                <Text style={ms.loadingText}>임시저장 불러오는 중...</Text>
+              </View>
+            )}
+
             <Pressable
               onPress={onBack}
               hitSlop={HIT_SLOP.MEDIUM}
@@ -264,8 +310,12 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
                   />
                   <CommonInput
                     placeholder="* 고객 연락처"
-                    value={formData.phone}
-                    onChangeText={v => updateField('phone', v)}
+                    value={formatPhoneNumber(formData.phone)}
+                    keyboardType="number-pad"
+                    onChangeText={v => {
+                      const raw = v.replace(/\D/g, '');
+                      updateField('phone', raw);
+                    }}
                   />
                   <CommonInput
                     placeholder="고객 주소"
