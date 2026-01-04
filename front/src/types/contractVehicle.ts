@@ -2,7 +2,7 @@ import { ContractType } from '../api/vehicleStatus';
 
 export interface ContractVehicleBase {
   /** 차량 기본 정보 */
-  id: number;
+  carId: number;
   model: string;
   number: string;
   location?: string;
