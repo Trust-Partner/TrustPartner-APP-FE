@@ -30,7 +30,11 @@ export const ContractAccidentSection = ({ accident }: Props) => {
         <StatusRow label="진행상태" value={accident.status} />
         <InfoRow label="고객 차량번호" value={accident.carNumber} />
         <InfoRow label="고객 차종" value={accident.carModel} />
-        <InfoRow label="고객 배기량" value={accident.displacement} />
+        <InfoRow
+          label="고객 배기량"
+          value={accident.displacement}
+          suffix="cc"
+        />
         <InfoRow label="입고 공업사" value={accident.garage} />
         <InfoRow label="요청업체" value={accident.requestCompany} />
       </View>
