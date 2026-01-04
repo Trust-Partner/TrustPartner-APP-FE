@@ -8,28 +8,27 @@ export interface ApiResponse<T> {
 
 export type ContractType = 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
 
-// 계약서 생성
-export interface CreateContractRequest {
+// 보험 계약서 생성
+export interface CreateInsuranceContractRequest {
   carDispatchId: number;
-  contractType: ContractType;
+  carId: number;
 }
 
-export interface CreateContractResponse {
+export interface CreateInsuranceContractResponse {
   contractId: number;
 }
 
-export const createContract = async (
-  body: CreateContractRequest,
+export const createInsuranceContract = async (
+  body: CreateInsuranceContractRequest,
 ): Promise<number> => {
-  const res = await axiosInstance.post<ApiResponse<CreateContractResponse>>(
-    '/contracts/v1',
-    body,
-  );
+  const res = await axiosInstance.post<
+    ApiResponse<CreateInsuranceContractResponse>
+  >('/contracts/v1/insurance', body);
 
   const contractId = res.data.data?.contractId;
 
   if (!contractId) {
-    throw new Error('contractId not found in createContract response');
+    throw new Error('contractId not found in createInsuranceContract response');
   }
 
   return contractId;
