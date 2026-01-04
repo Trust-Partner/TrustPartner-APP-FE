@@ -9,6 +9,8 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../../constants/colors';
 import { PrepaymentItemType } from '../../../mock/prepaymentMock';
 import CommonModal from '../../../components/common/CommonModal';
@@ -17,6 +19,10 @@ import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
 import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
 import { usePreviousDispatchBillings } from '../../../hooks/billings/usePreviousDispatchBillings';
 import { DispatchBillingItem } from '../../../api/billings';
+import { RootStackParamList } from '../../../navigations/root/RootNavigator';
+import { ContractType } from '../../contract/types';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 /** duration 포맷팅 함수 (일 시간 분) */
 const formatDuration = (
@@ -37,6 +43,19 @@ const formatDuration = (
   return parts.length > 0 ? parts.join(' ') : '0분';
 };
 
+/** ContractType 변환 함수 */
+const convertContractType = (
+  contractType: string,
+): ContractType | undefined => {
+  if (contractType === 'INSURANCE_CONTRACT') {
+    return 'INSURANCE';
+  }
+  if (contractType === 'GENERAL_CONTRACT') {
+    return 'GENERAL';
+  }
+  return undefined;
+};
+
 /** BillingItem을 PrepaymentItemType으로 변환 */
 const mapBillingToPrepaymentItem = (
   billing: DispatchBillingItem,
@@ -55,10 +74,13 @@ const mapBillingToPrepaymentItem = (
     company: billing.requestCompany,
     duration: durationStr,
     status,
+    contractId: billing.contractId,
+    contractType: convertContractType(billing.contractType),
   };
 };
 
 export default function PrepaymentScreen() {
+  const navigation = useNavigation<NavigationProp>();
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
     'waiting',
   );
@@ -213,6 +235,14 @@ export default function PrepaymentScreen() {
             <View style={s.buttonRow}>
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.GRAY_80 }]}
+                onPress={() => {
+                  if (item.contractId && item.contractType) {
+                    navigation.navigate('ContractIntegrated', {
+                      contractId: item.contractId,
+                      contractType: item.contractType,
+                    });
+                  }
+                }}
               >
                 <Text style={s.actionText}>계약서 확인</Text>
               </Pressable>
