@@ -50,7 +50,7 @@ export interface ApiResponse<T> {
 }
 
 /** 지급대기 청구 아이템 */
-export interface PendingBillingItem {
+export interface DispatchBillingItem {
   billingId: number;
   carModel: string;
   carNumber: string;
@@ -65,14 +65,37 @@ export interface PendingBillingItem {
 /** 지급대기 응답 */
 export interface PendingBillingsResponse {
   pendingCount: number;
-  billings: PendingBillingItem[];
+  billings: DispatchBillingItem[];
 }
 
 /** 지급대기 목록 조회 */
-export const getPendingBillings = async (): Promise<PendingBillingsResponse> => {
-  const res = await axiosInstance.get<ApiResponse<PendingBillingsResponse>>(
-    '/billings/v1/app/pending',
-  );
+export const getPendingBillings =
+  async (): Promise<PendingBillingsResponse> => {
+    const res = await axiosInstance.get<ApiResponse<PendingBillingsResponse>>(
+      '/billings/v1/app/pending',
+    );
+
+    return res.data.data;
+  };
+
+/** 당월배차내역 응답 */
+export interface MonthlyDispatchBillingsResponse {
+  totalCount: number;
+  billings: DispatchBillingItem[];
+}
+
+/** 당월배차내역 목록 조회 */
+export interface GetMonthlyDispatchBillingsParams {
+  year: number;
+  month: number;
+}
+
+export const getMonthlyDispatchBillings = async (
+  params: GetMonthlyDispatchBillingsParams,
+): Promise<MonthlyDispatchBillingsResponse> => {
+  const res = await axiosInstance.get<
+    ApiResponse<MonthlyDispatchBillingsResponse>
+  >('/billings/v1/app/monthly-dispatch', { params });
 
   return res.data.data;
 };

@@ -17,6 +17,7 @@ import {
 import CommonModal from '../../../components/common/CommonModal';
 import AppHeader from '../../../components/common/AppHeader';
 import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
+import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
 
 export default function PrepaymentScreen() {
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
@@ -26,12 +27,23 @@ export default function PrepaymentScreen() {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
+  // 현재 날짜의 년도와 월
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentMonth = useMemo(() => new Date().getMonth() + 1, []);
+
   // API hook (지급대기 탭일 때만 호출)
   const {
     data: pendingBillingsData,
     isLoading: isLoadingPending,
     error: pendingError,
   } = usePendingBillings();
+
+  // API hook (당월배차내역 탭일 때만 호출)
+  const {
+    data: monthlyDispatchBillingsData,
+    isLoading: isLoadingMonthly,
+    error: monthlyError,
+  } = useMonthlyDispatchBillings({ year: currentYear, month: currentMonth });
 
   /** API 데이터를 컴포넌트 구조로 변환 (지급대기) */
   const waitingData: PrepaymentItemType[] = useMemo(() => {
@@ -61,21 +73,54 @@ export default function PrepaymentScreen() {
     });
   }, [pendingBillingsData]);
 
+  /** API 데이터를 컴포넌트 구조로 변환 (당월배차내역) */
+  const currentData: PrepaymentItemType[] = useMemo(() => {
+    if (!monthlyDispatchBillingsData?.billings) return [];
+    return monthlyDispatchBillingsData.billings.map(billing => {
+      // duration 포맷팅 (일 시간 분)
+      const parts: string[] = [];
+      if (billing.daysElapsed > 0) {
+        parts.push(`${billing.daysElapsed}일`);
+      }
+      if (billing.hoursElapsed > 0) {
+        parts.push(`${billing.hoursElapsed}시간`);
+      }
+      if (billing.minutesElapsed > 0) {
+        parts.push(`${billing.minutesElapsed}분`);
+      }
+      const durationStr = parts.length > 0 ? parts.join(' ') : '0분';
+
+      return {
+        id: billing.billingId,
+        carName: billing.carModel,
+        carNumber: billing.carNumber,
+        company: billing.requestCompany,
+        duration: durationStr,
+        status: 'confirmed' as const,
+      };
+    });
+  }, [monthlyDispatchBillingsData]);
+
   /** 탭별 데이터 */
   const data = useMemo(() => {
     if (activeTab === 'waiting') {
       return waitingData;
     }
+    if (activeTab === 'current') {
+      return currentData;
+    }
     return prepaymentMock[activeTab];
-  }, [activeTab, waitingData]);
+  }, [activeTab, waitingData, currentData]);
 
   /** 지급대기 건수 */
   const pendingCount = useMemo(() => {
-    if (activeTab === 'waiting' && pendingBillingsData) {
-      return pendingBillingsData.pendingCount;
-    }
-    return prepaymentMock.waiting.length;
-  }, [activeTab, pendingBillingsData]);
+    return pendingBillingsData?.pendingCount ?? 0;
+  }, [pendingBillingsData]);
+
+  /** 당월배차내역 건수 */
+  const currentCount = useMemo(() => {
+    return monthlyDispatchBillingsData?.totalCount ?? 0;
+  }, [monthlyDispatchBillingsData]);
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -192,7 +237,7 @@ export default function PrepaymentScreen() {
               {
                 key: 'current',
                 label: '당월배차내역',
-                value: prepaymentMock.current.length,
+                value: currentCount,
               },
               {
                 key: 'past',
@@ -220,11 +265,13 @@ export default function PrepaymentScreen() {
         <View style={s.listBox}>
           {renderRowLayout(true)}
 
-          {activeTab === 'waiting' && isLoadingPending ? (
+          {(activeTab === 'waiting' && isLoadingPending) ||
+          (activeTab === 'current' && isLoadingMonthly) ? (
             <View style={s.loadingContainer}>
               <ActivityIndicator size="large" color={colors.PRIMARY_50} />
             </View>
-          ) : activeTab === 'waiting' && pendingError ? (
+          ) : (activeTab === 'waiting' && pendingError) ||
+            (activeTab === 'current' && monthlyError) ? (
             <View style={s.loadingContainer}>
               <Text style={s.errorText}>
                 데이터를 불러오는 중 오류가 발생했습니다.
