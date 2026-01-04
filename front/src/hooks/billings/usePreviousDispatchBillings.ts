@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import {
-  getMonthlyDispatchBillings,
+  getPreviousDispatchBillings,
   GetMonthlyDispatchBillingsParams,
   MonthlyDispatchBillingsResponse,
 } from '../../api/billings';
 
-export const useMonthlyDispatchBillings = (
+export const usePreviousDispatchBillings = (
   params: GetMonthlyDispatchBillingsParams,
 ) => {
   return useQuery<MonthlyDispatchBillingsResponse>({
-    queryKey: ['billings', 'monthly-dispatch', params.year, params.month],
-    queryFn: () => getMonthlyDispatchBillings(params),
+    queryKey: ['billings', 'previous-dispatch', params.year, params.month],
+    queryFn: () => getPreviousDispatchBillings(params),
   });
 };
