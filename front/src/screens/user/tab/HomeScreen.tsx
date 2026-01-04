@@ -27,29 +27,22 @@ const LoadingView = () => (
 
 export default function UserHomeScreen() {
   const navigation = useNavigation<any>();
-
   const user = useAuthStore(s => s.user);
-
-  const userId = user && user.kind === 'USER' ? user.partnerId : undefined;
-
   const date = dayjs().format('YYYY-MM-DD');
 
-  const { data, isLoading, refetch, isFetching } = useUserHome(
-    userId ?? '',
-    date,
-  );
+  const userId = (user as any)?.partnerId;
+  const { data, isLoading, refetch, isFetching } = useUserHome(userId, date);
+  const [alerts, setAlerts] = useState(mockUserDashboard.alerts);
 
-  const { request, alerts: initialAlerts } = mockUserDashboard;
-  const [alerts, setAlerts] = useState(initialAlerts);
-
-  // guard (렌더만 제어)
-  if (!user || user.kind !== 'USER') {
+  if (!user || !userId || user.kind !== 'USER') {
     return <LoadingView />;
   }
 
   if (isLoading) {
     return <LoadingView />;
   }
+
+  const { request, alerts: initialAlerts } = mockUserDashboard;
 
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
