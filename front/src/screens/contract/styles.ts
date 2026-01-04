@@ -1,0 +1,176 @@
+import { StyleSheet, Platform } from 'react-native';
+import { colors } from '../../constants/colors';
+
+export const s = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.GRAY_00,
+    padding: 16,
+  },
+  header: {
+    fontSize: 14,
+    color: colors.GRAY_90,
+  },
+  vehicleBox: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.GRAY_10,
+    borderRadius: 4,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    columnGap: 8,
+  },
+  vehicleModel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.GRAY_90,
+    lineHeight: 22.4,
+  },
+  vehicleNumber: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: colors.GRAY_60,
+    lineHeight: 16.8,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
+  },
+
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+    marginBottom: 18,
+  },
+  iconSmall: {
+    width: 16,
+    height: 16,
+    tintColor: colors.GRAY_80,
+  },
+  topBtn: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 8,
+    borderColor: colors.PRIMARY_50,
+    columnGap: 8,
+  },
+  topBtnText: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.PRIMARY_50,
+    lineHeight: 15.4,
+  },
+
+  card: {
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 8,
+    backgroundColor: colors.WHITE,
+  },
+  cardTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 4,
+  },
+  cardTitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: colors.GRAY_80,
+    marginTop: Platform.OS === 'android' ? -3 : 0,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  infoLabel: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_50,
+  },
+  infoValue: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_80,
+  },
+
+  tagSingle: {
+    backgroundColor: colors.PRIMARY_10,
+    borderRadius: 18,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+  },
+  tagText: {
+    color: colors.PRIMARY_50,
+    fontSize: 11,
+    fontWeight: '400',
+    lineHeight: 15.4,
+  },
+
+  memoContainerBox: {
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    padding: 8,
+    gap: 8,
+  },
+  memoBox: {
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 10,
+    padding: 10,
+  },
+  memoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  memoDate: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.GRAY_50,
+  },
+  memoWriter: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: colors.PRIMARY_50,
+  },
+  memoContent: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: colors.GRAY_80,
+  },
+
+  memoInputRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginTop: 8,
+  },
+  memoInput: {
+    flex: 1,
+    backgroundColor: colors.GRAY_05,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    borderRadius: 4,
+    padding: 8,
+    fontSize: 11,
+    fontWeight: 400,
+    color: colors.GRAY_50,
+    lineHeight: 15.4,
+  },
+  memoAddBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    backgroundColor: colors.PRIMARY_50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
+  },
+  memoAddText: { color: colors.WHITE, fontSize: 16, fontWeight: '600' },
+});
