@@ -6,7 +6,7 @@ import { s } from '../styles';
 
 interface Props {
   accident: {
-    status: string;
+    status: string[];
     carNumber: string;
     carModel: string;
     displacement: string;
