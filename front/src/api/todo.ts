@@ -107,3 +107,25 @@ export const getFuelWashDetail = async (
   return res.data.data;
 };
 
+/** 주유완료 API Response */
+export interface CompleteFuelResponse {
+  carId: number;
+  carModel: string;
+  carNumber: string;
+  needsFuel: boolean;
+  needsWash: boolean;
+  requestedAt: string;
+  timeAfterUpdate: string;
+}
+
+/** 주유완료 */
+export const completeFuel = async (
+  carId: number,
+): Promise<CompleteFuelResponse> => {
+  const res = await axiosInstance.post<ApiResponse<CompleteFuelResponse>>(
+    `/tasks/v1/fuel/${carId}`,
+  );
+
+  return res.data.data;
+};
+
