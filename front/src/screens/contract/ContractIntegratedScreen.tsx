@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, Clipboard } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
-
 import AppHeader from '../../components/common/AppHeader';
 import ToastMessage from '../../components/common/ToastMessage';
-
 import { useAuthStore } from '../../states/useAuthStore';
-import { contractMock } from '../../mock/ContractMockData';
-
 import { ContractHeaderSection } from './components/ContractHeaderSection';
 import { ContractMemoSection } from './components/ContractMemoSection';
 import { ContractDateSection } from './components/ContractDateSection';
@@ -15,11 +11,24 @@ import { ContractCustomerSection } from './components/ContractCustomerSection';
 import { ContractAccidentSection } from './components/ContractAccidentSection';
 import { ContractInsuranceClaimSection } from './components/ContractInsuranceClaimSection';
 import { ContractPaymentSection } from './components/ContractPaymentSection';
-
 import { CONTRACT_SECTIONS_BY_TYPE } from './constants';
-
-import { s } from './styles';
 import { RootStackParamList } from '../../navigations/root/RootNavigator';
+import { s } from './styles';
+import { contractMock } from '../../mock/ContractMockData';
+import { useContractAccidentCar } from '../../hooks/contracts/useContractAccident';
+import {
+  useContractCustomer,
+  useUpdateContractCustomer,
+} from '../../hooks/contracts/useContractCustomer';
+import {
+  useContractInsuranceClaim,
+  useUpdateContractInsuranceClaim,
+} from '../../hooks/contracts/useContractInsuranceClaim';
+import {
+  useContractMemos,
+  useCreateContractMemo,
+} from '../../hooks/contracts/useContractMemo';
+import { useContractPayment } from '../../hooks/contracts/useContractPayment';
 
 type RouteProps = RouteProp<RootStackParamList, 'ContractIntegrated'>;
 
@@ -27,40 +36,120 @@ const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
   const route = useRoute<RouteProps>();
 
-  const { contractType } = route.params;
+  const { contractId, contractType } = route.params;
   const sections = CONTRACT_SECTIONS_BY_TYPE[contractType];
 
   const [isEditMode, setIsEditMode] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
-  const [memos, setMemos] = useState(contractMock.memoList);
+  const { data: memos = [] } = useContractMemos(contractId);
+  const { data: customer } = useContractCustomer(contractId);
+  const { data: accident } = useContractAccidentCar(contractId);
+  const { data: insurance } = useContractInsuranceClaim(contractId);
+  const { data: payment } = useContractPayment(contractId);
 
-  const [form, setForm] = useState({
-    customer: { ...contractMock.customer },
-    insurance: { ...contractMock.insurance },
-  });
+  const createMemoMutation = useCreateContractMemo(contractId);
+  const updateCustomerMutation = useUpdateContractCustomer(contractId);
+  const updateInsuranceMutation = useUpdateContractInsuranceClaim(contractId);
+
+  // UI 타입 변환
+  const memoUI = useMemo(
+    () =>
+      memos.map(m => ({
+        id: m.contractId,
+        writer: m.staffName,
+        content: m.memo,
+        createdAt: m.createdAt,
+      })),
+    [memos],
+  );
+
+  const customerUI = useMemo(
+    () =>
+      customer
+        ? {
+            name: customer.customerName,
+            phone: customer.customerPhoneNumber,
+            address: customer.customerAddress,
+            carModel: customer.customerCarModel,
+            carNumber: customer.customerCarNum,
+          }
+        : null,
+    [customer],
+  );
+
+  const accidentUI = useMemo(
+    () =>
+      accident
+        ? {
+            status: accident.carStatuses?.[0] ?? '',
+            carNumber: accident.customerCarNumber,
+            carModel: accident.customerCarModel,
+            displacement: accident.customerCarDisplacement,
+            garage: accident.repairShopId,
+            requestCompany: accident.partnerId,
+          }
+        : null,
+    [accident],
+  );
+
+  const insuranceUI = useMemo(
+    () =>
+      insurance
+        ? {
+            status: insurance.billingStatus,
+            company: insurance.insuranceCompany,
+            claimNumber: insurance.caseNumber,
+            manager: insurance.managerName,
+            fax: insurance.faxNum,
+            phone: insurance.managerPhoneNum,
+          }
+        : null,
+    [insurance],
+  );
+
+  const paymentUI = useMemo(
+    () =>
+      payment
+        ? {
+            method: payment.paymentMethod,
+            time: payment.paymentTime,
+            amount: String(payment.paymentAmount),
+            note: payment.memo,
+          }
+        : null,
+    [payment],
+  );
+
+  const [form, setForm] = useState<{
+    customer?: typeof customerUI;
+    insurance?: typeof insuranceUI;
+  }>({});
+
   const [backup, setBackup] = useState(form);
 
-  const handleAddMemo = (content: string) => {
-    const now = new Date();
-    const createdAt =
-      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-        2,
-        '0',
-      )}-${String(now.getDate()).padStart(2, '0')} ` +
-      `${String(now.getHours()).padStart(2, '0')}:${String(
-        now.getMinutes(),
-      ).padStart(2, '0')}`;
+  useEffect(() => {
+    if (customerUI || insuranceUI) {
+      const next = { customer: customerUI, insurance: insuranceUI };
+      setForm(next);
+      setBackup(next);
+    }
+  }, [customerUI, insuranceUI]);
 
-    setMemos(prev => [
-      ...prev,
+  const handleAddMemo = (content: string) => {
+    if (!user || user.kind !== 'ADMIN') return;
+
+    createMemoMutation.mutate(
       {
-        id: Date.now(),
-        writer: user?.name ?? '알 수 없음',
-        content,
-        createdAt,
+        memo: content,
+        staffId: user.staffId,
       },
-    ]);
+      {
+        onSuccess: () => {
+          setToastMsg('메모가 추가되었습니다.');
+        },
+      },
+    );
   };
 
   const handleCopy = (value: string, label: string) => {
@@ -69,7 +158,24 @@ const ContractIntegratedScreen = () => {
   };
 
   const handleSave = () => {
-    console.log('저장 데이터:', form);
+    if (form.customer && customer) {
+      updateCustomerMutation.mutate({
+        customerName: form.customer.name,
+        customerPhoneNumber: form.customer.phone,
+        customerAddress: form.customer.address,
+      });
+    }
+
+    if (form.insurance && insurance) {
+      updateInsuranceMutation.mutate({
+        insuranceCompany: form.insurance.company,
+        caseNumber: form.insurance.claimNumber,
+        managerName: form.insurance.manager,
+        managerPhoneNum: form.insurance.phone,
+        faxNum: form.insurance.fax,
+      });
+    }
+
     setBackup(form);
     setIsEditMode(false);
     setToastMsg('수정 내용이 저장되었습니다.');
@@ -91,10 +197,9 @@ const ContractIntegratedScreen = () => {
         style={s.container}
         contentContainerStyle={{ paddingBottom: 16 }}
       >
-        {/* 상단 헤더 */}
         <ContractHeaderSection
-          model={contractMock.car.model}
-          number={contractMock.car.number}
+          model={customerUI?.carModel ?? ''}
+          number={customerUI?.carNumber ?? ''}
           isEditMode={isEditMode}
           onEdit={() => {
             setBackup(form);
@@ -104,54 +209,48 @@ const ContractIntegratedScreen = () => {
           onCancel={handleCancel}
         />
 
-        {/* 메모 */}
         {sections.includes('MEMO') && (
-          <ContractMemoSection memos={memos} onAddMemo={handleAddMemo} />
+          <ContractMemoSection memos={memoUI} onAddMemo={handleAddMemo} />
         )}
 
-        {/* 계약 일시 */}
         {sections.includes('DATE') && (
           <ContractDateSection contractDate={contractMock.contractDate} />
         )}
 
-        {/* 고객 정보 */}
-        {sections.includes('CUSTOMER') && (
+        {sections.includes('CUSTOMER') && form.customer && (
           <ContractCustomerSection
             isEditMode={isEditMode}
             customer={form.customer}
             onChange={(key, value) =>
               setForm(prev => ({
                 ...prev,
-                customer: { ...prev.customer, [key]: value },
+                customer: { ...prev.customer!, [key]: value },
               }))
             }
             onCopy={handleCopy}
           />
         )}
 
-        {/* 사고 차량 정보 */}
-        {sections.includes('ACCIDENT') && (
-          <ContractAccidentSection accident={contractMock.accident} />
+        {sections.includes('ACCIDENT') && accidentUI && (
+          <ContractAccidentSection accident={accidentUI} />
         )}
 
-        {/* 보험사 청구 */}
-        {sections.includes('INSURANCE_CLAIM') && (
+        {sections.includes('INSURANCE_CLAIM') && form.insurance && (
           <ContractInsuranceClaimSection
             isEditMode={isEditMode}
             insurance={form.insurance}
             onChange={(key, value) =>
               setForm(prev => ({
                 ...prev,
-                insurance: { ...prev.insurance, [key]: value },
+                insurance: { ...prev.insurance!, [key]: value },
               }))
             }
             onCopy={handleCopy}
           />
         )}
 
-        {/* 결제 정보 */}
-        {sections.includes('PAYMENT') && (
-          <ContractPaymentSection payment={contractMock.payment} />
+        {sections.includes('PAYMENT') && paymentUI && (
+          <ContractPaymentSection payment={paymentUI} />
         )}
       </ScrollView>
 
