@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,17 @@ import {
   Image,
   LayoutAnimation,
   Platform,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
-import { washFuelCompanyDetailMock } from '../../../../mock/todo/todoWashFuelDetailMock';
+import { WashFuelVehicle } from '../../../../mock/todo/todoWashFuelDetailMock';
 import CommonModal from '../../../../components/common/CommonModal';
 import { HIT_SLOP } from '../../../../constants/touch';
+import { useTodoFuelWashDetail } from '../../../../hooks/todo/useTodoFuelWashDetail';
+import { useCompleteFuelMutation } from '../../../../hooks/todo/useCompleteFuelMutation';
+import { useCompleteWashMutation } from '../../../../hooks/todo/useCompleteWashMutation';
 
 export default function TodoWashFuelDetailScreen() {
   const navigation = useNavigation();
@@ -27,6 +32,7 @@ export default function TodoWashFuelDetailScreen() {
   const [modal, setModal] = useState<{
     visible: boolean;
     type: 'wash' | 'fuel' | null;
+    carId?: number;
   }>({ visible: false, type: null });
 
   const handleExpand = (id: number) => {
@@ -37,19 +43,96 @@ export default function TodoWashFuelDetailScreen() {
     }));
   };
 
-  const openModal = (type: 'wash' | 'fuel') =>
-    setModal({ visible: true, type });
+  const formatDateTime = (iso: string) => {
+    const date = new Date(iso);
+
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${month}/${day} ${hours}:${minutes}`;
+  };
+
+  const formatDuration = (raw: string) => {
+    if (!raw) return '';
+
+    const dayMatch = raw.match(/(\d+)d/);
+    const hourMatch = raw.match(/(\d+)h/);
+
+    const days = dayMatch ? Number(dayMatch[1]) : 0;
+    const hours = hourMatch ? Number(hourMatch[1]) : 0;
+
+    const parts: string[] = [];
+
+    if (days > 0) {
+      parts.push(`${days}일`);
+    }
+
+    if (hours > 0) {
+      parts.push(`${hours}시간`);
+    }
+
+    return parts.join(' ');
+  };
+
+  // API hook
+  const {
+    data: fuelWashDetailData,
+    isLoading,
+    error,
+  } = useTodoFuelWashDetail(companyId);
+
+  // Mutation hooks
+  const completeFuelMutation = useCompleteFuelMutation(companyId);
+  const completeWashMutation = useCompleteWashMutation(companyId);
+
+  const openModal = (type: 'wash' | 'fuel', carId: number) =>
+    setModal({ visible: true, type, carId });
 
   const closeModal = () => setModal({ visible: false, type: null });
 
   const handleConfirm = () => {
-    setModal({ visible: false, type: null });
+    if (modal.type === 'fuel' && modal.carId) {
+      completeFuelMutation.mutate(modal.carId, {
+        onSuccess: () => {
+          setModal({ visible: false, type: null });
+        },
+        onError: () => {
+          setModal({ visible: false, type: null });
+          Alert.alert('알림', '주유 완료 처리에 실패했습니다');
+        },
+      });
+    } else if (modal.type === 'wash' && modal.carId) {
+      completeWashMutation.mutate(modal.carId, {
+        onSuccess: () => {
+          setModal({ visible: false, type: null });
+        },
+        onError: () => {
+          setModal({ visible: false, type: null });
+          Alert.alert('알림', '세차 완료 처리에 실패했습니다');
+        },
+      });
+    } else {
+      setModal({ visible: false, type: null });
+    }
   };
 
-  const company = washFuelCompanyDetailMock.find(
-    c => c.companyId === companyId,
-  );
-  const data = company?.vehicles ?? [];
+  // UI 타입 변환
+  const data: WashFuelVehicle[] = useMemo(() => {
+    if (!fuelWashDetailData?.carFuelWashes) return [];
+    return fuelWashDetailData.carFuelWashes.map(car => {
+      return {
+        id: car.carId,
+        name: car.carModel,
+        plateNumber: car.carNumber,
+        lastUpdate: car.requestedAt,
+        duration: car.timeAfterUpdate,
+        hasWash: car.needsWash,
+        hasFuel: car.needsFuel,
+      };
+    });
+  }, [fuelWashDetailData]);
 
   const getStatusColor = (item: { hasWash?: boolean; hasFuel?: boolean }) => {
     if (item.hasWash) return colors.PRIMARY_50;
@@ -71,117 +154,140 @@ export default function TodoWashFuelDetailScreen() {
       </View>
 
       {/* 리스트 */}
-      <FlatList
-        data={data}
-        keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const isOpen = !!expanded[item.id];
-          return (
-            <View style={s.item}>
-              {/* 좌측 상태바 */}
-              <View
-                style={[s.statusBar, { backgroundColor: getStatusColor(item) }]}
-              />
+      {isLoading ? (
+        <View style={s.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+        </View>
+      ) : error ? (
+        <View style={s.loadingContainer}>
+          <Text style={s.errorText}>
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => {
+            const isOpen = !!expanded[item.id];
+            return (
+              <View style={s.item}>
+                {/* 좌측 상태바 */}
+                <View
+                  style={[
+                    s.statusBar,
+                    { backgroundColor: getStatusColor(item) },
+                  ]}
+                />
 
-              <View style={s.itemBody}>
-                {/* 상단 영역 */}
-                <View style={s.itemTop}>
-                  <View style={s.carInfo}>
-                    <Text style={s.carName}>{item.name}</Text>
+                <View style={s.itemBody}>
+                  {/* 상단 영역 */}
+                  <View style={s.itemTop}>
+                    <View style={s.carInfo}>
+                      <Text style={s.carName}>{item.name}</Text>
 
-                    <View style={s.iconRow}>
+                      <View style={s.iconRow}>
+                        {item.hasWash && (
+                          <Image
+                            source={require('../../../../assets/admin-todo/wash.png')}
+                            style={s.washIcon}
+                          />
+                        )}
+                        {item.hasFuel && (
+                          <Image
+                            source={require('../../../../assets/admin-todo/fuel.png')}
+                            style={s.fuelIcon}
+                          />
+                        )}
+                      </View>
+
+                      <View style={s.plateBadge}>
+                        <Text style={s.plate}>{item.plateNumber}</Text>
+                      </View>
+                    </View>
+
+                    {/* 날짜 + 시간 + 화살표 */}
+                    <View style={s.rightWrap}>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <View style={s.row}>
+                          <Image
+                            source={require('../../../../assets/common/calendar.png')}
+                            style={s.smallIcon}
+                          />
+                          <Text style={s.date}>
+                            {formatDateTime(item.lastUpdate)}
+                          </Text>
+                        </View>
+                        <View style={s.row}>
+                          <Image
+                            source={require('../../../../assets/common/clock.png')}
+                            style={s.smallIcon}
+                          />
+                          <Text style={s.time}>
+                            {formatDuration(item.duration)}
+                          </Text>
+                        </View>
+                      </View>
+                      <Pressable
+                        hitSlop={HIT_SLOP.MEDIUM}
+                        onPress={e => {
+                          e.stopPropagation();
+                          handleExpand(item.id);
+                        }}
+                        style={s.arrowWrap}
+                      >
+                        <Image
+                          source={require('../../../../assets/common/down_arrow.png')}
+                          style={[
+                            s.arrowIcon,
+                            {
+                              transform: [
+                                { rotate: isOpen ? '180deg' : '0deg' },
+                              ],
+                            },
+                          ]}
+                        />
+                      </Pressable>
+                    </View>
+                  </View>
+
+                  {/* 하단 버튼 */}
+                  {isOpen && (
+                    <View style={s.buttonRow}>
                       {item.hasWash && (
-                        <Image
-                          source={require('../../../../assets/admin-todo/wash.png')}
-                          style={s.washIcon}
-                        />
-                      )}
-                      {item.hasFuel && (
-                        <Image
-                          source={require('../../../../assets/admin-todo/fuel.png')}
-                          style={s.fuelIcon}
-                        />
-                      )}
-                    </View>
-
-                    <View style={s.plateBadge}>
-                      <Text style={s.plate}>{item.plateNumber}</Text>
-                    </View>
-                  </View>
-
-                  {/* 날짜 + 시간 + 화살표 */}
-                  <View style={s.rightWrap}>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <View style={s.row}>
-                        <Image
-                          source={require('../../../../assets/common/calendar.png')}
-                          style={s.smallIcon}
-                        />
-                        <Text style={s.date}>{item.lastUpdate}</Text>
-                      </View>
-                      <View style={s.row}>
-                        <Image
-                          source={require('../../../../assets/common/clock.png')}
-                          style={s.smallIcon}
-                        />
-                        <Text style={s.time}>{item.duration}</Text>
-                      </View>
-                    </View>
-                    <Pressable
-                      hitSlop={HIT_SLOP.MEDIUM}
-                      onPress={e => {
-                        e.stopPropagation();
-                        handleExpand(item.id);
-                      }}
-                      style={s.arrowWrap}
-                    >
-                      <Image
-                        source={require('../../../../assets/common/down_arrow.png')}
-                        style={[
-                          s.arrowIcon,
-                          {
-                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
-                          },
-                        ]}
-                      />
-                    </Pressable>
-                  </View>
-                </View>
-
-                {/* 하단 버튼 */}
-                {isOpen && (
-                  <View style={s.buttonRow}>
-                    {item.hasWash && (
-                      <Pressable
-                        style={[s.actionBtn, s.blueBorderBtn]}
-                        onPress={() => openModal('wash')}
-                      >
-                        <Text
-                          style={[s.actionText, { color: colors.PRIMARY_50 }]}
+                        <Pressable
+                          style={[s.actionBtn, s.blueBorderBtn]}
+                          onPress={() => openModal('wash', item.id)}
                         >
-                          세차완료
-                        </Text>
-                      </Pressable>
-                    )}
+                          <Text
+                            style={[s.actionText, { color: colors.PRIMARY_50 }]}
+                          >
+                            세차완료
+                          </Text>
+                        </Pressable>
+                      )}
 
-                    {item.hasFuel && (
-                      <Pressable
-                        style={[s.actionBtn, s.redBorderBtn]}
-                        onPress={() => openModal('fuel')}
-                      >
-                        <Text style={[s.actionText, { color: colors.RED_50 }]}>
-                          주유완료
-                        </Text>
-                      </Pressable>
-                    )}
-                  </View>
-                )}
+                      {item.hasFuel && (
+                        <Pressable
+                          style={[s.actionBtn, s.redBorderBtn]}
+                          onPress={() => openModal('fuel', item.id)}
+                        >
+                          <Text
+                            style={[s.actionText, { color: colors.RED_50 }]}
+                          >
+                            주유완료
+                          </Text>
+                        </Pressable>
+                      )}
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
 
       {/* 공용 모달 */}
       {modal.type && (
@@ -304,5 +410,15 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15.4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+    textAlign: 'center',
   },
 });
