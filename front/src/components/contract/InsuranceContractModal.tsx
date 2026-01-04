@@ -105,7 +105,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     removePhoto,
     sigRef,
     signatureStyle,
-  } = useContractForm('insurance', vehicle.id.toString(), updated => {
+  } = useContractForm('insurance', vehicle.carId.toString(), updated => {
     setFormData(updated);
     const mf = requiredFields.filter(k => !updated[k] || updated[k] === '');
     setMissingFields(mf);
