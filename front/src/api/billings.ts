@@ -126,3 +126,28 @@ export const cancelBillingRequest = async (
     `/billings/v1/${billingId}/cancel-request`,
   );
 };
+
+/** 거래처 현재월 통계 */
+export interface PartnerCurrentMonthStatistics {
+  totalAmount: number;
+  carManagementAmount: number;
+  settlementAmount: number;
+  gradeName: string;
+  discountRate: number;
+}
+
+export interface GetPartnerCurrentMonthStatisticsParams {
+  year: number;
+  month: number;
+}
+
+export const getPartnerCurrentMonthStatistics = async (
+  params: GetPartnerCurrentMonthStatisticsParams,
+): Promise<PartnerCurrentMonthStatistics> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerCurrentMonthStatistics>>(
+    '/billings/v1/partner/current-month-statistics',
+    { params },
+  );
+
+  return res.data.data;
+};

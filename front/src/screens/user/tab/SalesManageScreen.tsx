@@ -7,6 +7,7 @@ import {
   Pressable,
   Image,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import {
@@ -14,22 +15,56 @@ import {
   dispatchListMock,
   getMonthlyTotal,
 } from '../../../mock/salesMock';
+import { usePartnerCurrentMonthStatistics } from '../../../hooks/billings/usePartnerCurrentMonthStatistics';
 
 const SalesManageScreen = () => {
-  const summary = salesSummaryMock;
   const dispatch = dispatchListMock;
 
-  // 현재 등급 정보
-  const currentGrade = summary.currentGrade;
-  const payRate = summary.payRates[currentGrade];
+  // 현재 날짜 기준 년, 월 가져오기
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0-11이므로 +1
 
-  // 이번달 총 매출 (차량관리금액 + 정산금액)
-  const currentMonthTotal = getMonthlyTotal(summary);
+  // API 호출
+  const {
+    data: statistics,
+    isLoading,
+    isError,
+  } = usePartnerCurrentMonthStatistics({
+    year: currentYear,
+    month: currentMonth,
+  });
+
+  // 등급 이름에서 숫자 추출 (예: "1등급" -> 1, "5등급" -> 5)
+  const currentGrade = useMemo(() => {
+    if (!statistics?.gradeName) return salesSummaryMock.currentGrade;
+    const match = statistics.gradeName.match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : salesSummaryMock.currentGrade;
+  }, [statistics?.gradeName]);
+
+  // payRate는 discountRate를 그대로 사용 (discountRate가 지급율인 것으로 가정)
+  // 만약 discountRate가 할인율이라면 100 - discountRate를 사용해야 함
+  const payRate =
+    statistics?.discountRate ?? salesSummaryMock.payRates[currentGrade];
+
+  // 이번달 총 매출
+  const currentMonthTotal =
+    statistics?.totalAmount ?? getMonthlyTotal(salesSummaryMock);
+
+  // 사전 지급 금액 (차량관리 금액)
+  const prePaidAmount =
+    statistics?.carManagementAmount ?? salesSummaryMock.prePaidAmount;
+
+  // 정산 금액
+  const settlementAmount =
+    statistics?.settlementAmount ?? salesSummaryMock.settlementAmount;
+
+  // 기존 payRates (등급 비교 계산용 - 현재는 mock 데이터 사용)
+  // 실제로는 모든 등급의 discountRate를 가져와야 하지만, 현재 API는 현재 등급만 제공
+  const payRates = salesSummaryMock.payRates;
 
   // 선택된 등급 (null = 선택안함)
-  const [selectedGrade, setSelectedGrade] = useState<number>(
-    summary.currentGrade,
-  );
+  const [selectedGrade, setSelectedGrade] = useState<number>(currentGrade);
 
   // 버튼 배열 (현재 등급 위치에 "현재" 삽입)
   const gradeButtons = useMemo(() => {
@@ -44,7 +79,7 @@ const SalesManageScreen = () => {
       selectedGrade && selectedGrade >= 1 && selectedGrade <= 5
         ? selectedGrade
         : currentGrade;
-    const targetRate = summary.payRates[targetGrade];
+    const targetRate = payRates[targetGrade];
 
     const appliedMonthly = (currentMonthTotal / payRate) * targetRate;
     const appliedYearly = (baseYearTotal / payRate) * targetRate;
@@ -59,7 +94,35 @@ const SalesManageScreen = () => {
       monthlyGain,
       yearlyGain,
     };
-  }, [selectedGrade, currentMonthTotal, payRate]);
+  }, [selectedGrade, currentMonthTotal, payRate, currentGrade, payRates]);
+
+  if (isLoading) {
+    return (
+      <View
+        style={[
+          s.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
+        <ActivityIndicator size="small" color={colors.PRIMARY_50} />
+      </View>
+    );
+  }
+
+  if (isError || !statistics) {
+    return (
+      <View
+        style={[
+          s.container,
+          { justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
+        <Text style={{ color: colors.RED_50 }}>
+          데이터를 불러올 수 없습니다.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={s.container}>
@@ -90,15 +153,13 @@ const SalesManageScreen = () => {
 
         <View style={s.cardRow}>
           <View style={s.card}>
-            <Text style={s.cardAmount}>
-              ₩ {summary.prePaidAmount.toLocaleString()}
-            </Text>
+            <Text style={s.cardAmount}>₩ {prePaidAmount.toLocaleString()}</Text>
             <Text style={s.cardLabel}>사전 지급 금액</Text>
-            <Text style={s.cardSub}>평균 {summary.avgDays}일 기준</Text>
+            <Text style={s.cardSub}>차량관리 금액</Text>
           </View>
           <View style={s.card}>
             <Text style={s.cardAmount}>
-              ₩ {summary.settlementAmount.toLocaleString()}
+              ₩ {settlementAmount.toLocaleString()}
             </Text>
             <Text style={s.cardLabel}>이번달 정산금액</Text>
             <Text style={s.cardSub}>실제 렌트비 차액</Text>
