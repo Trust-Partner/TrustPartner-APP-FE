@@ -129,3 +129,25 @@ export const completeFuel = async (
   return res.data.data;
 };
 
+/** 세차완료 API Response (주유완료와 동일한 구조) */
+export interface CompleteWashResponse {
+  carId: number;
+  carModel: string;
+  carNumber: string;
+  needsFuel: boolean;
+  needsWash: boolean;
+  requestedAt: string;
+  timeAfterUpdate: string;
+}
+
+/** 세차완료 */
+export const completeWash = async (
+  carId: number,
+): Promise<CompleteWashResponse> => {
+  const res = await axiosInstance.post<ApiResponse<CompleteWashResponse>>(
+    `/tasks/v1/wash/${carId}`,
+  );
+
+  return res.data.data;
+};
+
