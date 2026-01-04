@@ -32,6 +32,21 @@ import { useContractPayment } from '../../hooks/contracts/useContractPayment';
 
 type RouteProps = RouteProp<RootStackParamList, 'ContractIntegrated'>;
 
+const ACCIDENT_STATUS_LABEL: Record<string, string> = {
+  AVAILABLE: '대기중',
+  IN_USE: '배차중',
+  RETURN_REQUESTED: '반납신청',
+};
+
+const BILLING_STATUS_LABEL: Record<string, string> = {
+  PENDING: '지급대기',
+  CONFIRMED: '지급확정',
+  COMPLETED_BILLED: '청구완료',
+  COMPLETED_APPROVED: '입금완료',
+  COMPLETED_UNAPPROVED: '입금완료',
+  CANCELLED: '지급취소',
+};
+
 const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
   const route = useRoute<RouteProps>();
@@ -78,35 +93,35 @@ const ContractIntegratedScreen = () => {
     [customer],
   );
 
-  const accidentUI = useMemo(
-    () =>
-      accident
-        ? {
-            status: accident.carStatuses?.[0] ?? '',
-            carNumber: accident.customerCarNumber,
-            carModel: accident.customerCarModel,
-            displacement: accident.customerCarDisplacement,
-            garage: accident.repairShopId,
-            requestCompany: accident.partnerId,
-          }
-        : null,
-    [accident],
-  );
+  const accidentUI = useMemo(() => {
+    if (!accident) return null;
 
-  const insuranceUI = useMemo(
-    () =>
-      insurance
-        ? {
-            status: insurance.billingStatus,
-            company: insurance.insuranceCompany,
-            claimNumber: insurance.caseNumber,
-            manager: insurance.managerName,
-            fax: insurance.faxNum,
-            phone: insurance.managerPhoneNum,
-          }
-        : null,
-    [insurance],
-  );
+    const rawStatus = accident.carStatuses?.[0];
+
+    return {
+      status: rawStatus ? ACCIDENT_STATUS_LABEL[rawStatus] ?? rawStatus : '',
+      carNumber: accident.customerCarNumber,
+      carModel: accident.customerCarModel,
+      displacement: accident.customerCarDisplacement,
+      garage: accident.repairShopId,
+      requestCompany: accident.partnerId,
+    };
+  }, [accident]);
+
+  const insuranceUI = useMemo(() => {
+    if (!insurance) return null;
+
+    const rawStatus = insurance.billingStatus;
+
+    return {
+      status: rawStatus ? BILLING_STATUS_LABEL[rawStatus] ?? rawStatus : '',
+      company: insurance.insuranceCompany,
+      claimNumber: insurance.caseNumber,
+      manager: insurance.managerName,
+      fax: insurance.faxNum,
+      phone: insurance.managerPhoneNum,
+    };
+  }, [insurance]);
 
   const paymentUI = useMemo(
     () =>
