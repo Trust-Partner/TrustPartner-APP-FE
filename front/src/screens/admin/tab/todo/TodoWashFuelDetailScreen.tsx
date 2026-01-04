@@ -18,6 +18,7 @@ import CommonModal from '../../../../components/common/CommonModal';
 import { HIT_SLOP } from '../../../../constants/touch';
 import { useTodoFuelWashDetail } from '../../../../hooks/todo/useTodoFuelWashDetail';
 import { useCompleteFuelMutation } from '../../../../hooks/todo/useCompleteFuelMutation';
+import { useCompleteWashMutation } from '../../../../hooks/todo/useCompleteWashMutation';
 
 export default function TodoWashFuelDetailScreen() {
   const navigation = useNavigation();
@@ -49,8 +50,9 @@ export default function TodoWashFuelDetailScreen() {
     error,
   } = useTodoFuelWashDetail(companyId);
 
-  // Mutation hook
+  // Mutation hooks
   const completeFuelMutation = useCompleteFuelMutation(companyId);
+  const completeWashMutation = useCompleteWashMutation(companyId);
 
   const openModal = (type: 'wash' | 'fuel', carId: number) =>
     setModal({ visible: true, type, carId });
@@ -68,8 +70,17 @@ export default function TodoWashFuelDetailScreen() {
           Alert.alert('알림', '주유 완료 처리에 실패했습니다');
         },
       });
+    } else if (modal.type === 'wash' && modal.carId) {
+      completeWashMutation.mutate(modal.carId, {
+        onSuccess: () => {
+          setModal({ visible: false, type: null });
+        },
+        onError: () => {
+          setModal({ visible: false, type: null });
+          Alert.alert('알림', '세차 완료 처리에 실패했습니다');
+        },
+      });
     } else {
-      // 세차 완료는 아직 구현되지 않음
       setModal({ visible: false, type: null });
     }
   };
