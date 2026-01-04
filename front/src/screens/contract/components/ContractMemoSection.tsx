@@ -46,12 +46,12 @@ export const ContractMemoSection = ({ memos, onAddMemo }: Props) => {
         <Text style={s.cardTitle}>메모</Text>
       </View>
 
-      <ScrollView
-        style={{ maxHeight: MEMO_MAX_HEIGHT }}
-        showsVerticalScrollIndicator={false}
-        nestedScrollEnabled
-      >
-        <View style={[s.memoContainerBox, { minHeight: MEMO_MIN_HEIGHT }]}>
+      <View style={{ maxHeight: MEMO_MAX_HEIGHT }}>
+        <ScrollView
+          style={[s.memoContainerBox, { minHeight: MEMO_MIN_HEIGHT }]}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
+        >
           {memos.map(m => (
             <View key={m.id} style={s.memoBox}>
               <View style={s.memoRow}>
@@ -61,8 +61,8 @@ export const ContractMemoSection = ({ memos, onAddMemo }: Props) => {
               <Text style={s.memoContent}>{m.content}</Text>
             </View>
           ))}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       <View style={s.memoInputRow}>
         <TextInput
