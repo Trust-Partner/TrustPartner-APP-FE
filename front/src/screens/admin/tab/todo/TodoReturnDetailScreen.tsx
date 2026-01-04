@@ -15,6 +15,7 @@ import { colors } from '../../../../constants/colors';
 import { ReturnVehicleItem } from '../../../../mock/todo/todoReturnDetailMock';
 import { HIT_SLOP } from '../../../../constants/touch';
 import { useTodoReturnDetail } from '../../../../hooks/todo/useTodoReturnDetail';
+import VehicleRetrieveModal from '../../../../components/vehicleStatus/VehicleRetrieveModal';
 
 export default function TodoReturnDetailScreen() {
   const navigation = useNavigation();
@@ -25,6 +26,16 @@ export default function TodoReturnDetailScreen() {
   };
 
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
+  const [retrieveModalVisible, setRetrieveModalVisible] = useState(false);
+  const [selectedVehicle, setSelectedVehicle] = useState<{
+    id: number;
+    name: string;
+    plateNumber: string;
+    status: '배차중' | '대기중' | '반납신청';
+    lastUpdate: string;
+    duration: string;
+    isGarage: boolean;
+  } | null>(null);
 
   // API hook
   const {
@@ -80,8 +91,19 @@ export default function TodoReturnDetailScreen() {
   }, [returnDetailData]);
 
   const handleCollect = (vehicleId: number) => {
-    console.log('회수 처리:', vehicleId);
-    // TODO: 회수 API 연동
+    const vehicle = data.find(item => item.id === vehicleId);
+    if (vehicle) {
+      setSelectedVehicle({
+        id: vehicle.id,
+        name: vehicle.name,
+        plateNumber: vehicle.plateNumber,
+        status: '반납신청' as const,
+        lastUpdate: vehicle.lastUpdate,
+        duration: vehicle.duration,
+        isGarage: false,
+      });
+      setRetrieveModalVisible(true);
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -204,6 +226,18 @@ export default function TodoReturnDetailScreen() {
               </View>
             );
           }}
+        />
+      )}
+
+      {/* 회수하기 모달 */}
+      {selectedVehicle && (
+        <VehicleRetrieveModal
+          visible={retrieveModalVisible}
+          onClose={() => {
+            setRetrieveModalVisible(false);
+            setSelectedVehicle(null);
+          }}
+          vehicle={selectedVehicle}
         />
       )}
     </View>
