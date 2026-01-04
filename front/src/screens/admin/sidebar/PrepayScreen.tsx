@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,24 +7,170 @@ import {
   LayoutAnimation,
   Pressable,
   Image,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { colors } from '../../../constants/colors';
-import {
-  prepaymentMock,
-  PrepaymentItemType,
-} from '../../../mock/prepaymentMock';
+import { PrepaymentItemType } from '../../../mock/prepaymentMock';
 import CommonModal from '../../../components/common/CommonModal';
 import AppHeader from '../../../components/common/AppHeader';
+import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
+import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
+import { usePreviousDispatchBillings } from '../../../hooks/billings/usePreviousDispatchBillings';
+import { useConfirmBilling } from '../../../hooks/billings/useConfirmBilling';
+import { useCancelBillingRequest } from '../../../hooks/billings/useCancelBillingRequest';
+import { DispatchBillingItem } from '../../../api/billings';
+import { RootStackParamList } from '../../../navigations/root/RootNavigator';
+import { ContractType } from '../../contract/types';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+/** duration 포맷팅 함수 (일 시간 분) */
+const formatDuration = (
+  daysElapsed: number,
+  hoursElapsed: number,
+  minutesElapsed: number,
+): string => {
+  const parts: string[] = [];
+  if (daysElapsed > 0) {
+    parts.push(`${daysElapsed}일`);
+  }
+  if (hoursElapsed > 0) {
+    parts.push(`${hoursElapsed}시간`);
+  }
+  if (minutesElapsed > 0) {
+    parts.push(`${minutesElapsed}분`);
+  }
+  return parts.length > 0 ? parts.join(' ') : '0분';
+};
+
+/** ContractType 변환 함수 */
+const convertContractType = (
+  contractType: string,
+): ContractType | undefined => {
+  if (contractType === 'INSURANCE_CONTRACT') {
+    return 'INSURANCE';
+  }
+  if (contractType === 'GENERAL_CONTRACT') {
+    return 'GENERAL';
+  }
+  return undefined;
+};
+
+/** BillingItem을 PrepaymentItemType으로 변환 */
+const mapBillingToPrepaymentItem = (
+  billing: DispatchBillingItem,
+  status: 'waiting' | 'current' | 'past',
+): PrepaymentItemType => {
+  const durationStr = formatDuration(
+    billing.daysElapsed,
+    billing.hoursElapsed,
+    billing.minutesElapsed,
+  );
+
+  return {
+    id: billing.billingId,
+    carName: billing.carModel,
+    carNumber: billing.carNumber,
+    company: billing.requestCompany,
+    duration: durationStr,
+    status,
+    contractId: billing.contractId,
+    contractType: convertContractType(billing.contractType),
+  };
+};
 
 export default function PrepaymentScreen() {
+  const navigation = useNavigation<NavigationProp>();
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
     'waiting',
   );
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
+  const [selectedBillingId, setSelectedBillingId] = useState<number | null>(
+    null,
+  );
 
-  const data = prepaymentMock[activeTab];
+  const confirmBillingMutation = useConfirmBilling();
+  const cancelBillingRequestMutation = useCancelBillingRequest();
+
+  // 현재 날짜의 년도와 월
+  const currentYear = useMemo(() => new Date().getFullYear(), []);
+  const currentMonth = useMemo(() => new Date().getMonth() + 1, []);
+
+  // API hook (지급대기 탭일 때만 호출)
+  const {
+    data: pendingBillingsData,
+    isLoading: isLoadingPending,
+    error: pendingError,
+  } = usePendingBillings();
+
+  // API hook (당월배차내역 탭일 때만 호출)
+  const {
+    data: monthlyDispatchBillingsData,
+    isLoading: isLoadingMonthly,
+    error: monthlyError,
+  } = useMonthlyDispatchBillings({ year: currentYear, month: currentMonth });
+
+  // API hook (지난배차내역 탭일 때만 호출)
+  const {
+    data: previousDispatchBillingsData,
+    isLoading: isLoadingPrevious,
+    error: previousError,
+  } = usePreviousDispatchBillings({ year: currentYear, month: currentMonth });
+
+  /** API 데이터를 컴포넌트 구조로 변환 (지급대기) */
+  const waitingData: PrepaymentItemType[] = useMemo(() => {
+    if (!pendingBillingsData?.billings) return [];
+    return pendingBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'waiting'),
+    );
+  }, [pendingBillingsData]);
+
+  /** API 데이터를 컴포넌트 구조로 변환 (당월배차내역) */
+  const currentData: PrepaymentItemType[] = useMemo(() => {
+    if (!monthlyDispatchBillingsData?.billings) return [];
+    return monthlyDispatchBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'current'),
+    );
+  }, [monthlyDispatchBillingsData]);
+
+  /** API 데이터를 컴포넌트 구조로 변환 (지난배차내역) */
+  const pastData: PrepaymentItemType[] = useMemo(() => {
+    if (!previousDispatchBillingsData?.billings) return [];
+    return previousDispatchBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'past'),
+    );
+  }, [previousDispatchBillingsData]);
+
+  /** 탭별 데이터 */
+  const data = useMemo(() => {
+    if (activeTab === 'waiting') {
+      return waitingData;
+    }
+    if (activeTab === 'current') {
+      return currentData;
+    }
+    return pastData;
+  }, [activeTab, waitingData, currentData, pastData]);
+
+  /** 지급대기 건수 */
+  const pendingCount = useMemo(() => {
+    return pendingBillingsData?.pendingCount ?? 0;
+  }, [pendingBillingsData]);
+
+  /** 당월배차내역 건수 */
+  const currentCount = useMemo(() => {
+    return monthlyDispatchBillingsData?.totalCount ?? 0;
+  }, [monthlyDispatchBillingsData]);
+
+  /** 지난배차내역 건수 */
+  const pastCount = useMemo(() => {
+    return previousDispatchBillingsData?.totalCount ?? 0;
+  }, [previousDispatchBillingsData]);
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -98,20 +244,34 @@ export default function PrepaymentScreen() {
             <View style={s.buttonRow}>
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.GRAY_80 }]}
+                onPress={() => {
+                  if (item.contractId && item.contractType) {
+                    navigation.navigate('ContractIntegrated', {
+                      contractId: item.contractId,
+                      contractType: item.contractType,
+                    });
+                  }
+                }}
               >
                 <Text style={s.actionText}>계약서 확인</Text>
               </Pressable>
               {item.status === 'waiting' && (
                 <Pressable
                   style={[s.actionBtn, { backgroundColor: colors.PRIMARY_50 }]}
-                  onPress={() => setConfirmModalVisible(true)}
+                  onPress={() => {
+                    setSelectedBillingId(item.id);
+                    setConfirmModalVisible(true);
+                  }}
                 >
                   <Text style={s.actionText}>지급확정</Text>
                 </Pressable>
               )}
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.RED_50 }]}
-                onPress={() => setCancelModalVisible(true)}
+                onPress={() => {
+                  setSelectedBillingId(item.id);
+                  setCancelModalVisible(true);
+                }}
               >
                 <Text style={s.actionText}>취소신청</Text>
               </Pressable>
@@ -136,17 +296,17 @@ export default function PrepaymentScreen() {
               {
                 key: 'waiting',
                 label: '지급대기',
-                value: prepaymentMock.waiting.length,
+                value: pendingCount,
               },
               {
                 key: 'current',
                 label: '당월배차내역',
-                value: prepaymentMock.current.length,
+                value: currentCount,
               },
               {
                 key: 'past',
                 label: '지난배차내역',
-                value: prepaymentMock.past.length,
+                value: pastCount,
               },
             ] as const
           ).map((tab, idx) => {
@@ -169,11 +329,27 @@ export default function PrepaymentScreen() {
         <View style={s.listBox}>
           {renderRowLayout(true)}
 
-          <FlatList
-            data={data}
-            keyExtractor={item => item.id.toString()}
-            renderItem={renderItem}
-          />
+          {(activeTab === 'waiting' && isLoadingPending) ||
+          (activeTab === 'current' && isLoadingMonthly) ||
+          (activeTab === 'past' && isLoadingPrevious) ? (
+            <View style={s.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+            </View>
+          ) : (activeTab === 'waiting' && pendingError) ||
+            (activeTab === 'current' && monthlyError) ||
+            (activeTab === 'past' && previousError) ? (
+            <View style={s.loadingContainer}>
+              <Text style={s.errorText}>
+                데이터를 불러오는 중 오류가 발생했습니다.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={item => item.id.toString()}
+              renderItem={renderItem}
+            />
+          )}
         </View>
         <CommonModal
           visible={confirmModalVisible}
@@ -181,10 +357,22 @@ export default function PrepaymentScreen() {
           message="지급 확정할까요?"
           confirmText="지급확정"
           cancelText="취소"
-          onCancel={() => setConfirmModalVisible(false)}
-          onConfirm={() => {
+          onCancel={() => {
             setConfirmModalVisible(false);
-            console.log('지급 확정 처리');
+            setSelectedBillingId(null);
+          }}
+          onConfirm={() => {
+            if (selectedBillingId !== null) {
+              confirmBillingMutation.mutate(selectedBillingId, {
+                onSuccess: () => {
+                  setConfirmModalVisible(false);
+                  setSelectedBillingId(null);
+                },
+                onError: () => {
+                  Alert.alert('알림', '지급확정 처리에 실패했습니다.');
+                },
+              });
+            }
           }}
         />
 
@@ -194,10 +382,22 @@ export default function PrepaymentScreen() {
           message="취소 신청할까요?"
           confirmText="취소신청"
           cancelText="취소"
-          onCancel={() => setCancelModalVisible(false)}
-          onConfirm={() => {
+          onCancel={() => {
             setCancelModalVisible(false);
-            console.log('취소 신청 처리');
+            setSelectedBillingId(null);
+          }}
+          onConfirm={() => {
+            if (selectedBillingId !== null) {
+              cancelBillingRequestMutation.mutate(selectedBillingId, {
+                onSuccess: () => {
+                  setCancelModalVisible(false);
+                  setSelectedBillingId(null);
+                },
+                onError: () => {
+                  Alert.alert('알림', '취소 신청 처리에 실패했습니다.');
+                },
+              });
+            }
           }}
         />
       </View>
@@ -324,5 +524,16 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15.4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  errorText: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+    textAlign: 'center',
   },
 });

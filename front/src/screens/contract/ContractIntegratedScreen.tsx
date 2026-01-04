@@ -71,7 +71,7 @@ const ContractIntegratedScreen = () => {
   const memoUI = useMemo(
     () =>
       memos.map(m => ({
-        id: m.contractId,
+        id: m.createdAt,
         writer: m.staffName,
         content: m.memo,
         createdAt: m.createdAt,
