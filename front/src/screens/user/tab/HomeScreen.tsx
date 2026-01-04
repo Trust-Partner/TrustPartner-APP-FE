@@ -30,21 +30,26 @@ export default function UserHomeScreen() {
 
   const user = useAuthStore(s => s.user);
 
+  const userId = user && user.kind === 'USER' ? user.partnerId : undefined;
+
+  const date = dayjs().format('YYYY-MM-DD');
+
+  const { data, isLoading, refetch, isFetching } = useUserHome(
+    userId ?? '',
+    date,
+  );
+
+  const { request, alerts: initialAlerts } = mockUserDashboard;
+  const [alerts, setAlerts] = useState(initialAlerts);
+
+  // guard (렌더만 제어)
   if (!user || user.kind !== 'USER') {
     return <LoadingView />;
   }
 
-  const userId = user.partnerId;
-  const date = dayjs().format('YYYY-MM-DD');
-
-  const { data, isLoading, refetch, isFetching } = useUserHome(userId, date);
-
   if (isLoading) {
     return <LoadingView />;
   }
-
-  const { request, alerts: initialAlerts } = mockUserDashboard;
-  const [alerts, setAlerts] = useState(initialAlerts);
 
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
