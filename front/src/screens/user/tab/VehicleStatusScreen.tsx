@@ -194,7 +194,7 @@ export default function VehicleStatusScreen() {
             <Pressable
               onPress={() =>
                 navigation.navigate('ContractIntegrated', {
-                  contractId: item.id,
+                  contractId: 35,
                   contractType: 'INSURANCE',
                 })
               }
