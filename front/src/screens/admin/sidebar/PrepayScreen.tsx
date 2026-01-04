@@ -16,6 +16,47 @@ import AppHeader from '../../../components/common/AppHeader';
 import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
 import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
 import { usePreviousDispatchBillings } from '../../../hooks/billings/usePreviousDispatchBillings';
+import { DispatchBillingItem } from '../../../api/billings';
+
+/** duration 포맷팅 함수 (일 시간 분) */
+const formatDuration = (
+  daysElapsed: number,
+  hoursElapsed: number,
+  minutesElapsed: number,
+): string => {
+  const parts: string[] = [];
+  if (daysElapsed > 0) {
+    parts.push(`${daysElapsed}일`);
+  }
+  if (hoursElapsed > 0) {
+    parts.push(`${hoursElapsed}시간`);
+  }
+  if (minutesElapsed > 0) {
+    parts.push(`${minutesElapsed}분`);
+  }
+  return parts.length > 0 ? parts.join(' ') : '0분';
+};
+
+/** BillingItem을 PrepaymentItemType으로 변환 */
+const mapBillingToPrepaymentItem = (
+  billing: DispatchBillingItem,
+  status: 'waiting' | 'current' | 'past',
+): PrepaymentItemType => {
+  const durationStr = formatDuration(
+    billing.daysElapsed,
+    billing.hoursElapsed,
+    billing.minutesElapsed,
+  );
+
+  return {
+    id: billing.billingId,
+    carName: billing.carModel,
+    carNumber: billing.carNumber,
+    company: billing.requestCompany,
+    duration: durationStr,
+    status,
+  };
+};
 
 export default function PrepaymentScreen() {
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
@@ -53,85 +94,25 @@ export default function PrepaymentScreen() {
   /** API 데이터를 컴포넌트 구조로 변환 (지급대기) */
   const waitingData: PrepaymentItemType[] = useMemo(() => {
     if (!pendingBillingsData?.billings) return [];
-    return pendingBillingsData.billings.map(billing => {
-      // duration 포맷팅 (일 시간 분)
-      const parts: string[] = [];
-      if (billing.daysElapsed > 0) {
-        parts.push(`${billing.daysElapsed}일`);
-      }
-      if (billing.hoursElapsed > 0) {
-        parts.push(`${billing.hoursElapsed}시간`);
-      }
-      if (billing.minutesElapsed > 0) {
-        parts.push(`${billing.minutesElapsed}분`);
-      }
-      const durationStr = parts.length > 0 ? parts.join(' ') : '0분';
-
-      return {
-        id: billing.billingId,
-        carName: billing.carModel,
-        carNumber: billing.carNumber,
-        company: billing.requestCompany,
-        duration: durationStr,
-        status: 'waiting' as const,
-      };
-    });
+    return pendingBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'waiting'),
+    );
   }, [pendingBillingsData]);
 
   /** API 데이터를 컴포넌트 구조로 변환 (당월배차내역) */
   const currentData: PrepaymentItemType[] = useMemo(() => {
     if (!monthlyDispatchBillingsData?.billings) return [];
-    return monthlyDispatchBillingsData.billings.map(billing => {
-      // duration 포맷팅 (일 시간 분)
-      const parts: string[] = [];
-      if (billing.daysElapsed > 0) {
-        parts.push(`${billing.daysElapsed}일`);
-      }
-      if (billing.hoursElapsed > 0) {
-        parts.push(`${billing.hoursElapsed}시간`);
-      }
-      if (billing.minutesElapsed > 0) {
-        parts.push(`${billing.minutesElapsed}분`);
-      }
-      const durationStr = parts.length > 0 ? parts.join(' ') : '0분';
-
-      return {
-        id: billing.billingId,
-        carName: billing.carModel,
-        carNumber: billing.carNumber,
-        company: billing.requestCompany,
-        duration: durationStr,
-        status: 'confirmed' as const,
-      };
-    });
+    return monthlyDispatchBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'current'),
+    );
   }, [monthlyDispatchBillingsData]);
 
   /** API 데이터를 컴포넌트 구조로 변환 (지난배차내역) */
   const pastData: PrepaymentItemType[] = useMemo(() => {
     if (!previousDispatchBillingsData?.billings) return [];
-    return previousDispatchBillingsData.billings.map(billing => {
-      // duration 포맷팅 (일 시간 분)
-      const parts: string[] = [];
-      if (billing.daysElapsed > 0) {
-        parts.push(`${billing.daysElapsed}일`);
-      }
-      if (billing.hoursElapsed > 0) {
-        parts.push(`${billing.hoursElapsed}시간`);
-      }
-      if (billing.minutesElapsed > 0) {
-        parts.push(`${billing.minutesElapsed}분`);
-      }
-      const durationStr = parts.length > 0 ? parts.join(' ') : '0분';
-
-      return {
-        id: billing.billingId,
-        carName: billing.carModel,
-        carNumber: billing.carNumber,
-        company: billing.requestCompany,
-        duration: durationStr,
-        status: 'completed' as const,
-      };
-    });
+    return previousDispatchBillingsData.billings.map(billing =>
+      mapBillingToPrepaymentItem(billing, 'past'),
+    );
   }, [previousDispatchBillingsData]);
 
   /** 탭별 데이터 */
