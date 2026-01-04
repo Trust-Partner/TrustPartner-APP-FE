@@ -13,7 +13,7 @@ import { HIT_SLOP } from '../../../constants/touch';
 import { s } from '../styles';
 
 interface Memo {
-  id: number;
+  id: string;
   writer: string;
   content: string;
   createdAt: string;
