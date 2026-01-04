@@ -20,6 +20,7 @@ import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
 import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
 import { usePreviousDispatchBillings } from '../../../hooks/billings/usePreviousDispatchBillings';
 import { useConfirmBilling } from '../../../hooks/billings/useConfirmBilling';
+import { useCancelBillingRequest } from '../../../hooks/billings/useCancelBillingRequest';
 import { DispatchBillingItem } from '../../../api/billings';
 import { RootStackParamList } from '../../../navigations/root/RootNavigator';
 import { ContractType } from '../../contract/types';
@@ -94,6 +95,7 @@ export default function PrepaymentScreen() {
   );
 
   const confirmBillingMutation = useConfirmBilling();
+  const cancelBillingRequestMutation = useCancelBillingRequest();
 
   // 현재 날짜의 년도와 월
   const currentYear = useMemo(() => new Date().getFullYear(), []);
@@ -266,7 +268,10 @@ export default function PrepaymentScreen() {
               )}
               <Pressable
                 style={[s.actionBtn, { backgroundColor: colors.RED_50 }]}
-                onPress={() => setCancelModalVisible(true)}
+                onPress={() => {
+                  setSelectedBillingId(item.id);
+                  setCancelModalVisible(true);
+                }}
               >
                 <Text style={s.actionText}>취소신청</Text>
               </Pressable>
@@ -377,10 +382,22 @@ export default function PrepaymentScreen() {
           message="취소 신청할까요?"
           confirmText="취소신청"
           cancelText="취소"
-          onCancel={() => setCancelModalVisible(false)}
-          onConfirm={() => {
+          onCancel={() => {
             setCancelModalVisible(false);
-            console.log('취소 신청 처리');
+            setSelectedBillingId(null);
+          }}
+          onConfirm={() => {
+            if (selectedBillingId !== null) {
+              cancelBillingRequestMutation.mutate(selectedBillingId, {
+                onSuccess: () => {
+                  setCancelModalVisible(false);
+                  setSelectedBillingId(null);
+                },
+                onError: () => {
+                  Alert.alert('알림', '취소 신청 처리에 실패했습니다.');
+                },
+              });
+            }
           }}
         />
       </View>

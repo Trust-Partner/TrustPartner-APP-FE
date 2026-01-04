@@ -117,3 +117,12 @@ export const confirmBilling = async (billingId: number): Promise<void> => {
     `/billings/v1/${billingId}/confirm`,
   );
 };
+
+/** 취소신청 */
+export const cancelBillingRequest = async (
+  billingId: number,
+): Promise<void> => {
+  await axiosInstance.post<ApiResponse<{}>>(
+    `/billings/v1/${billingId}/cancel-request`,
+  );
+};
