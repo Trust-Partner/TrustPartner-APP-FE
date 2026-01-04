@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Clipboard } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
+
 import AppHeader from '../../components/common/AppHeader';
 import ToastMessage from '../../components/common/ToastMessage';
 
@@ -12,15 +14,22 @@ import { ContractDateSection } from './components/ContractDateSection';
 import { ContractCustomerSection } from './components/ContractCustomerSection';
 import { ContractAccidentSection } from './components/ContractAccidentSection';
 import { ContractInsuranceClaimSection } from './components/ContractInsuranceClaimSection';
-import { ContractExchangeSection } from './components/ContractExchangeSection';
 import { ContractPaymentSection } from './components/ContractPaymentSection';
 
+import { CONTRACT_SECTIONS_BY_TYPE } from './constants';
+
 import { s } from './styles';
+import { RootStackParamList } from '../../navigations/root/RootNavigator';
+
+type RouteProps = RouteProp<RootStackParamList, 'ContractIntegrated'>;
 
 const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
+  const route = useRoute<RouteProps>();
 
-  /** ---------- state ---------- */
+  const { contractType } = route.params;
+  const sections = CONTRACT_SECTIONS_BY_TYPE[contractType];
+
   const [isEditMode, setIsEditMode] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
 
@@ -32,7 +41,6 @@ const ContractIntegratedScreen = () => {
   });
   const [backup, setBackup] = useState(form);
 
-  /** ---------- handlers ---------- */
   const handleAddMemo = (content: string) => {
     const now = new Date();
     const createdAt =
@@ -72,7 +80,6 @@ const ContractIntegratedScreen = () => {
     setIsEditMode(false);
   };
 
-  /** ---------- render ---------- */
   return (
     <View style={{ flex: 1 }}>
       <AppHeader
@@ -98,45 +105,54 @@ const ContractIntegratedScreen = () => {
         />
 
         {/* 메모 */}
-        <ContractMemoSection memos={memos} onAddMemo={handleAddMemo} />
+        {sections.includes('MEMO') && (
+          <ContractMemoSection memos={memos} onAddMemo={handleAddMemo} />
+        )}
 
         {/* 계약 일시 */}
-        <ContractDateSection contractDate={contractMock.contractDate} />
+        {sections.includes('DATE') && (
+          <ContractDateSection contractDate={contractMock.contractDate} />
+        )}
 
         {/* 고객 정보 */}
-        <ContractCustomerSection
-          isEditMode={isEditMode}
-          customer={form.customer}
-          onChange={(key, value) =>
-            setForm(prev => ({
-              ...prev,
-              customer: { ...prev.customer, [key]: value },
-            }))
-          }
-          onCopy={handleCopy}
-        />
+        {sections.includes('CUSTOMER') && (
+          <ContractCustomerSection
+            isEditMode={isEditMode}
+            customer={form.customer}
+            onChange={(key, value) =>
+              setForm(prev => ({
+                ...prev,
+                customer: { ...prev.customer, [key]: value },
+              }))
+            }
+            onCopy={handleCopy}
+          />
+        )}
 
         {/* 사고 차량 정보 */}
-        <ContractAccidentSection accident={contractMock.accident} />
+        {sections.includes('ACCIDENT') && (
+          <ContractAccidentSection accident={contractMock.accident} />
+        )}
 
         {/* 보험사 청구 */}
-        <ContractInsuranceClaimSection
-          isEditMode={isEditMode}
-          insurance={form.insurance}
-          onChange={(key, value) =>
-            setForm(prev => ({
-              ...prev,
-              insurance: { ...prev.insurance, [key]: value },
-            }))
-          }
-          onCopy={handleCopy}
-        />
-
-        {/* 교체 계약서 */}
-        <ContractExchangeSection exchange={contractMock.exchangeContract} />
+        {sections.includes('INSURANCE_CLAIM') && (
+          <ContractInsuranceClaimSection
+            isEditMode={isEditMode}
+            insurance={form.insurance}
+            onChange={(key, value) =>
+              setForm(prev => ({
+                ...prev,
+                insurance: { ...prev.insurance, [key]: value },
+              }))
+            }
+            onCopy={handleCopy}
+          />
+        )}
 
         {/* 결제 정보 */}
-        <ContractPaymentSection payment={contractMock.payment} />
+        {sections.includes('PAYMENT') && (
+          <ContractPaymentSection payment={contractMock.payment} />
+        )}
       </ScrollView>
 
       {toastMsg && (

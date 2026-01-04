@@ -70,7 +70,10 @@ export default function ContractListScreen() {
   });
 
   const handlePressContract = (contractId: number) => {
-    navigation.navigate('ContractIntegrated', { contractId });
+    navigation.navigate('ContractIntegrated', {
+      contractId,
+      contractType: 'INSURANCE',
+    });
   };
 
   return (

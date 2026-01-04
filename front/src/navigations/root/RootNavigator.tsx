@@ -16,6 +16,7 @@ import UserContractsStack from '../user/stacks/drawer/UserContractsStack';
 import UserInquiryStack from '../user/stacks/drawer/UserInquiryStack';
 import UserMyInfoStack from '../user/stacks/drawer/UserMyInfoStack';
 import UserProfitAnalysisStack from '../user/stacks/drawer/UserProfitAnalysisStack';
+import { ContractType } from '../../screens/contract/types';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +24,10 @@ export type RootStackParamList = {
   Auth: undefined;
   AdminRoot: NavigatorScreenParams<AdminDrawerParamList>;
   UserRoot: NavigatorScreenParams<UserDrawerParamList>;
-  ContractIntegrated: { contractId: number };
+  ContractIntegrated: {
+    contractId: number;
+    contractType: ContractType;
+  };
 };
 
 export default function RootNavigator() {

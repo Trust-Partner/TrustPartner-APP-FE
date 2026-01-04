@@ -195,6 +195,7 @@ export default function VehicleStatusScreen() {
               onPress={() =>
                 navigation.navigate('ContractIntegrated', {
                   contractId: item.id,
+                  contractType: 'INSURANCE',
                 })
               }
             >
