@@ -205,7 +205,8 @@ export default function VehicleCompanyDetailScreen() {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('ContractIntegrated', {
-                    contractId: item.carId,
+                    contractId: 35,
+                    contractType: 'INSURANCE',
                   })
                 }
               >
