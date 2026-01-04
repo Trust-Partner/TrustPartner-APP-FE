@@ -9,6 +9,7 @@ import {
   LayoutAnimation,
   Platform,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
@@ -63,8 +64,8 @@ export default function TodoWashFuelDetailScreen() {
           setModal({ visible: false, type: null });
         },
         onError: () => {
-          // 에러 처리 (필요시 추가)
           setModal({ visible: false, type: null });
+          Alert.alert('알림', '주유 완료 처리에 실패했습니다');
         },
       });
     } else {
