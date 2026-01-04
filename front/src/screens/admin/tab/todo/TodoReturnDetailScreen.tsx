@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,13 @@ import {
   Image,
   LayoutAnimation,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../../../constants/colors';
-import { returnCompanyDetailMock } from '../../../../mock/todo/todoReturnDetailMock';
+import { ReturnVehicleItem } from '../../../../mock/todo/todoReturnDetailMock';
 import { HIT_SLOP } from '../../../../constants/touch';
+import { useTodoReturnDetail } from '../../../../hooks/todo/useTodoReturnDetail';
 
 export default function TodoReturnDetailScreen() {
   const navigation = useNavigation();
@@ -24,6 +26,13 @@ export default function TodoReturnDetailScreen() {
 
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
 
+  // API hook
+  const {
+    data: returnDetailData,
+    isLoading,
+    error,
+  } = useTodoReturnDetail(companyId);
+
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(prev => ({
@@ -32,11 +41,47 @@ export default function TodoReturnDetailScreen() {
     }));
   };
 
-  const company = returnCompanyDetailMock.find(c => c.companyId === companyId);
-  const data = company?.vehicles ?? [];
+  /** returnTaskType을 status로 변환 */
+  const mapReturnTaskTypeToStatus = (
+    returnTaskType: string,
+  ): '즉시반납' | '고객연락' | '금일회수' => {
+    switch (returnTaskType) {
+      case 'IMMEDIATELY':
+        return '즉시반납';
+      case 'BY_TODAY':
+        return '금일회수';
+      case 'CALL_TO_CUSTOMER':
+        return '고객연락';
+      default:
+        return '즉시반납';
+    }
+  };
+
+  /** API 데이터를 컴포넌트 구조로 변환 */
+  const data: ReturnVehicleItem[] = useMemo(() => {
+    if (!returnDetailData?.carReturnRequests) return [];
+    return returnDetailData.carReturnRequests.map(request => {
+      const date = new Date(request.requestedAt);
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const formattedDate = `${month}/${day} ${hours}:${minutes}`;
+
+      return {
+        id: request.carId,
+        name: request.carModel,
+        plateNumber: request.carNumber,
+        lastUpdate: formattedDate,
+        duration: request.timeAfterUpdate,
+        status: mapReturnTaskTypeToStatus(request.returnTaskType),
+      };
+    });
+  }, [returnDetailData]);
 
   const handleCollect = (vehicleId: number) => {
     console.log('회수 처리:', vehicleId);
+    // TODO: 회수 API 연동
   };
 
   const getStatusColor = (status: string) => {
@@ -64,89 +109,103 @@ export default function TodoReturnDetailScreen() {
         <Text style={s.title}>{companyName} 반납신청 차량</Text>
       </View>
 
-      <FlatList
-        data={data}
-        keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const isOpen = !!expanded[item.id];
-          return (
-            <View style={s.item}>
-              {/* 좌측 상태바 */}
-              <View
-                style={[
-                  s.statusBar,
-                  { backgroundColor: getStatusColor(item.status) },
-                ]}
-              />
+      {isLoading ? (
+        <View style={s.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+        </View>
+      ) : error ? (
+        <View style={s.loadingContainer}>
+          <Text style={s.errorText}>
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => {
+            const isOpen = !!expanded[item.id];
+            return (
+              <View style={s.item}>
+                {/* 좌측 상태바 */}
+                <View
+                  style={[
+                    s.statusBar,
+                    { backgroundColor: getStatusColor(item.status) },
+                  ]}
+                />
 
-              <View style={s.itemBody}>
-                {/* 상단 영역 */}
-                <View style={s.itemTop}>
-                  <View style={s.carInfo}>
-                    <Text style={s.carName}>{item.name}</Text>
-                    <View style={s.plateBadge}>
-                      <Text style={s.plate}>{item.plateNumber}</Text>
+                <View style={s.itemBody}>
+                  {/* 상단 영역 */}
+                  <View style={s.itemTop}>
+                    <View style={s.carInfo}>
+                      <Text style={s.carName}>{item.name}</Text>
+                      <View style={s.plateBadge}>
+                        <Text style={s.plate}>{item.plateNumber}</Text>
+                      </View>
+                    </View>
+
+                    {/* 날짜 + 시간 + 화살표 */}
+                    <View style={s.rightWrap}>
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <View style={s.row}>
+                          <Image
+                            source={require('../../../../assets/common/calendar.png')}
+                            style={s.smallIcon}
+                          />
+                          <Text style={s.date}>{item.lastUpdate}</Text>
+                        </View>
+                        <View style={s.row}>
+                          <Image
+                            source={require('../../../../assets/common/clock.png')}
+                            style={s.smallIcon}
+                          />
+                          <Text style={s.time}>{item.duration}</Text>
+                        </View>
+                      </View>
+                      <Pressable
+                        hitSlop={HIT_SLOP.MEDIUM}
+                        onPress={e => {
+                          e.stopPropagation();
+                          handleExpand(item.id);
+                        }}
+                        style={s.arrowWrap}
+                      >
+                        <Image
+                          source={require('../../../../assets/common/down_arrow.png')}
+                          style={[
+                            s.arrowIcon,
+                            {
+                              transform: [
+                                { rotate: isOpen ? '180deg' : '0deg' },
+                              ],
+                            },
+                          ]}
+                        />
+                      </Pressable>
                     </View>
                   </View>
 
-                  {/* 날짜 + 시간 + 화살표 */}
-                  <View style={s.rightWrap}>
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <View style={s.row}>
-                        <Image
-                          source={require('../../../../assets/common/calendar.png')}
-                          style={s.smallIcon}
-                        />
-                        <Text style={s.date}>{item.lastUpdate}</Text>
-                      </View>
-                      <View style={s.row}>
-                        <Image
-                          source={require('../../../../assets/common/clock.png')}
-                          style={s.smallIcon}
-                        />
-                        <Text style={s.time}>{item.duration}</Text>
-                      </View>
+                  {/* 하단 버튼 영역 */}
+                  {isOpen && (
+                    <View style={s.buttonRow}>
+                      <Pressable
+                        style={[s.actionBtn, s.blueBtn]}
+                        onPress={() => handleCollect(item.id)}
+                      >
+                        <Text style={[s.actionText, { color: colors.WHITE }]}>
+                          회수하기
+                        </Text>
+                      </Pressable>
                     </View>
-                    <Pressable
-                      hitSlop={HIT_SLOP.MEDIUM}
-                      onPress={e => {
-                        e.stopPropagation();
-                        handleExpand(item.id);
-                      }}
-                      style={s.arrowWrap}
-                    >
-                      <Image
-                        source={require('../../../../assets/common/down_arrow.png')}
-                        style={[
-                          s.arrowIcon,
-                          {
-                            transform: [{ rotate: isOpen ? '180deg' : '0deg' }],
-                          },
-                        ]}
-                      />
-                    </Pressable>
-                  </View>
+                  )}
                 </View>
-
-                {/* 하단 버튼 영역 */}
-                {isOpen && (
-                  <View style={s.buttonRow}>
-                    <Pressable
-                      style={[s.actionBtn, s.blueBtn]}
-                      onPress={() => handleCollect(item.id)}
-                    >
-                      <Text style={[s.actionText, { color: colors.WHITE }]}>
-                        회수하기
-                      </Text>
-                    </Pressable>
-                  </View>
-                )}
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
@@ -271,5 +330,15 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
     color: colors.WHITE,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+    textAlign: 'center',
   },
 });

@@ -56,3 +56,28 @@ export const getFuelWashRequests = async (): Promise<FuelWashResponse> => {
   return res.data.data;
 };
 
+/** 반납신청 상세 조회 API Response */
+export interface CarReturnRequest {
+  carId: number;
+  carModel: string;
+  carNumber: string;
+  returnTaskType: 'IMMEDIATELY' | 'BY_TODAY' | 'CALL_TO_CUSTOMER';
+  requestedAt: string;
+  timeAfterUpdate: string;
+}
+
+export interface ReturnDetailResponse {
+  carReturnRequests: CarReturnRequest[];
+}
+
+/** 반납신청 상세 조회 */
+export const getReturnDetail = async (
+  locationId: number,
+): Promise<ReturnDetailResponse> => {
+  const res = await axiosInstance.get<ApiResponse<ReturnDetailResponse>>(
+    `/tasks/v1/returns/${locationId}`,
+  );
+
+  return res.data.data;
+};
+
