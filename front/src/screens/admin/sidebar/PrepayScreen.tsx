@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   LayoutAnimation,
   Pressable,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
 import {
@@ -15,6 +16,7 @@ import {
 } from '../../../mock/prepaymentMock';
 import CommonModal from '../../../components/common/CommonModal';
 import AppHeader from '../../../components/common/AppHeader';
+import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
 
 export default function PrepaymentScreen() {
   const [activeTab, setActiveTab] = useState<'waiting' | 'current' | 'past'>(
@@ -24,7 +26,56 @@ export default function PrepaymentScreen() {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
 
-  const data = prepaymentMock[activeTab];
+  // API hook (지급대기 탭일 때만 호출)
+  const {
+    data: pendingBillingsData,
+    isLoading: isLoadingPending,
+    error: pendingError,
+  } = usePendingBillings();
+
+  /** API 데이터를 컴포넌트 구조로 변환 (지급대기) */
+  const waitingData: PrepaymentItemType[] = useMemo(() => {
+    if (!pendingBillingsData?.billings) return [];
+    return pendingBillingsData.billings.map(billing => {
+      // duration 포맷팅 (일 시간 분)
+      const parts: string[] = [];
+      if (billing.daysElapsed > 0) {
+        parts.push(`${billing.daysElapsed}일`);
+      }
+      if (billing.hoursElapsed > 0) {
+        parts.push(`${billing.hoursElapsed}시간`);
+      }
+      if (billing.minutesElapsed > 0) {
+        parts.push(`${billing.minutesElapsed}분`);
+      }
+      const durationStr = parts.length > 0 ? parts.join(' ') : '0분';
+
+      return {
+        id: billing.billingId,
+        carName: billing.carModel,
+        carNumber: billing.carNumber,
+        company: billing.requestCompany,
+        duration: durationStr,
+        status: 'waiting' as const,
+      };
+    });
+  }, [pendingBillingsData]);
+
+  /** 탭별 데이터 */
+  const data = useMemo(() => {
+    if (activeTab === 'waiting') {
+      return waitingData;
+    }
+    return prepaymentMock[activeTab];
+  }, [activeTab, waitingData]);
+
+  /** 지급대기 건수 */
+  const pendingCount = useMemo(() => {
+    if (activeTab === 'waiting' && pendingBillingsData) {
+      return pendingBillingsData.pendingCount;
+    }
+    return prepaymentMock.waiting.length;
+  }, [activeTab, pendingBillingsData]);
 
   const handleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -136,7 +187,7 @@ export default function PrepaymentScreen() {
               {
                 key: 'waiting',
                 label: '지급대기',
-                value: prepaymentMock.waiting.length,
+                value: pendingCount,
               },
               {
                 key: 'current',
@@ -169,11 +220,23 @@ export default function PrepaymentScreen() {
         <View style={s.listBox}>
           {renderRowLayout(true)}
 
-          <FlatList
-            data={data}
-            keyExtractor={item => item.id.toString()}
-            renderItem={renderItem}
-          />
+          {activeTab === 'waiting' && isLoadingPending ? (
+            <View style={s.loadingContainer}>
+              <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+            </View>
+          ) : activeTab === 'waiting' && pendingError ? (
+            <View style={s.loadingContainer}>
+              <Text style={s.errorText}>
+                데이터를 불러오는 중 오류가 발생했습니다.
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              data={data}
+              keyExtractor={item => item.id.toString()}
+              renderItem={renderItem}
+            />
+          )}
         </View>
         <CommonModal
           visible={confirmModalVisible}
@@ -324,5 +387,16 @@ const s = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
     lineHeight: 15.4,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  errorText: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+    textAlign: 'center',
   },
 });
