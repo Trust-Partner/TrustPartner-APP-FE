@@ -96,10 +96,9 @@ const ContractIntegratedScreen = () => {
   const accidentUI = useMemo(() => {
     if (!accident) return null;
 
-    const rawStatus = accident.carStatuses?.[0];
-
     return {
-      status: rawStatus ? ACCIDENT_STATUS_LABEL[rawStatus] ?? rawStatus : '',
+      status:
+        accident.carStatuses?.map(s => ACCIDENT_STATUS_LABEL[s] ?? s) ?? [],
       carNumber: accident.customerCarNumber,
       carModel: accident.customerCarModel,
       displacement: accident.customerCarDisplacement,
@@ -111,10 +110,15 @@ const ContractIntegratedScreen = () => {
   const insuranceUI = useMemo(() => {
     if (!insurance) return null;
 
-    const rawStatus = insurance.billingStatus;
+    const status = insurance.billingStatus
+      ? [
+          BILLING_STATUS_LABEL[insurance.billingStatus] ??
+            insurance.billingStatus,
+        ]
+      : [];
 
     return {
-      status: rawStatus ? BILLING_STATUS_LABEL[rawStatus] ?? rawStatus : '',
+      status,
       company: insurance.insuranceCompany,
       claimNumber: insurance.caseNumber,
       manager: insurance.managerName,
