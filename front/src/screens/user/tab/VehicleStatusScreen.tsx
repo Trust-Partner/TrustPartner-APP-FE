@@ -74,8 +74,10 @@ export default function VehicleStatusScreen() {
   const userName = useAuthStore(s => s.user?.name);
   const apiStatus = statusMap[activeStatus];
 
-  const { data: summary } = usePartnerCarStatusSummary();
-  const { data: carListData } = usePartnerCars(apiStatus);
+  const { data: summary, refetch: refetchSummary } =
+    usePartnerCarStatusSummary();
+  const { data: carListData, refetch: refetchCarList } =
+    usePartnerCars(apiStatus);
 
   const vehicles = carListData?.carList.map(mapPartnerCarToVehicle) ?? [];
 
@@ -396,6 +398,9 @@ export default function VehicleStatusScreen() {
           staffId={1}
           onSubmitSuccess={() => {
             setReturnModalVisible(false);
+            // 반납신청 성공 후 리스트 및 요약 정보 refetch
+            refetchSummary();
+            refetchCarList();
           }}
         />
       )}
