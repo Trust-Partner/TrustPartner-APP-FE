@@ -4,7 +4,6 @@ import {
   Text,
   FlatList,
   StyleSheet,
-  TouchableOpacity,
   Image,
   Pressable,
   LayoutAnimation,
@@ -70,6 +69,9 @@ export default function VehicleCompanyDetailScreen() {
       plateNumber: car.carNum,
       lastUpdate: car.updatedAt,
       duration: car.timeAfterUpdate,
+
+      contractId: car.contractId,
+      contractType: car.contractType,
     }));
   });
 
@@ -108,6 +110,21 @@ export default function VehicleCompanyDetailScreen() {
     return `${days}일 ${hours}시간`;
   };
 
+  const handlePressVehicle = (
+    contractId?: number | null,
+    contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null,
+  ) => {
+    if (!contractId || !contractType) {
+      return;
+    }
+
+    navigation.navigate('ContractIntegrated', {
+      contractId,
+      contractType:
+        contractType === 'INSURANCE_CONTRACT' ? 'INSURANCE' : 'GENERAL',
+    });
+  };
+
   const handleExpand = (carId: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(prev => ({ ...prev, [carId]: !prev[carId] }));
@@ -130,15 +147,12 @@ export default function VehicleCompanyDetailScreen() {
 
       {/* 헤더 */}
       <View style={s.subHeader}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={s.backButton}
-        >
+        <Pressable onPress={() => navigation.goBack()} style={s.backButton}>
           <Image
             source={require('../../../../assets/admin-vehicle/left_arrow.png')}
             style={{ width: 20, height: 20 }}
           />
-        </TouchableOpacity>
+        </Pressable>
 
         <Text style={s.title}>{locationName}</Text>
       </View>
@@ -171,7 +185,7 @@ export default function VehicleCompanyDetailScreen() {
           ).map((box, idx) => {
             const isActive = activeStatus === box.label;
             return (
-              <TouchableOpacity
+              <Pressable
                 key={box.label}
                 style={[s.summaryCell, idx !== 3 && s.rightDivider]}
                 onPress={() => setActiveStatus(box.label)}
@@ -179,7 +193,7 @@ export default function VehicleCompanyDetailScreen() {
                 <Text style={[s.value, { color: box.color }]}>{box.value}</Text>
                 <Text style={s.label}>{box.label}</Text>
                 {isActive && <View style={s.activeBorder} />}
-              </TouchableOpacity>
+              </Pressable>
             );
           })}
         </View>
@@ -200,14 +214,13 @@ export default function VehicleCompanyDetailScreen() {
           renderItem={({ item }) => {
             const isOpen = expanded[item.carId];
             const isDispatched = item.status === '배차중';
+            const isClickable = !!item.contractId;
 
             return (
-              <TouchableOpacity
+              <Pressable
+                disabled={!isClickable}
                 onPress={() =>
-                  navigation.navigate('ContractIntegrated', {
-                    contractId: 35,
-                    contractType: 'INSURANCE',
-                  })
+                  handlePressVehicle(item.contractId, item.contractType)
                 }
               >
                 <View style={s.item}>
@@ -312,7 +325,7 @@ export default function VehicleCompanyDetailScreen() {
                     )}
                   </View>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             );
           }}
         />
