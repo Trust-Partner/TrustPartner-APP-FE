@@ -32,6 +32,9 @@ export type Vehicle = {
   duration: string;
   location?: string;
   immediateDispatchable: boolean;
+
+  contractId?: number | null;
+  contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null;
 };
 
 const statusMap = {
@@ -55,6 +58,9 @@ const mapPartnerCarToVehicle = (car: PartnerCarItem): Vehicle => ({
   duration: car.timeAfterUpdate,
   location: car.locationName,
   immediateDispatchable: car.immediateDispatchable,
+
+  contractId: car.contractId,
+  contractType: car.contractType,
 });
 
 export default function VehicleStatusScreen() {
@@ -81,13 +87,35 @@ export default function VehicleStatusScreen() {
     useContractModalStore();
 
   const toContractVehicleFromUser = (v: Vehicle): ContractVehicleBase => ({
-    id: v.id,
+    carId: v.id,
     model: v.name,
     number: v.plateNumber,
     location: v.location,
+
     reserverName: null,
+
+    carDispatchId: null,
+    draftingContract: false,
+    contractType: null,
+    contractId: null,
+
     status: v.status,
   });
+
+  const handlePressContract = (
+    contractId?: number | null,
+    contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null,
+  ) => {
+    if (!contractId || !contractType) {
+      return;
+    }
+
+    navigation.navigate('ContractIntegrated', {
+      contractId,
+      contractType:
+        contractType === 'INSURANCE_CONTRACT' ? 'INSURANCE' : 'GENERAL',
+    });
+  };
 
   const toggleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -189,14 +217,13 @@ export default function VehicleStatusScreen() {
             - 대기중 + 다른 장소에 주차된 경우
            */
           const showLocation = isInUseRequestCompany || isAvailableButNotHere;
+          const isContractClickable = !!item.contractId && !!item.contractType;
 
           return (
             <Pressable
+              disabled={!isContractClickable}
               onPress={() =>
-                navigation.navigate('ContractIntegrated', {
-                  contractId: 35,
-                  contractType: 'INSURANCE',
-                })
+                handlePressContract(item.contractId, item.contractType)
               }
             >
               <View style={s.item}>

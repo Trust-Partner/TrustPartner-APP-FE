@@ -215,6 +215,9 @@ export interface CarItem {
   carNum: string;
   updatedAt: string;
   timeAfterUpdate: string;
+
+  contractId?: number | null;
+  contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null;
 }
 
 export interface CarsByLocationItem {
@@ -338,6 +341,8 @@ export interface PartnerCarItem {
   timeAfterUpdate: string;
   immediateDispatchable: boolean;
   locationName: string;
+  contractId?: number | null;
+  contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null;
 }
 
 /** 차량 리스트 응답 */
