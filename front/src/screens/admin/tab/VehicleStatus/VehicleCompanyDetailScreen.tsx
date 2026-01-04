@@ -206,6 +206,7 @@ export default function VehicleCompanyDetailScreen() {
                 onPress={() =>
                   navigation.navigate('ContractIntegrated', {
                     contractId: item.carId,
+                    contractType: 'INSURANCE',
                   })
                 }
               >
