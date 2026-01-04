@@ -13,8 +13,8 @@ import { colors } from '../../constants/colors';
 import { HIT_SLOP } from '../../constants/touch';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useContractModalStore } from '../../stores/useContractModalStore';
-import { useCreateContract } from '../../hooks/contracts/useCreateContract';
-import { ContractType } from '../../api/contracts/contract';
+import { useCreateInsuranceContract } from '../../hooks/contracts/useCreateInsuranceContract';
+import { createInsuranceContract } from '../../api/contracts/contract';
 
 interface Props {
   visible: boolean;
@@ -42,7 +42,8 @@ export default function MainContractModal({
   const { selectedVehicle, goTo, updateSelectedVehicle } =
     useContractModalStore();
 
-  const { mutateAsync: createContract, isPending } = useCreateContract();
+  const { mutateAsync: createContract, isPending } =
+    useCreateInsuranceContract();
   const handleSelect = async (
     type: 'general' | 'insurance' | 'replacement' | 'dispatch',
   ) => {
@@ -52,47 +53,50 @@ export default function MainContractModal({
     // 중복 클릭 방지
     if (isPending) return;
 
-    // 배차 확정
     if (type === 'dispatch') {
       goTo('dispatch');
       return;
     }
 
-    // 교체 계약서 (생성 API 다름 → 여기선 생성 안 함)
     if (type === 'replacement') {
       goTo('replacement');
       return;
     }
 
-    // 일반 / 보험 계약서만 생성 책임
-    const contractType: ContractType =
-      type === 'general' ? 'GENERAL_CONTRACT' : 'INSURANCE_CONTRACT';
-
-    // 이미 있으면 재사용
-    if (vehicle.contractType === contractType && vehicle.contractId) {
-      goTo(type);
+    if (type === 'general') {
+      goTo('general');
       return;
     }
 
-    // 없으면 생성
-    try {
-      const contractId = await createContract({
-        carDispatchId: vehicle.carDispatchId!,
-        contractType,
-      });
+    if (type === 'insurance') {
+      // 재사용 로직 (이미 보험계약서 생성을 한 경우)
+      if (vehicle.contractType === 'INSURANCE_CONTRACT' && vehicle.contractId) {
+        goTo('insurance');
+        return;
+      }
 
-      updateSelectedVehicle({
-        contractType,
-        contractId,
-        draftingContract: true,
-      });
+      // 없을 때만 생성
+      try {
+        const contractId = await createInsuranceContract({
+          carDispatchId: vehicle.carDispatchId!,
+          carId: vehicle.carId!,
+        });
 
-      goTo(type);
-    } catch (error) {
-      Alert.alert(
-        '계약서 생성 실패',
-        '계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
-      );
+        updateSelectedVehicle({
+          contractType: 'INSURANCE_CONTRACT',
+          contractId,
+          draftingContract: true,
+        });
+
+        goTo('insurance');
+      } catch {
+        Alert.alert(
+          '계약서 생성 실패',
+          '계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+        );
+      }
+
+      return;
     }
   };
 
