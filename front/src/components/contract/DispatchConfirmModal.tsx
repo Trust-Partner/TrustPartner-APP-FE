@@ -11,7 +11,6 @@ import {
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { colors } from '../../constants/colors';
-import { mockDispatchRequests } from '../../mock/mockDispatchRequests';
 import CommonModal from '../common/CommonModal';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import CommonTextarea from '../common/CommonTextarea';
@@ -61,29 +60,12 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
         setMessage('');
       }
     })();
-  }, [vehicle.id]);
-
-  // const handleConfirm = async () => {
-  //   try {
-  //     if (autoSave) {
-  //       await AsyncStorage.setItem('dispatch_autosave', 'true');
-  //       await AsyncStorage.setItem('dispatch_message', message);
-  //     } else {
-  //       await AsyncStorage.removeItem('dispatch_autosave');
-  //       await AsyncStorage.removeItem('dispatch_message');
-  //     }
-  //     setSendModalVisible(true);
-  //   } catch (e) {
-  //     console.warn('자동저장 처리 실패:', e);
-  //     setSendModalVisible(true);
-  //   }
-  // };
+  }, [vehicle.carId]);
 
   const handleConfirm = async () => {
     if (!selectedRequest) return;
 
     try {
-      // 1️⃣ 자동 저장 처리
       if (autoSave) {
         await AsyncStorage.setItem('dispatch_autosave', 'true');
         await AsyncStorage.setItem('dispatch_message', message);
@@ -92,17 +74,15 @@ export default function DispatchConfirmModal({ onBack, vehicle }: Props) {
         await AsyncStorage.removeItem('dispatch_message');
       }
 
-      // 2️⃣ 배차 확정 API 호출
       confirmMutation.mutate(
         {
-          carId: vehicle.id,
+          carId: vehicle.carId,
           dispatchId: selectedRequest.id,
           message,
           autoSave,
         },
         {
           onSuccess: () => {
-            // 성공 시 완료 모달
             setSendModalVisible(true);
           },
           onError: e => {
