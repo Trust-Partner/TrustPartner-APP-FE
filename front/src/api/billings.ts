@@ -99,3 +99,14 @@ export const getMonthlyDispatchBillings = async (
 
   return res.data.data;
 };
+
+/** 지난배차내역 목록 조회 */
+export const getPreviousDispatchBillings = async (
+  params: GetMonthlyDispatchBillingsParams,
+): Promise<MonthlyDispatchBillingsResponse> => {
+  const res = await axiosInstance.get<
+    ApiResponse<MonthlyDispatchBillingsResponse>
+  >('/billings/v1/app/previous-dispatch', { params });
+
+  return res.data.data;
+};
