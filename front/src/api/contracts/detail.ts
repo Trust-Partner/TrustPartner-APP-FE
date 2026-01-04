@@ -85,7 +85,9 @@ export interface ContractAccidentCar {
   customerCarModel: string;
   customerCarDisplacement: string;
   repairShopId: string;
+  repairShopName: string;
   partnerId: string;
+  partnerName: string;
 }
 
 export const getContractAccidentCar = async (

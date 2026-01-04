@@ -102,8 +102,8 @@ const ContractIntegratedScreen = () => {
       carNumber: accident.customerCarNumber,
       carModel: accident.customerCarModel,
       displacement: accident.customerCarDisplacement,
-      garage: accident.repairShopId,
-      requestCompany: accident.partnerId,
+      garage: accident.repairShopName,
+      requestCompany: accident.partnerName,
     };
   }, [accident]);
 
