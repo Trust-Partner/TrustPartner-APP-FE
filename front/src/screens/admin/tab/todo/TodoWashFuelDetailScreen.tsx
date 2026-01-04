@@ -43,6 +43,39 @@ export default function TodoWashFuelDetailScreen() {
     }));
   };
 
+  const formatDateTime = (iso: string) => {
+    const date = new Date(iso);
+
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${month}/${day} ${hours}:${minutes}`;
+  };
+
+  const formatDuration = (raw: string) => {
+    if (!raw) return '';
+
+    const dayMatch = raw.match(/(\d+)d/);
+    const hourMatch = raw.match(/(\d+)h/);
+
+    const days = dayMatch ? Number(dayMatch[1]) : 0;
+    const hours = hourMatch ? Number(hourMatch[1]) : 0;
+
+    const parts: string[] = [];
+
+    if (days > 0) {
+      parts.push(`${days}일`);
+    }
+
+    if (hours > 0) {
+      parts.push(`${hours}시간`);
+    }
+
+    return parts.join(' ');
+  };
+
   // API hook
   const {
     data: fuelWashDetailData,
@@ -85,22 +118,15 @@ export default function TodoWashFuelDetailScreen() {
     }
   };
 
-  /** API 데이터를 컴포넌트 구조로 변환 */
+  // UI 타입 변환
   const data: WashFuelVehicle[] = useMemo(() => {
     if (!fuelWashDetailData?.carFuelWashes) return [];
     return fuelWashDetailData.carFuelWashes.map(car => {
-      const date = new Date(car.requestedAt);
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const formattedDate = `${month}/${day} ${hours}:${minutes}`;
-
       return {
         id: car.carId,
         name: car.carModel,
         plateNumber: car.carNumber,
-        lastUpdate: formattedDate,
+        lastUpdate: car.requestedAt,
         duration: car.timeAfterUpdate,
         hasWash: car.needsWash,
         hasFuel: car.needsFuel,
@@ -189,14 +215,18 @@ export default function TodoWashFuelDetailScreen() {
                             source={require('../../../../assets/common/calendar.png')}
                             style={s.smallIcon}
                           />
-                          <Text style={s.date}>{item.lastUpdate}</Text>
+                          <Text style={s.date}>
+                            {formatDateTime(item.lastUpdate)}
+                          </Text>
                         </View>
                         <View style={s.row}>
                           <Image
                             source={require('../../../../assets/common/clock.png')}
                             style={s.smallIcon}
                           />
-                          <Text style={s.time}>{item.duration}</Text>
+                          <Text style={s.time}>
+                            {formatDuration(item.duration)}
+                          </Text>
                         </View>
                       </View>
                       <Pressable
