@@ -24,6 +24,9 @@ interface Props {
   onAddMemo: (content: string) => void;
 }
 
+const MEMO_MIN_HEIGHT = 64;
+const MEMO_MAX_HEIGHT = 120;
+
 export const ContractMemoSection = ({ memos, onAddMemo }: Props) => {
   const [newMemo, setNewMemo] = useState('');
 
@@ -44,11 +47,11 @@ export const ContractMemoSection = ({ memos, onAddMemo }: Props) => {
       </View>
 
       <ScrollView
-        style={{ maxHeight: Dimensions.get('window').height * 0.3 }}
+        style={{ maxHeight: MEMO_MAX_HEIGHT }}
         showsVerticalScrollIndicator={false}
         nestedScrollEnabled
       >
-        <View style={s.memoContainerBox}>
+        <View style={[s.memoContainerBox, { minHeight: MEMO_MIN_HEIGHT }]}>
           {memos.map(m => (
             <View key={m.id} style={s.memoBox}>
               <View style={s.memoRow}>
