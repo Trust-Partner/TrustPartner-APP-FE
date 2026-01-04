@@ -81,3 +81,29 @@ export const getReturnDetail = async (
   return res.data.data;
 };
 
+/** 세차/주유 상세 조회 API Response */
+export interface CarFuelWash {
+  carId: number;
+  carModel: string;
+  carNumber: string;
+  needsFuel: boolean;
+  needsWash: boolean;
+  requestedAt: string;
+  timeAfterUpdate: string;
+}
+
+export interface FuelWashDetailResponse {
+  carFuelWashes: CarFuelWash[];
+}
+
+/** 세차/주유 상세 조회 */
+export const getFuelWashDetail = async (
+  locationId: number,
+): Promise<FuelWashDetailResponse> => {
+  const res = await axiosInstance.get<ApiResponse<FuelWashDetailResponse>>(
+    `/tasks/v1/fuel-wash/${locationId}`,
+  );
+
+  return res.data.data;
+};
+
