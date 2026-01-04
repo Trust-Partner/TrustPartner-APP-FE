@@ -16,6 +16,7 @@ import { WashFuelVehicle } from '../../../../mock/todo/todoWashFuelDetailMock';
 import CommonModal from '../../../../components/common/CommonModal';
 import { HIT_SLOP } from '../../../../constants/touch';
 import { useTodoFuelWashDetail } from '../../../../hooks/todo/useTodoFuelWashDetail';
+import { useCompleteFuelMutation } from '../../../../hooks/todo/useCompleteFuelMutation';
 
 export default function TodoWashFuelDetailScreen() {
   const navigation = useNavigation();
@@ -29,6 +30,7 @@ export default function TodoWashFuelDetailScreen() {
   const [modal, setModal] = useState<{
     visible: boolean;
     type: 'wash' | 'fuel' | null;
+    carId?: number;
   }>({ visible: false, type: null });
 
   const handleExpand = (id: number) => {
@@ -46,14 +48,29 @@ export default function TodoWashFuelDetailScreen() {
     error,
   } = useTodoFuelWashDetail(companyId);
 
-  const openModal = (type: 'wash' | 'fuel') =>
-    setModal({ visible: true, type });
+  // Mutation hook
+  const completeFuelMutation = useCompleteFuelMutation(companyId);
+
+  const openModal = (type: 'wash' | 'fuel', carId: number) =>
+    setModal({ visible: true, type, carId });
 
   const closeModal = () => setModal({ visible: false, type: null });
 
   const handleConfirm = () => {
-    setModal({ visible: false, type: null });
-    // TODO: 세차/주유 완료 API 연동
+    if (modal.type === 'fuel' && modal.carId) {
+      completeFuelMutation.mutate(modal.carId, {
+        onSuccess: () => {
+          setModal({ visible: false, type: null });
+        },
+        onError: () => {
+          // 에러 처리 (필요시 추가)
+          setModal({ visible: false, type: null });
+        },
+      });
+    } else {
+      // 세차 완료는 아직 구현되지 않음
+      setModal({ visible: false, type: null });
+    }
   };
 
   /** API 데이터를 컴포넌트 구조로 변환 */
@@ -199,7 +216,7 @@ export default function TodoWashFuelDetailScreen() {
                       {item.hasWash && (
                         <Pressable
                           style={[s.actionBtn, s.blueBorderBtn]}
-                          onPress={() => openModal('wash')}
+                          onPress={() => openModal('wash', item.id)}
                         >
                           <Text
                             style={[s.actionText, { color: colors.PRIMARY_50 }]}
@@ -212,7 +229,7 @@ export default function TodoWashFuelDetailScreen() {
                       {item.hasFuel && (
                         <Pressable
                           style={[s.actionBtn, s.redBorderBtn]}
-                          onPress={() => openModal('fuel')}
+                          onPress={() => openModal('fuel', item.id)}
                         >
                           <Text
                             style={[s.actionText, { color: colors.RED_50 }]}
