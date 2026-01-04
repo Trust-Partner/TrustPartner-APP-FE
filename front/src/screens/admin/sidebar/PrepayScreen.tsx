@@ -8,6 +8,7 @@ import {
   Pressable,
   Image,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -18,6 +19,7 @@ import AppHeader from '../../../components/common/AppHeader';
 import { usePendingBillings } from '../../../hooks/billings/usePendingBillings';
 import { useMonthlyDispatchBillings } from '../../../hooks/billings/useMonthlyDispatchBillings';
 import { usePreviousDispatchBillings } from '../../../hooks/billings/usePreviousDispatchBillings';
+import { useConfirmBilling } from '../../../hooks/billings/useConfirmBilling';
 import { DispatchBillingItem } from '../../../api/billings';
 import { RootStackParamList } from '../../../navigations/root/RootNavigator';
 import { ContractType } from '../../contract/types';
@@ -87,6 +89,11 @@ export default function PrepaymentScreen() {
   const [expanded, setExpanded] = useState<{ [key: number]: boolean }>({});
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
+  const [selectedBillingId, setSelectedBillingId] = useState<number | null>(
+    null,
+  );
+
+  const confirmBillingMutation = useConfirmBilling();
 
   // 현재 날짜의 년도와 월
   const currentYear = useMemo(() => new Date().getFullYear(), []);
@@ -249,7 +256,10 @@ export default function PrepaymentScreen() {
               {item.status === 'waiting' && (
                 <Pressable
                   style={[s.actionBtn, { backgroundColor: colors.PRIMARY_50 }]}
-                  onPress={() => setConfirmModalVisible(true)}
+                  onPress={() => {
+                    setSelectedBillingId(item.id);
+                    setConfirmModalVisible(true);
+                  }}
                 >
                   <Text style={s.actionText}>지급확정</Text>
                 </Pressable>
@@ -342,10 +352,22 @@ export default function PrepaymentScreen() {
           message="지급 확정할까요?"
           confirmText="지급확정"
           cancelText="취소"
-          onCancel={() => setConfirmModalVisible(false)}
-          onConfirm={() => {
+          onCancel={() => {
             setConfirmModalVisible(false);
-            console.log('지급 확정 처리');
+            setSelectedBillingId(null);
+          }}
+          onConfirm={() => {
+            if (selectedBillingId !== null) {
+              confirmBillingMutation.mutate(selectedBillingId, {
+                onSuccess: () => {
+                  setConfirmModalVisible(false);
+                  setSelectedBillingId(null);
+                },
+                onError: () => {
+                  Alert.alert('알림', '지급확정 처리에 실패했습니다.');
+                },
+              });
+            }
           }}
         />
 

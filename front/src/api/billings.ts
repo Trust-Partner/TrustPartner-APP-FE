@@ -110,3 +110,10 @@ export const getPreviousDispatchBillings = async (
 
   return res.data.data;
 };
+
+/** 지급확정 */
+export const confirmBilling = async (billingId: number): Promise<void> => {
+  await axiosInstance.post<ApiResponse<{}>>(
+    `/billings/v1/${billingId}/confirm`,
+  );
+};
