@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,14 @@ import {
   Pressable,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../../constants/colors';
-import { partnerStats } from '../../../mock/partnerMock';
 import { adminMyInfoMock } from '../../../mock/adminMyInfoMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import AppHeader from '../../../components/common/AppHeader';
+import { usePartnerMonthlyStatistics } from '../../../hooks/billings/usePartnerMonthlyStatistics';
 
 export default function SalesAnalysisScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
@@ -27,8 +28,36 @@ export default function SalesAnalysisScreen() {
   const data = adminMyInfoMock;
   const carRates = data.carRatesByGrade[selectedGrade];
   const yearOptions = [2025, 2024, 2023];
-  const totalSales = partnerStats.reduce((sum, i) => sum + i.sales, 0);
-  const totalCount = partnerStats.reduce((sum, i) => sum + i.count, 0);
+
+  // API 호출
+  const {
+    data: statistics,
+    isLoading,
+    isError,
+  } = usePartnerMonthlyStatistics({ year: selectedYear });
+
+  // API 데이터를 화면 형식에 맞게 변환
+  const partnerStats = useMemo(() => {
+    if (!statistics?.monthlyStatistics) return [];
+
+    // 연도 뒷 두자리 추출 (예: 2025 -> '25')
+    const yearShort = String(selectedYear).slice(-2);
+
+    return statistics.monthlyStatistics.map(item => ({
+      month: `${yearShort}.${String(item.month).padStart(2, '0')}`,
+      sales: item.amount,
+      count: item.dispatchCount,
+    }));
+  }, [statistics, selectedYear]);
+
+  // 총합 계산
+  const totalSales = useMemo(() => {
+    return statistics?.totalAmount ?? 0;
+  }, [statistics]);
+
+  const totalCount = useMemo(() => {
+    return statistics?.totalDispatchCount ?? 0;
+  }, [statistics]);
 
   const handleCopy = (text: string) => {
     Clipboard.setString(text);
@@ -119,31 +148,53 @@ export default function SalesAnalysisScreen() {
             </View>
             <View style={s.topDivider} />
 
-            {partnerStats.map((item, idx) => (
-              <View
-                key={idx}
-                style={[
-                  s.row,
-                  idx === partnerStats.length - 1 && { borderBottomWidth: 0 },
-                ]}
-              >
-                <Text style={s.cell}>{item.month}</Text>
-                <Text style={s.cell}>
-                  {tab === 'sales'
-                    ? `₩ ${item.sales.toLocaleString('ko-KR')}`
-                    : `${item.count}건`}
+            {isLoading ? (
+              <View style={{ padding: 16, alignItems: 'center' }}>
+                <ActivityIndicator size="small" color={colors.PRIMARY_50} />
+              </View>
+            ) : isError || !statistics ? (
+              <View style={{ padding: 16, alignItems: 'center' }}>
+                <Text style={{ color: colors.RED_50, fontSize: 12 }}>
+                  데이터를 불러올 수 없습니다.
                 </Text>
               </View>
-            ))}
+            ) : partnerStats.length > 0 ? (
+              <>
+                {partnerStats.map((item, idx) => (
+                  <View
+                    key={idx}
+                    style={[
+                      s.row,
+                      idx === partnerStats.length - 1 && {
+                        borderBottomWidth: 0,
+                      },
+                    ]}
+                  >
+                    <Text style={s.cell}>{item.month}</Text>
+                    <Text style={s.cell}>
+                      {tab === 'sales'
+                        ? `₩ ${item.sales.toLocaleString('ko-KR')}`
+                        : `${item.count}건`}
+                    </Text>
+                  </View>
+                ))}
 
-            <View style={[s.totalRow, s.footer]}>
-              <Text style={[s.cell, s.boldMonth]}>합계</Text>
-              <Text style={[s.cell, s.boldCell]}>
-                {tab === 'sales'
-                  ? `₩ ${totalSales.toLocaleString('ko-KR')}`
-                  : `${totalCount}건`}
-              </Text>
-            </View>
+                <View style={[s.totalRow, s.footer]}>
+                  <Text style={[s.cell, s.boldMonth]}>합계</Text>
+                  <Text style={[s.cell, s.boldCell]}>
+                    {tab === 'sales'
+                      ? `₩ ${totalSales.toLocaleString('ko-KR')}`
+                      : `${totalCount}건`}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <View style={{ padding: 16, alignItems: 'center' }}>
+                <Text style={{ color: colors.GRAY_50, fontSize: 12 }}>
+                  데이터가 없습니다.
+                </Text>
+              </View>
+            )}
           </View>
 
           {/* 등급별 지급비율표 */}

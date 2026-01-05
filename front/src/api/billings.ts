@@ -191,3 +191,37 @@ export const getPartnerCurrentMonthDispatchList = async (
 
   return res.data.data;
 };
+
+/** 거래처 월별 통계 조회 */
+
+/** 월별 통계 아이템 */
+export interface PartnerMonthlyStatisticItem {
+  month: number;
+  amount: number;
+  dispatchCount: number;
+}
+
+/** 거래처 월별 통계 응답 */
+export interface PartnerMonthlyStatistics {
+  year: number;
+  totalAmount: number;
+  totalDispatchCount: number;
+  monthlyStatistics: PartnerMonthlyStatisticItem[];
+}
+
+/** 거래처 월별 통계 조회 파라미터 */
+export interface GetPartnerMonthlyStatisticsParams {
+  year: number;
+}
+
+/** 거래처 월별 통계 조회 */
+export const getPartnerMonthlyStatistics = async (
+  params: GetPartnerMonthlyStatisticsParams,
+): Promise<PartnerMonthlyStatistics> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerMonthlyStatistics>>(
+    '/billings/v1/partner/monthly-statistics',
+    { params },
+  );
+
+  return res.data.data;
+};
