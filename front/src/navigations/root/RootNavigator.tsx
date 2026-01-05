@@ -31,7 +31,11 @@ export type RootStackParamList = {
 };
 
 export default function RootNavigator() {
-  const { user } = useAuthStore();
+  const { user, initialized } = useAuthStore();
+
+  if (!initialized) {
+    return null;
+  }
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
