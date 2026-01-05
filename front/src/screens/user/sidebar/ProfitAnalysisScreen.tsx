@@ -15,6 +15,8 @@ import { adminMyInfoMock } from '../../../mock/adminMyInfoMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import AppHeader from '../../../components/common/AppHeader';
 import { usePartnerMonthlyStatistics } from '../../../hooks/billings/usePartnerMonthlyStatistics';
+import { useGeneralManagerInquiry } from '../../../hooks/inquiry/useGeneralManagerInquiry';
+import { formatPhoneNumber } from '../../../utils/formatPhoneNumber';
 
 export default function SalesAnalysisScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
@@ -58,6 +60,12 @@ export default function SalesAnalysisScreen() {
   const totalCount = useMemo(() => {
     return statistics?.totalDispatchCount ?? 0;
   }, [statistics]);
+
+  const {
+    data: manager,
+    isLoading: isManagerLoading,
+    isError: isManagerError,
+  } = useGeneralManagerInquiry();
 
   const handleCopy = (text: string) => {
     Clipboard.setString(text);
@@ -299,7 +307,12 @@ export default function SalesAnalysisScreen() {
 
             <Pressable
               style={s.contactBtn}
-              onPress={() => handleCopy('010-1111-1111')}
+              onPress={() => {
+                if (manager?.phoneNumber) {
+                  handleCopy(manager.phoneNumber);
+                }
+              }}
+              disabled={!manager}
             >
               <Image
                 source={require('../../../assets/common/copy.png')}
@@ -310,7 +323,13 @@ export default function SalesAnalysisScreen() {
                   marginRight: 4,
                 }}
               />
-              <Text style={s.contactText}>서승동 매니저 | 010-1111-1111</Text>
+              <Text style={s.contactText}>
+                {manager
+                  ? `${manager.staffName} ${
+                      manager.title
+                    } | ${formatPhoneNumber(manager.phoneNumber)}`
+                  : '담당자 정보를 불러오는 중입니다'}
+              </Text>
             </Pressable>
           </View>
         </View>
