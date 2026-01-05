@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,17 +10,17 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
-import { salesSummaryMock, getMonthlyTotal } from '../../../mock/salesMock';
 import { usePartnerCurrentMonthStatistics } from '../../../hooks/billings/usePartnerCurrentMonthStatistics';
 import { usePartnerCurrentMonthDispatchList } from '../../../hooks/billings/usePartnerCurrentMonthDispatchList';
+import { usePartnerGradeComparison } from '../../../hooks/billings/usePartnerGradeComparison';
 
 const SalesManageScreen = () => {
-  // 현재 날짜 기준 년, 월 가져오기
+  // 현재 날짜 기준 년, 월
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0-11이므로 +1
+  const currentMonth = currentDate.getMonth() + 1;
 
-  // API 호출
+  /** 이번달 통계 */
   const {
     data: statistics,
     isLoading: isStatisticsLoading,
@@ -30,6 +30,7 @@ const SalesManageScreen = () => {
     month: currentMonth,
   });
 
+  /** 이번달 배차 목록 */
   const {
     data: dispatchList,
     isLoading: isDispatchLoading,
@@ -39,7 +40,7 @@ const SalesManageScreen = () => {
     month: currentMonth,
   });
 
-  // ISO 날짜를 YYYY-MM-DD 형식으로 변환
+  /** 날짜 포맷 */
   const formatDate = (isoDate: string): string => {
     const date = new Date(isoDate);
     const year = date.getFullYear();
@@ -48,13 +49,10 @@ const SalesManageScreen = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // API 데이터를 화면 형식에 맞게 변환
+  /** 배차 데이터 가공 (UI 그대로) */
   const dispatch = useMemo(() => {
     if (!dispatchList) {
-      return {
-        totalDispatches: 0,
-        list: [],
-      };
+      return { totalDispatches: 0, list: [] };
     }
 
     return {
@@ -71,66 +69,39 @@ const SalesManageScreen = () => {
   const isLoading = isStatisticsLoading || isDispatchLoading;
   const isError = isStatisticsError || isDispatchError;
 
-  // 등급 이름에서 숫자 추출 (예: "1등급" -> 1, "5등급" -> 5)
+  /** 현재 등급 (API 기반) */
   const currentGrade = useMemo(() => {
-    if (!statistics?.gradeName) return salesSummaryMock.currentGrade;
+    if (!statistics?.gradeName) return null;
     const match = statistics.gradeName.match(/(\d+)/);
-    return match ? parseInt(match[1], 10) : salesSummaryMock.currentGrade;
+    return match ? parseInt(match[1], 10) : null;
   }, [statistics?.gradeName]);
 
-  // payRate는 discountRate를 그대로 사용 (discountRate가 지급율인 것으로 가정)
-  // 만약 discountRate가 할인율이라면 100 - discountRate를 사용해야 함
-  const payRate =
-    statistics?.discountRate ?? salesSummaryMock.payRates[currentGrade];
+  /** 선택된 비교 등급 */
+  const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
 
-  // 이번달 총 매출
-  const currentMonthTotal =
-    statistics?.totalAmount ?? getMonthlyTotal(salesSummaryMock);
+  /** 최초 진입 시 현재 등급 자동 선택 */
+  useEffect(() => {
+    if (currentGrade && selectedGrade === null) {
+      setSelectedGrade(currentGrade);
+    }
+  }, [currentGrade, selectedGrade]);
 
-  // 사전 지급 금액 (차량관리 금액)
-  const prePaidAmount =
-    statistics?.carManagementAmount ?? salesSummaryMock.prePaidAmount;
+  /** 등급 비교 API */
+  const { data: gradeComparison } = usePartnerGradeComparison(
+    selectedGrade
+      ? {
+          compareGradeId: selectedGrade,
+          year: currentYear,
+          month: currentMonth,
+        }
+      : null,
+  );
 
-  // 정산 금액
-  const settlementAmount =
-    statistics?.settlementAmount ?? salesSummaryMock.settlementAmount;
-
-  // 기존 payRates (등급 비교 계산용 - 현재는 mock 데이터 사용)
-  // 실제로는 모든 등급의 discountRate를 가져와야 하지만, 현재 API는 현재 등급만 제공
-  const payRates = salesSummaryMock.payRates;
-
-  // 선택된 등급 (null = 선택안함)
-  const [selectedGrade, setSelectedGrade] = useState<number>(currentGrade);
-
-  // 버튼 배열 (현재 등급 위치에 "현재" 삽입)
+  /** 등급 버튼 (UI 그대로) */
   const gradeButtons = useMemo(() => {
     const arr = [1, 2, 3, 4, 5];
     return arr.map(num => (num === currentGrade ? '현재' : num));
   }, [currentGrade]);
-
-  // 계산된 비교 데이터
-  const calculated = useMemo(() => {
-    const baseYearTotal = currentMonthTotal * 12;
-    const targetGrade =
-      selectedGrade && selectedGrade >= 1 && selectedGrade <= 5
-        ? selectedGrade
-        : currentGrade;
-    const targetRate = payRates[targetGrade];
-
-    const appliedMonthly = (currentMonthTotal / payRate) * targetRate;
-    const appliedYearly = (baseYearTotal / payRate) * targetRate;
-    const monthlyGain = appliedMonthly - currentMonthTotal;
-    const yearlyGain = monthlyGain * 12;
-
-    return {
-      targetGrade,
-      targetRate,
-      appliedMonthly,
-      appliedYearly,
-      monthlyGain,
-      yearlyGain,
-    };
-  }, [selectedGrade, currentMonthTotal, payRate, currentGrade, payRates]);
 
   if (isLoading) {
     return (
@@ -175,13 +146,13 @@ const SalesManageScreen = () => {
             </View>
             <View style={s.gradeTagBox}>
               <Text style={s.tag}>{currentGrade}등급</Text>
-              <Text style={s.tag}>{payRate}% 지급</Text>
+              <Text style={s.tag}>{statistics.discountRate}% 지급</Text>
             </View>
           </View>
 
           <View style={s.totalBox}>
             <Text style={s.totalAmount}>
-              ₩ {currentMonthTotal.toLocaleString()}
+              ₩ {statistics.totalAmount.toLocaleString()}
             </Text>
             <Text style={s.totalSub}>차량관리 금액 + 정산 금액</Text>
           </View>
@@ -189,20 +160,22 @@ const SalesManageScreen = () => {
 
         <View style={s.cardRow}>
           <View style={s.card}>
-            <Text style={s.cardAmount}>₩ {prePaidAmount.toLocaleString()}</Text>
+            <Text style={s.cardAmount}>
+              ₩ {statistics.carManagementAmount.toLocaleString()}
+            </Text>
             <Text style={s.cardLabel}>사전 지급 금액</Text>
             <Text style={s.cardSub}>차량관리 금액</Text>
           </View>
           <View style={s.card}>
             <Text style={s.cardAmount}>
-              ₩ {settlementAmount.toLocaleString()}
+              ₩ {statistics.settlementAmount.toLocaleString()}
             </Text>
             <Text style={s.cardLabel}>이번달 정산금액</Text>
             <Text style={s.cardSub}>실제 렌트비 차액</Text>
           </View>
         </View>
 
-        {/* 등급 비교 */}
+        {/* 등급 비교 (UI 그대로, 값만 API) */}
         <View style={s.section}>
           <View style={s.gradeRow}>
             {gradeButtons.map((label, i) => {
@@ -224,12 +197,7 @@ const SalesManageScreen = () => {
                   ]}
                 >
                   <Text
-                    style={[
-                      s.gradeText,
-                      isActive && {
-                        color: colors.WHITE,
-                      },
-                    ]}
+                    style={[s.gradeText, isActive && { color: colors.WHITE }]}
                   >
                     {displayText}
                   </Text>
@@ -238,89 +206,96 @@ const SalesManageScreen = () => {
             })}
           </View>
 
-          <View
-            style={[
-              s.infoBox,
-              {
-                backgroundColor: colors.YELLOW_00,
-                borderColor: colors.YELLOW_10,
-              },
-            ]}
-          >
-            <View>
-              <Text style={[s.infoLabel, { color: colors.YELLOW_50 }]}>
-                {calculated.targetGrade}등급 적용 시 연 총액
-              </Text>
-              <Text style={s.infoSub}>
-                {calculated.targetRate}% 지급비율 적용
-              </Text>
-            </View>
+          {gradeComparison && (
+            <>
+              <View
+                style={[
+                  s.infoBox,
+                  {
+                    backgroundColor: colors.YELLOW_00,
+                    borderColor: colors.YELLOW_10,
+                  },
+                ]}
+              >
+                <View>
+                  <Text style={[s.infoLabel, { color: colors.YELLOW_50 }]}>
+                    {gradeComparison.compareGrade.gradeName} 적용 시 연 총액
+                  </Text>
+                  <Text style={s.infoSub}>
+                    {gradeComparison.compareGrade.discountRate}% 지급비율 적용
+                  </Text>
+                </View>
+                <Text style={[s.infoValue, { color: colors.YELLOW_50 }]}>
+                  ₩ {gradeComparison.compareGrade.yearTotal.toLocaleString()}
+                </Text>
+              </View>
 
-            <Text style={[s.infoValue, { color: colors.YELLOW_50 }]}>
-              ₩ {Math.round(calculated.appliedYearly).toLocaleString()}
-            </Text>
-          </View>
+              <View
+                style={[
+                  s.infoBox,
+                  {
+                    backgroundColor: colors.PRIMARY_10,
+                    borderColor: colors.PRIMARY_15,
+                  },
+                ]}
+              >
+                <View>
+                  <Text style={s.infoLabel}>
+                    {gradeComparison.compareGrade.gradeName} 적용 시 월 총액
+                  </Text>
+                  <Text style={s.infoSub}>
+                    {gradeComparison.compareGrade.discountRate}% 지급비율 적용
+                  </Text>
+                </View>
+                <Text style={s.infoValue}>
+                  ₩ {gradeComparison.compareGrade.monthTotal.toLocaleString()}
+                </Text>
+              </View>
 
-          <View
-            style={[
-              s.infoBox,
-              {
-                backgroundColor: colors.PRIMARY_10,
-                borderColor: colors.PRIMARY_15,
-              },
-            ]}
-          >
-            <View>
-              <Text style={s.infoLabel}>
-                {calculated.targetGrade}등급 적용 시 월 총액
-              </Text>
-              <Text style={s.infoSub}>
-                {calculated.targetRate}% 지급비율 적용
-              </Text>
-            </View>
-            <Text style={s.infoValue}>
-              ₩ {Math.round(calculated.appliedMonthly).toLocaleString()}
-            </Text>
-          </View>
+              <View
+                style={[
+                  s.infoBox,
+                  {
+                    backgroundColor: colors.PRIMARY_00,
+                    borderColor: colors.PRIMARY_10,
+                  },
+                ]}
+              >
+                <View>
+                  <Text style={s.infoLabel}>현재대비 월간 추가수익</Text>
+                  <Text style={s.infoSub}>
+                    {gradeComparison.compareGrade.gradeName} vs 현재{' '}
+                    {currentGrade}
+                    등급
+                  </Text>
+                </View>
+                <Text style={s.infoValue}>
+                  +₩{' '}
+                  {gradeComparison.compareGrade.monthlyAdditionalRevenue.toLocaleString()}
+                </Text>
+              </View>
 
-          <View
-            style={[
-              s.infoBox,
-              {
-                backgroundColor: colors.PRIMARY_00,
-                borderColor: colors.PRIMARY_10,
-              },
-            ]}
-          >
-            <View>
-              <Text style={s.infoLabel}>현재대비 월간 추가수익</Text>
-              <Text style={s.infoSub}>
-                {calculated.targetGrade}등급 vs 현재 {currentGrade}등급
-              </Text>
-            </View>
-            <Text style={s.infoValue}>
-              +₩ {Math.round(calculated.monthlyGain).toLocaleString()}
-            </Text>
-          </View>
-
-          <View
-            style={[
-              s.infoBox,
-              {
-                backgroundColor: colors.WHITE,
-                borderColor: colors.PRIMARY_10,
-                marginBottom: 0,
-              },
-            ]}
-          >
-            <View>
-              <Text style={s.infoLabel}>현재대비 연간 추가수익</Text>
-              <Text style={s.infoSub}>월간 추가수익 * 12개월</Text>
-            </View>
-            <Text style={s.infoValue}>
-              +₩ {Math.round(calculated.yearlyGain).toLocaleString()}
-            </Text>
-          </View>
+              <View
+                style={[
+                  s.infoBox,
+                  {
+                    backgroundColor: colors.WHITE,
+                    borderColor: colors.PRIMARY_10,
+                    marginBottom: 0,
+                  },
+                ]}
+              >
+                <View>
+                  <Text style={s.infoLabel}>현재대비 연간 추가수익</Text>
+                  <Text style={s.infoSub}>월간 추가수익 * 12개월</Text>
+                </View>
+                <Text style={s.infoValue}>
+                  +₩{' '}
+                  {gradeComparison.compareGrade.yearlyAdditionalRevenue.toLocaleString()}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
 
         {/* 이번달 배차 목록 */}
@@ -337,7 +312,7 @@ const SalesManageScreen = () => {
             <ScrollView
               style={{ maxHeight: 200 }}
               showsVerticalScrollIndicator={false}
-              nestedScrollEnabled={true}
+              nestedScrollEnabled
             >
               {dispatch.list.length > 0 ? (
                 dispatch.list.map(item => (
