@@ -126,3 +126,136 @@ export const cancelBillingRequest = async (
     `/billings/v1/${billingId}/cancel-request`,
   );
 };
+
+/* -------------------------------------------------------------------------- */
+/*                          Partner (거래처) 관련 API                          */
+/* -------------------------------------------------------------------------- */
+
+/** 거래처 현재월 통계 조회 */
+
+/** 거래처 현재월 통계 응답 */
+export interface PartnerCurrentMonthStatistics {
+  totalAmount: number;
+  carManagementAmount: number;
+  settlementAmount: number;
+  gradeName: string;
+  discountRate: number;
+}
+
+/** 거래처 현재월 통계 조회 파라미터 */
+export interface GetPartnerCurrentMonthStatisticsParams {
+  year: number;
+  month: number;
+}
+
+/** 거래처 현재월 통계 조회 */
+export const getPartnerCurrentMonthStatistics = async (
+  params: GetPartnerCurrentMonthStatisticsParams,
+): Promise<PartnerCurrentMonthStatistics> => {
+  const res = await axiosInstance.get<
+    ApiResponse<PartnerCurrentMonthStatistics>
+  >('/billings/v1/partner/current-month-statistics', { params });
+
+  return res.data.data;
+};
+
+// 등급별 비교
+export interface GradeComparisonGrade {
+  gradeId: number;
+  gradeName: string;
+  discountRate: number;
+  yearTotal: number;
+  monthTotal: number;
+}
+
+export interface GradeComparisonResponse {
+  currentGrade: GradeComparisonGrade;
+  compareGrade: GradeComparisonGrade & {
+    monthlyAdditionalRevenue: number;
+    yearlyAdditionalRevenue: number;
+  };
+}
+
+export interface GetPartnerGradeComparisonParams {
+  compareGradeId: number;
+  year?: number;
+  month?: number;
+}
+
+export const getPartnerGradeComparison = async (
+  params: GetPartnerGradeComparisonParams,
+): Promise<GradeComparisonResponse> => {
+  const res = await axiosInstance.get<ApiResponse<GradeComparisonResponse>>(
+    '/billings/v1/partner/grade-comparison',
+    {
+      params,
+    },
+  );
+
+  return res.data.data;
+};
+
+/** 거래처 배차 아이템 */
+export interface PartnerDispatchItem {
+  carModel: string;
+  dispatchDate: string;
+  advancePayment: number;
+}
+
+/** 거래처 현재월 배차 목록 응답 */
+export interface PartnerCurrentMonthDispatchList {
+  totalCount: number;
+  totalAdvancePayment: number;
+  dispatches: PartnerDispatchItem[];
+}
+
+/** 거래처 현재월 배차 목록 조회 파라미터 */
+export interface GetPartnerCurrentMonthDispatchListParams {
+  year: number;
+  month: number;
+}
+
+/** 거래처 현재월 배차 목록 조회 */
+export const getPartnerCurrentMonthDispatchList = async (
+  params: GetPartnerCurrentMonthDispatchListParams,
+): Promise<PartnerCurrentMonthDispatchList> => {
+  const res = await axiosInstance.get<
+    ApiResponse<PartnerCurrentMonthDispatchList>
+  >('/billings/v1/partner/current-month-dispatch-list', { params });
+
+  return res.data.data;
+};
+
+/** 거래처 월별 통계 조회 */
+
+/** 월별 통계 아이템 */
+export interface PartnerMonthlyStatisticItem {
+  month: number;
+  amount: number;
+  dispatchCount: number;
+}
+
+/** 거래처 월별 통계 응답 */
+export interface PartnerMonthlyStatistics {
+  year: number;
+  totalAmount: number;
+  totalDispatchCount: number;
+  monthlyStatistics: PartnerMonthlyStatisticItem[];
+}
+
+/** 거래처 월별 통계 조회 파라미터 */
+export interface GetPartnerMonthlyStatisticsParams {
+  year: number;
+}
+
+/** 거래처 월별 통계 조회 */
+export const getPartnerMonthlyStatistics = async (
+  params: GetPartnerMonthlyStatisticsParams,
+): Promise<PartnerMonthlyStatistics> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerMonthlyStatistics>>(
+    '/billings/v1/partner/monthly-statistics',
+    { params },
+  );
+
+  return res.data.data;
+};
