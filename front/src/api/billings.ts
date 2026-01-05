@@ -159,7 +159,41 @@ export const getPartnerCurrentMonthStatistics = async (
   return res.data.data;
 };
 
-/** 거래처 현재월 배차 목록 조회 */
+// 등급별 비교
+export interface GradeComparisonGrade {
+  gradeId: number;
+  gradeName: string;
+  discountRate: number;
+  yearTotal: number;
+  monthTotal: number;
+}
+
+export interface GradeComparisonResponse {
+  currentGrade: GradeComparisonGrade;
+  compareGrade: GradeComparisonGrade & {
+    monthlyAdditionalRevenue: number;
+    yearlyAdditionalRevenue: number;
+  };
+}
+
+export interface GetPartnerGradeComparisonParams {
+  compareGradeId: number;
+  year?: number;
+  month?: number;
+}
+
+export const getPartnerGradeComparison = async (
+  params: GetPartnerGradeComparisonParams,
+): Promise<GradeComparisonResponse> => {
+  const res = await axiosInstance.get<ApiResponse<GradeComparisonResponse>>(
+    '/billings/v1/partner/grade-comparison',
+    {
+      params,
+    },
+  );
+
+  return res.data.data;
+};
 
 /** 거래처 배차 아이템 */
 export interface PartnerDispatchItem {
