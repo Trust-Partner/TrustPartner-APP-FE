@@ -10,16 +10,11 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
-import {
-  salesSummaryMock,
-  dispatchListMock,
-  getMonthlyTotal,
-} from '../../../mock/salesMock';
+import { salesSummaryMock, getMonthlyTotal } from '../../../mock/salesMock';
 import { usePartnerCurrentMonthStatistics } from '../../../hooks/billings/usePartnerCurrentMonthStatistics';
+import { usePartnerCurrentMonthDispatchList } from '../../../hooks/billings/usePartnerCurrentMonthDispatchList';
 
 const SalesManageScreen = () => {
-  const dispatch = dispatchListMock;
-
   // 현재 날짜 기준 년, 월 가져오기
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -28,12 +23,53 @@ const SalesManageScreen = () => {
   // API 호출
   const {
     data: statistics,
-    isLoading,
-    isError,
+    isLoading: isStatisticsLoading,
+    isError: isStatisticsError,
   } = usePartnerCurrentMonthStatistics({
     year: currentYear,
     month: currentMonth,
   });
+
+  const {
+    data: dispatchList,
+    isLoading: isDispatchLoading,
+    isError: isDispatchError,
+  } = usePartnerCurrentMonthDispatchList({
+    year: currentYear,
+    month: currentMonth,
+  });
+
+  // ISO 날짜를 YYYY-MM-DD 형식으로 변환
+  const formatDate = (isoDate: string): string => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // API 데이터를 화면 형식에 맞게 변환
+  const dispatch = useMemo(() => {
+    if (!dispatchList) {
+      return {
+        totalDispatches: 0,
+        list: [],
+      };
+    }
+
+    return {
+      totalDispatches: dispatchList.totalCount,
+      list: dispatchList.dispatches.map((item, index) => ({
+        id: index + 1,
+        title: item.carModel,
+        date: formatDate(item.dispatchDate),
+        amount: item.advancePayment,
+      })),
+    };
+  }, [dispatchList]);
+
+  const isLoading = isStatisticsLoading || isDispatchLoading;
+  const isError = isStatisticsError || isDispatchError;
 
   // 등급 이름에서 숫자 추출 (예: "1등급" -> 1, "5등급" -> 5)
   const currentGrade = useMemo(() => {
@@ -294,7 +330,7 @@ const SalesManageScreen = () => {
               source={require('../../../assets/common/car.png')}
               style={s.smallIcon}
             />
-            <Text style={s.sectionTitle}>8월 배차 목록</Text>
+            <Text style={s.sectionTitle}>{currentMonth}월 배차 목록</Text>
           </View>
 
           <View>
@@ -303,17 +339,25 @@ const SalesManageScreen = () => {
               showsVerticalScrollIndicator={false}
               nestedScrollEnabled={true}
             >
-              {dispatch.list.map(item => (
-                <View key={item.id} style={s.dispatchItem}>
-                  <View>
-                    <Text style={s.dispatchTitle}>{item.title}</Text>
-                    <Text style={s.dispatchDate}>{item.date}</Text>
+              {dispatch.list.length > 0 ? (
+                dispatch.list.map(item => (
+                  <View key={item.id} style={s.dispatchItem}>
+                    <View>
+                      <Text style={s.dispatchTitle}>{item.title}</Text>
+                      <Text style={s.dispatchDate}>{item.date}</Text>
+                    </View>
+                    <Text style={s.dispatchAmount}>
+                      ₩{item.amount.toLocaleString()}
+                    </Text>
                   </View>
-                  <Text style={s.dispatchAmount}>
-                    ₩{item.amount.toLocaleString()}
+                ))
+              ) : (
+                <View style={{ padding: 16, alignItems: 'center' }}>
+                  <Text style={{ color: colors.GRAY_50, fontSize: 12 }}>
+                    배차 내역이 없습니다.
                   </Text>
                 </View>
-              ))}
+              )}
             </ScrollView>
 
             <View style={s.divider} />
@@ -324,9 +368,11 @@ const SalesManageScreen = () => {
               </Text>
               <Text style={s.footerAmount}>
                 ₩
-                {dispatch.list
-                  .reduce((acc, cur) => acc + cur.amount, 0)
-                  .toLocaleString()}
+                {dispatchList?.totalAdvancePayment
+                  ? dispatchList.totalAdvancePayment.toLocaleString()
+                  : dispatch.list
+                      .reduce((acc, cur) => acc + cur.amount, 0)
+                      .toLocaleString()}
               </Text>
             </View>
           </View>
