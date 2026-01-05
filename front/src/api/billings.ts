@@ -127,7 +127,13 @@ export const cancelBillingRequest = async (
   );
 };
 
-/** 거래처 현재월 통계 */
+/* -------------------------------------------------------------------------- */
+/*                          Partner (거래처) 관련 API                          */
+/* -------------------------------------------------------------------------- */
+
+/** 거래처 현재월 통계 조회 */
+
+/** 거래처 현재월 통계 응답 */
 export interface PartnerCurrentMonthStatistics {
   totalAmount: number;
   carManagementAmount: number;
@@ -136,18 +142,52 @@ export interface PartnerCurrentMonthStatistics {
   discountRate: number;
 }
 
+/** 거래처 현재월 통계 조회 파라미터 */
 export interface GetPartnerCurrentMonthStatisticsParams {
   year: number;
   month: number;
 }
 
+/** 거래처 현재월 통계 조회 */
 export const getPartnerCurrentMonthStatistics = async (
   params: GetPartnerCurrentMonthStatisticsParams,
 ): Promise<PartnerCurrentMonthStatistics> => {
-  const res = await axiosInstance.get<ApiResponse<PartnerCurrentMonthStatistics>>(
-    '/billings/v1/partner/current-month-statistics',
-    { params },
-  );
+  const res = await axiosInstance.get<
+    ApiResponse<PartnerCurrentMonthStatistics>
+  >('/billings/v1/partner/current-month-statistics', { params });
+
+  return res.data.data;
+};
+
+/** 거래처 현재월 배차 목록 조회 */
+
+/** 거래처 배차 아이템 */
+export interface PartnerDispatchItem {
+  carModel: string;
+  dispatchDate: string;
+  advancePayment: number;
+}
+
+/** 거래처 현재월 배차 목록 응답 */
+export interface PartnerCurrentMonthDispatchList {
+  totalCount: number;
+  totalAdvancePayment: number;
+  dispatches: PartnerDispatchItem[];
+}
+
+/** 거래처 현재월 배차 목록 조회 파라미터 */
+export interface GetPartnerCurrentMonthDispatchListParams {
+  year: number;
+  month: number;
+}
+
+/** 거래처 현재월 배차 목록 조회 */
+export const getPartnerCurrentMonthDispatchList = async (
+  params: GetPartnerCurrentMonthDispatchListParams,
+): Promise<PartnerCurrentMonthDispatchList> => {
+  const res = await axiosInstance.get<
+    ApiResponse<PartnerCurrentMonthDispatchList>
+  >('/billings/v1/partner/current-month-dispatch-list', { params });
 
   return res.data.data;
 };
