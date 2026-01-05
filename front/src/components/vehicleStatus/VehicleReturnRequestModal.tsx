@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, Image, Keyboard } from 'react-native';
+import { View, Text, Pressable, Image, Keyboard, ActivityIndicator } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
@@ -7,6 +7,7 @@ import CommonDropdown from '../common/CommonDropdown';
 import CommonModal from '../common/CommonModal';
 import { HIT_SLOP } from '../../constants/touch';
 import { Vehicle } from '../../screens/user/tab/VehicleStatusScreen';
+import { requestPartnerReturn } from '../../api/vehicleStatus';
 
 interface Props {
   visible: boolean;
@@ -26,33 +27,57 @@ export default function VehicleReturnRequestModal({
   const [location, setLocation] = useState<string | null>(null);
   const [immediate, setImmediate] = useState<string | null>(null);
   const [doneModal, setDoneModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setLocation(null);
     setImmediate(null);
+    setError(null);
   }, [vehicle?.id]);
 
   /** 버튼 비활성화 조건 */
   const isSubmitDisabled =
-    !location || (location === '공업사에 있어요' && !immediate);
+    !location || (location === '공업사에 있어요' && !immediate) || isLoading;
 
   /** 서버 전송 */
   const handleSubmit = async () => {
-    const payload = {
-      staffId,
-      vehicleId: vehicle.id,
-      location, // '공업사에 있어요' / '고객에게 연락해봐야 해요'
-      needImmediate:
-        location === '공업사에 있어요'
-          ? immediate === '네, 즉시 회수해주세요'
-            ? 'immediate'
-            : 'today'
-          : null,
-    };
+    if (!location) return;
+
+    // locationAnswer 매핑
+    const locationAnswer =
+      location === '공업사에 있어요'
+        ? ('AT_PARTNER_LOCATION' as const)
+        : ('CALL_TO_CUSTOMER' as const);
+
+    // whenToReturn 매핑
+    let whenToReturn: 'IMMEDIATELY' | 'BY_TODAY';
+    if (location === '공업사에 있어요') {
+      whenToReturn =
+        immediate === '네, 즉시 회수해주세요'
+          ? ('IMMEDIATELY' as const)
+          : ('BY_TODAY' as const);
+    } else {
+      // 고객에게 연락해야 하는 경우 기본값으로 BY_TODAY 설정
+      whenToReturn = 'BY_TODAY' as const;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     try {
+      await requestPartnerReturn(vehicle.id, {
+        locationAnswer,
+        whenToReturn,
+      });
       setDoneModal(true);
-    } catch (err) {
+    } catch (err: any) {
       console.warn('반납신청 오류:', err);
+      setError(
+        err?.response?.data?.message || '반납신청 중 오류가 발생했습니다.',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,12 +134,27 @@ export default function VehicleReturnRequestModal({
 
             {/* 즉시 회수 여부 (공업사일 때만 표시) */}
             {location === '공업사에 있어요' && (
-              <CommonDropdown
-                placeholder="지금 즉시 회수해야 하나요?"
-                options={['네, 즉시 회수해주세요', '오늘내로 회수해주세요']}
-                selectedValue={immediate}
-                onSelect={setImmediate}
-              />
+              <>
+                <View style={{ marginTop: 16 }} />
+                <Text style={ms.radioLabel}>회수 시점</Text>
+                <View style={{ marginTop: 8 }} />
+                <CommonDropdown
+                  placeholder="지금 즉시 회수해야 하나요?"
+                  options={['네, 즉시 회수해주세요', '오늘내로 회수해주세요']}
+                  selectedValue={immediate}
+                  onSelect={setImmediate}
+                />
+              </>
+            )}
+
+            {/* 에러 메시지 */}
+            {error && (
+              <>
+                <View style={{ marginTop: 16 }} />
+                <Text style={{ color: colors.RED_50, fontSize: 12 }}>
+                  {error}
+                </Text>
+              </>
             )}
 
             {/* 버튼 */}
@@ -137,16 +177,20 @@ export default function VehicleReturnRequestModal({
                 disabled={isSubmitDisabled}
                 onPress={handleSubmit}
               >
-                <Text
-                  style={[
-                    ms.footerBtnText,
-                    {
-                      color: colors.WHITE,
-                    },
-                  ]}
-                >
-                  반납 신청
-                </Text>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color={colors.WHITE} />
+                ) : (
+                  <Text
+                    style={[
+                      ms.footerBtnText,
+                      {
+                        color: colors.WHITE,
+                      },
+                    ]}
+                  >
+                    반납 신청
+                  </Text>
+                )}
               </Pressable>
             </View>
           </View>

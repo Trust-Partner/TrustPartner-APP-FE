@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,12 @@ import {
   Pressable,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../../constants/colors';
 import {
   ReturnRequestCompany,
-  returnRequestList,
   WashFuelCompany,
-  washFuelList,
 } from '../../../../mock/todo/todoMock';
 import {
   useFocusEffect,
@@ -21,6 +20,8 @@ import {
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AdminTodoStackParamList } from '../../../../navigations/admin/stacks/tabs/AdminTodoStack';
+import { useTodoReturns } from '../../../../hooks/todo/useTodoReturns';
+import { useTodoFuelWash } from '../../../../hooks/todo/useTodoFuelWash';
 
 export default function TodoScreen() {
   const route = useRoute<any>();
@@ -38,35 +39,83 @@ export default function TodoScreen() {
     }, [route?.params?.initialTab]),
   );
 
+  // API hooks
+  const {
+    data: returnData,
+    isLoading: isLoadingReturns,
+    error: returnError,
+  } = useTodoReturns();
+  const {
+    data: fuelWashData,
+    isLoading: isLoadingFuelWash,
+    error: fuelWashError,
+  } = useTodoFuelWash();
+
+  /** API 데이터를 컴포넌트 구조로 변환 */
+  const returnList: ReturnRequestCompany[] = useMemo(() => {
+    if (!returnData?.locations) return [];
+    return returnData.locations.map(location => ({
+      id: location.locationId,
+      name: location.locationName,
+      totalCount: location.carAtLocationCount,
+      immediateReturn: location.immediateReturnRequestCount,
+      contactCustomer: location.callToCustomerRequestCount,
+      todayPickup: location.byTodayReturnRequestCount,
+      unprocessedPrevDay: location.unprocessedPreviousDay,
+    }));
+  }, [returnData]);
+
+  const washFuelList: WashFuelCompany[] = useMemo(() => {
+    if (!fuelWashData?.locations) return [];
+    return fuelWashData.locations.map(location => ({
+      id: location.locationId,
+      name: location.locationName,
+      totalCount: location.carAtLocationCount,
+      washCount: location.needsWashCount,
+      fuelCount: location.needsFuelCount,
+      unprocessedPrevDay: location.unprocessedPreviousDay,
+      isParkingLot: false, // API에 해당 필드가 없으므로 기본값 설정
+    }));
+  }, [fuelWashData]);
+
   /** 상단 탭의 전체 건수 */
-  const totalReturnBadges = returnRequestList.reduce(
-    (acc, cur) =>
-      acc + cur.immediateReturn + cur.contactCustomer + cur.todayPickup,
-    0,
-  );
-  const totalWFBadges = washFuelList.reduce(
-    (acc, cur) => acc + cur.washCount + cur.fuelCount,
-    0,
-  );
+  const totalReturnBadges = useMemo(() => {
+    return returnList.reduce(
+      (acc, cur) =>
+        acc + cur.immediateReturn + cur.contactCustomer + cur.todayPickup,
+      0,
+    );
+  }, [returnList]);
+
+  const totalWFBadges = useMemo(() => {
+    return washFuelList.reduce(
+      (acc, cur) => acc + cur.washCount + cur.fuelCount,
+      0,
+    );
+  }, [washFuelList]);
 
   /** 리스트 정렬 */
-  const sortedReturnList = [...returnRequestList].sort((a, b) => {
-    // 보라(전일 미처리) > 빨강(즉시반납) > 흰색
-    if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
-    if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
-    if (a.immediateReturn > 0 && b.immediateReturn === 0) return -1;
-    if (a.immediateReturn === 0 && b.immediateReturn > 0) return 1;
-    return 0;
-  });
+  const sortedReturnList = useMemo(() => {
+    return [...returnList].sort((a, b) => {
+      // 보라(전일 미처리) > 빨강(즉시반납) > 흰색
+      if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
+      if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
+      if (a.immediateReturn > 0 && b.immediateReturn === 0) return -1;
+      if (a.immediateReturn === 0 && b.immediateReturn > 0) return 1;
+      return 0;
+    });
+  }, [returnList]);
 
-  const sortedWashFuelList = [...washFuelList].sort((a, b) => {
-    // 보라(전일 미처리) > 파랑(주차장) > 흰색
-    if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
-    if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
-    if (a.isParkingLot && !b.isParkingLot) return -1;
-    if (!a.isParkingLot && b.isParkingLot) return 1;
-    return 0;
-  });
+  const sortedWashFuelList = useMemo(() => {
+    return [...washFuelList].sort((a, b) => {
+      // 보라(전일 미처리) > 파랑(주차장) > 흰색
+      if (a.unprocessedPrevDay && !b.unprocessedPrevDay) return -1;
+      if (!a.unprocessedPrevDay && b.unprocessedPrevDay) return 1;
+      if (a.isParkingLot && !b.isParkingLot) return -1;
+      if (!a.isParkingLot && b.isParkingLot) return 1;
+      return 0;
+    });
+  }, [washFuelList]);
 
   /** 카드 배경색 */
   const getReturnCardStyle = (item: ReturnRequestCompany) => {
@@ -115,44 +164,66 @@ export default function TodoScreen() {
 
       {/* 리스트 */}
       {tab === 'return' ? (
-        <FlatList<ReturnRequestCompany>
-          data={sortedReturnList}
-          keyExtractor={item => item.id.toString()}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          renderItem={({ item }) => (
-            <Pressable
-              style={[s.card, getReturnCardStyle(item)]}
-              onPress={() =>
-                navigation.navigate('TodoReturnDetail', {
-                  companyId: item.id,
-                  companyName: item.name,
-                })
-              }
-            >
-              <View style={s.cardHeader}>
-                <Text style={s.cardTitle}>{item.name}</Text>
-                <Text style={s.totalTag}>{item.totalCount}대</Text>
-              </View>
+        isLoadingReturns ? (
+          <View style={s.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+          </View>
+        ) : returnError ? (
+          <View style={s.loadingContainer}>
+            <Text style={s.errorText}>
+              데이터를 불러오는 중 오류가 발생했습니다.
+            </Text>
+          </View>
+        ) : (
+          <FlatList<ReturnRequestCompany>
+            data={sortedReturnList}
+            keyExtractor={item => item.id.toString()}
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: 'space-between' }}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            renderItem={({ item }) => (
+              <Pressable
+                style={[s.card, getReturnCardStyle(item)]}
+                onPress={() =>
+                  navigation.navigate('TodoReturnDetail', {
+                    companyId: item.id,
+                    companyName: item.name,
+                  })
+                }
+              >
+                <View style={s.cardHeader}>
+                  <Text style={s.cardTitle}>{item.name}</Text>
+                  <Text style={s.totalTag}>{item.totalCount}대</Text>
+                </View>
 
-              <View style={s.badgeRow}>
-                <Text style={[s.badge, s.badgeBlue]}>{item.todayPickup}</Text>
-                <Text style={[s.badge, s.badgeRed]}>
-                  {item.immediateReturn}
-                </Text>
-                <Text style={[s.badge, s.badgeGreen]}>
-                  {item.contactCustomer}
-                </Text>
-                <Image
-                  source={require('../../../../assets/common/right_arrow.png')}
-                  style={s.arrowIcon}
-                />
-              </View>
-            </Pressable>
-          )}
-        />
+                <View style={s.badgeRow}>
+                  <Text style={[s.badge, s.badgeBlue]}>{item.todayPickup}</Text>
+                  <Text style={[s.badge, s.badgeRed]}>
+                    {item.immediateReturn}
+                  </Text>
+                  <Text style={[s.badge, s.badgeGreen]}>
+                    {item.contactCustomer}
+                  </Text>
+                  <Image
+                    source={require('../../../../assets/common/right_arrow.png')}
+                    style={s.arrowIcon}
+                  />
+                </View>
+              </Pressable>
+            )}
+          />
+        )
+      ) : isLoadingFuelWash ? (
+        <View style={s.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+        </View>
+      ) : fuelWashError ? (
+        <View style={s.loadingContainer}>
+          <Text style={s.errorText}>
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </Text>
+        </View>
       ) : (
         <FlatList<WashFuelCompany>
           data={sortedWashFuelList}
@@ -338,5 +409,15 @@ const s = StyleSheet.create({
     height: 16,
     marginLeft: 'auto',
     resizeMode: 'contain',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    color: colors.GRAY_60,
+    textAlign: 'center',
   },
 });

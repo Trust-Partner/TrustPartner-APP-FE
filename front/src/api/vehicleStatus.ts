@@ -215,6 +215,9 @@ export interface CarItem {
   carNum: string;
   updatedAt: string;
   timeAfterUpdate: string;
+
+  contractId?: number | null;
+  contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null;
 }
 
 export interface CarsByLocationItem {
@@ -338,6 +341,8 @@ export interface PartnerCarItem {
   timeAfterUpdate: string;
   immediateDispatchable: boolean;
   locationName: string;
+  contractId?: number | null;
+  contractType?: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT' | null;
 }
 
 /** 차량 리스트 응답 */
@@ -365,6 +370,35 @@ export const getPartnerCars = async (
     {
       params: carStatus ? { carStatus } : undefined,
     },
+  );
+
+  return res.data.data;
+};
+
+/** 거래처 반납신청 */
+export interface RequestPartnerReturnRequest {
+  locationAnswer: 'AT_PARTNER_LOCATION' | 'CALL_TO_CUSTOMER';
+  whenToReturn: 'IMMEDIATELY' | 'BY_TODAY';
+}
+
+export interface RequestPartnerReturnResponse {
+  carStatus: 'AVAILABLE' | 'IN_USE' | 'RETURN_REQUESTED';
+  carId: number;
+  model: string;
+  carNum: string;
+  updatedAt: string;
+  timeAfterUpdate: string;
+  immediateDispatchable: boolean;
+  locationName: string;
+}
+
+export const requestPartnerReturn = async (
+  carId: number,
+  payload: RequestPartnerReturnRequest,
+): Promise<RequestPartnerReturnResponse> => {
+  const res = await axiosInstance.post<ApiResponse<RequestPartnerReturnResponse>>(
+    `/cars/v1/partners/${carId}/return`,
+    payload,
   );
 
   return res.data.data;

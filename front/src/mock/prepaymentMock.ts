@@ -4,7 +4,9 @@ export type PrepaymentItemType = {
   carNumber: string;
   company: string;
   duration: string;
-  status: 'waiting' | 'confirmed' | 'completed';
+  status: 'waiting' | 'current' | 'past';
+  contractId: number;
+  contractType?: 'INSURANCE' | 'GENERAL';
 };
 
 export const prepaymentMock: Record<
@@ -20,6 +22,8 @@ export const prepaymentMock: Record<
       company: '한라모터스',
       duration: '1시간 25분',
       status: 'waiting',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 2,
@@ -28,6 +32,8 @@ export const prepaymentMock: Record<
       company: '현대정비소',
       duration: '2시간 03분',
       status: 'waiting',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 3,
@@ -36,6 +42,8 @@ export const prepaymentMock: Record<
       company: '강남오토',
       duration: '3시간 15분',
       status: 'waiting',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 4,
@@ -44,6 +52,8 @@ export const prepaymentMock: Record<
       company: '대성렌터카',
       duration: '47분',
       status: 'waiting',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 5,
@@ -52,6 +62,8 @@ export const prepaymentMock: Record<
       company: '동서울서비스',
       duration: '1시간 58분',
       status: 'waiting',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
   ],
 
@@ -63,7 +75,9 @@ export const prepaymentMock: Record<
       carNumber: '08무8812',
       company: '경기모터스',
       duration: '5시간 12분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 7,
@@ -71,7 +85,9 @@ export const prepaymentMock: Record<
       carNumber: '42라2871',
       company: '세종오토',
       duration: '1시간 44분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 8,
@@ -79,7 +95,9 @@ export const prepaymentMock: Record<
       carNumber: '30너4481',
       company: '성남정비',
       duration: '2시간 20분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 9,
@@ -87,7 +105,9 @@ export const prepaymentMock: Record<
       carNumber: '33무4411',
       company: '부천렌터카',
       duration: '4시간 07분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 10,
@@ -95,7 +115,9 @@ export const prepaymentMock: Record<
       carNumber: '75러1134',
       company: '제주오토',
       duration: '6시간 42분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 11,
@@ -103,7 +125,9 @@ export const prepaymentMock: Record<
       carNumber: '21가9223',
       company: '청주정비소',
       duration: '1시간 31분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 12,
@@ -111,7 +135,9 @@ export const prepaymentMock: Record<
       carNumber: '19가3012',
       company: '송파모터스',
       duration: '3시간 59분',
-      status: 'confirmed',
+      status: 'current',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
   ],
 
@@ -123,7 +149,9 @@ export const prepaymentMock: Record<
       carNumber: '38가9921',
       company: '대전정비소',
       duration: '2025-10-18 12:40',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 14,
@@ -131,7 +159,9 @@ export const prepaymentMock: Record<
       carNumber: '15가8742',
       company: '부산오토',
       duration: '2025-10-17 08:50',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 15,
@@ -139,7 +169,9 @@ export const prepaymentMock: Record<
       carNumber: '41나2114',
       company: '천안렌터카',
       duration: '2025-10-15 14:20',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 16,
@@ -147,7 +179,9 @@ export const prepaymentMock: Record<
       carNumber: '57러2229',
       company: '한성자동차',
       duration: '2025-10-14 10:15',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 17,
@@ -155,7 +189,9 @@ export const prepaymentMock: Record<
       carNumber: '66모9910',
       company: '광주정비센터',
       duration: '2025-10-12 09:00',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 18,
@@ -163,7 +199,9 @@ export const prepaymentMock: Record<
       carNumber: '08마3838',
       company: '울산렌트',
       duration: '2025-10-10 17:30',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
     {
       id: 19,
@@ -171,7 +209,9 @@ export const prepaymentMock: Record<
       carNumber: '12라5555',
       company: '익산정비소',
       duration: '2025-10-08 13:05',
-      status: 'completed',
+      status: 'past',
+      contractId: 1,
+      contractType: 'INSURANCE',
     },
     {
       id: 20,
@@ -179,7 +219,9 @@ export const prepaymentMock: Record<
       carNumber: '98루2221',
       company: '평택모터스',
       duration: '2025-10-05 15:44',
-      status: 'completed',
+      status: 'past',
+      contractId: 35,
+      contractType: 'INSURANCE',
     },
   ],
 };

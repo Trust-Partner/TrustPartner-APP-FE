@@ -44,7 +44,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     removePhoto,
     sigRef,
     signatureStyle,
-  } = useContractForm('replacement', vehicle.id.toString(), updated => {
+  } = useContractForm('replacement', vehicle.carId.toString(), updated => {
     setFormData(updated);
     const mf = requiredFields.filter(k => !updated[k] || updated[k] === '');
     setMissingFields(mf);

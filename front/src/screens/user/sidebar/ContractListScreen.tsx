@@ -69,8 +69,15 @@ export default function ContractListScreen() {
     return matchSearch && matchDate;
   });
 
-  const handlePressContract = (contractId: number) => {
-    navigation.navigate('ContractIntegrated', { contractId });
+  const handlePressContract = (
+    contractId: number,
+    contractType: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT',
+  ) => {
+    navigation.navigate('ContractIntegrated', {
+      contractId,
+      contractType:
+        contractType === 'INSURANCE_CONTRACT' ? 'INSURANCE' : 'GENERAL',
+    });
   };
 
   return (
@@ -156,13 +163,15 @@ export default function ContractListScreen() {
         <View style={s.cardContainer}>
           <FlatList
             data={filteredList}
-            // keyExtractor={item => item.id.toString()} // response값에 contractId 추가될 시 사용
-            keyExtractor={(_, index) => index.toString()}
+            keyExtractor={item => item.contractId.toString()}
             nestedScrollEnabled
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
-              // <Pressable onPress={() => handlePressContract(item.id)}> // response값에 contractId 추가될 시 사용
-              <Pressable onPress={() => handlePressContract(14)}>
+              <Pressable
+                onPress={() =>
+                  handlePressContract(item.contractId, item.contractType)
+                }
+              >
                 <View style={s.card}>
                   <View style={s.cardRow}>
                     <Image
