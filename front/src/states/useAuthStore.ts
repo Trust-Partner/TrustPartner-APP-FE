@@ -82,17 +82,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await EncryptedStorage.setItem('accessToken', accessToken);
       await EncryptedStorage.setItem('refreshToken', refreshToken);
 
-      // autoLogin이 true일 때 저장
+      axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
+
       if (autoLogin) {
         await EncryptedStorage.setItem('user', JSON.stringify(user));
       }
 
-      // 상태 저장
-      set({
-        user,
-        accessToken,
-        refreshToken,
-      });
+      set({ user, accessToken, refreshToken });
     } catch (error) {
       console.error('로그인 실패:', error);
       throw error;
@@ -113,7 +109,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         EncryptedStorage.getItem('refreshToken'),
       ]);
 
-      if (userStr) {
+      if (userStr && token) {
+        axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
+
         const user: User = JSON.parse(userStr);
         set({
           user,
