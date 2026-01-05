@@ -8,6 +8,8 @@ export interface ApiResponse<T> {
 
 // 계약서 리스트
 export interface ContractListItem {
+  contractId: number;
+  contractType: 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
   customerName: string;
   dispatchTime: string;
   model: string;

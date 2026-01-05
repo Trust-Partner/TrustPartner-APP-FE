@@ -50,7 +50,7 @@ export default function DispatchGroupDetailScreen({ route }: any) {
   const toContractVehicleFromDispatch = (
     v: DispatchDetail,
   ): ContractVehicleBase => ({
-    id: v.id,
+    carId: v.id,
     model: v.model,
     number: v.number,
     location: v.location,

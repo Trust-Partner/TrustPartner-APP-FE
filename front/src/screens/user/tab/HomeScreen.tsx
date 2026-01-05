@@ -27,24 +27,22 @@ const LoadingView = () => (
 
 export default function UserHomeScreen() {
   const navigation = useNavigation<any>();
-
   const user = useAuthStore(s => s.user);
-
-  if (!user || user.kind !== 'USER') {
-    return <LoadingView />;
-  }
-
-  const userId = user.partnerId;
   const date = dayjs().format('YYYY-MM-DD');
 
+  const userId = (user as any)?.partnerId;
   const { data, isLoading, refetch, isFetching } = useUserHome(userId, date);
+  const [alerts, setAlerts] = useState(mockUserDashboard.alerts);
+
+  if (!user || !userId || user.kind !== 'USER') {
+    return <LoadingView />;
+  }
 
   if (isLoading) {
     return <LoadingView />;
   }
 
   const { request, alerts: initialAlerts } = mockUserDashboard;
-  const [alerts, setAlerts] = useState(initialAlerts);
 
   const handleAlertPress = (id: number) => {
     setAlerts(prev => prev.filter(a => a.id !== id));
