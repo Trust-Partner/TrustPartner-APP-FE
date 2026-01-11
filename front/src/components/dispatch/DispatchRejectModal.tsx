@@ -53,7 +53,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     color: colors.GRAY_90,
     marginBottom: 24,
     textAlign: 'center',
@@ -78,12 +78,12 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   cancelText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.PRIMARY_50,
     fontWeight: '400',
   },
   rejectText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.WHITE,
     fontWeight: '400',
   },

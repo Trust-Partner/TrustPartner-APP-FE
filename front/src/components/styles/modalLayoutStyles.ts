@@ -24,7 +24,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   loadingText: {
     marginTop: 8,
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_60,
   },
   closeBtn: {
@@ -60,7 +60,7 @@ export const modalLayoutStyles = StyleSheet.create({
   vehicleTag: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     lineHeight: 16.8,
     borderRadius: 4,
@@ -102,7 +102,7 @@ export const modalLayoutStyles = StyleSheet.create({
     backgroundColor: colors.GRAY_05,
   },
   radioLabel: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
   },
   radioCircle: {
@@ -122,12 +122,12 @@ export const modalLayoutStyles = StyleSheet.create({
     marginBottom: 12,
   },
   amountUnit: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     marginLeft: 6,
     marginTop: Platform.OS === 'android' ? 2 : 0,
   },
-  radioText: { fontSize: 14, color: colors.GRAY_90 },
+  radioText: { fontSize: 20, color: colors.GRAY_90 },
   photoContainer: {
     width: '100%',
     borderWidth: 1,
@@ -174,7 +174,7 @@ export const modalLayoutStyles = StyleSheet.create({
     height: 16,
   },
   addText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },
@@ -193,7 +193,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   subText: {
     color: colors.GRAY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     marginTop: 12,
     textAlign: 'center',
@@ -207,7 +207,7 @@ export const modalLayoutStyles = StyleSheet.create({
     borderColor: colors.GRAY_10,
   },
   subTitle: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
     fontWeight: '600',
     marginBottom: 12,
@@ -217,7 +217,7 @@ export const modalLayoutStyles = StyleSheet.create({
     marginTop: 12,
   },
   clearText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
     fontWeight: '400',
   },
@@ -239,7 +239,7 @@ export const modalLayoutStyles = StyleSheet.create({
     right: 0,
     textAlign: 'center',
     color: colors.GRAY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     zIndex: 1,
   },
@@ -253,7 +253,7 @@ export const modalLayoutStyles = StyleSheet.create({
     width: '100%',
   },
   missingTitle: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
     fontWeight: '400',
     marginBottom: 12,
@@ -269,7 +269,7 @@ export const modalLayoutStyles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   missingTagText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.PRIMARY_50,
     fontWeight: '400',
     lineHeight: 15.4,
@@ -303,7 +303,7 @@ export const modalLayoutStyles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   footerBtnText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
     marginTop: Platform.OS === 'android' ? -1 : 0,
@@ -340,7 +340,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   sendBtnDisabled: { backgroundColor: colors.GRAY_15 },
   sendBtnText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.WHITE,
   },

@@ -93,7 +93,7 @@ const s = StyleSheet.create({
     tintColor: colors.GRAY_90,
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
@@ -107,7 +107,7 @@ const s = StyleSheet.create({
     marginLeft: 12,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     fontWeight: '400',
     lineHeight: 15.4,
@@ -131,7 +131,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_15,
   },
   message: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     lineHeight: 15.4,
   },
@@ -140,7 +140,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
     lineHeight: 15.4,

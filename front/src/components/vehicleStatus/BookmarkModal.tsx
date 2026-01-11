@@ -343,7 +343,7 @@ const s = StyleSheet.create({
     tintColor: colors.GRAY_60,
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '500',
     color: colors.GRAY_90,
     textAlign: 'center',
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 4,
     marginHorizontal: 4,
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     lineHeight: 16.8,
   },
@@ -385,14 +385,14 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_50,
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     fontWeight: '400',
     lineHeight: 15.4,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   labelSmall: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
   },
   inputGroup: {
@@ -410,7 +410,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'ios' ? 6 : 2,
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     marginTop: 4,
   },
@@ -431,7 +431,7 @@ const s = StyleSheet.create({
     marginRight: 8,
   },
   dateText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -459,7 +459,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
   },
   timeText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_70,
   },
   btnRow: {
@@ -477,7 +477,7 @@ const s = StyleSheet.create({
   },
   cancelText: {
     color: colors.PRIMARY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },
@@ -491,7 +491,7 @@ const s = StyleSheet.create({
   },
   confirmText: {
     color: colors.WHITE,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },

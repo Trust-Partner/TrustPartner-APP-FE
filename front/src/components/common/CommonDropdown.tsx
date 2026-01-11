@@ -92,7 +92,7 @@ const s = StyleSheet.create({
     padding: 8,
   },
   selectText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },
@@ -113,7 +113,7 @@ const s = StyleSheet.create({
     padding: 8,
   },
   optionText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },

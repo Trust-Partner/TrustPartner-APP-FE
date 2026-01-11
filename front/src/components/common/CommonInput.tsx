@@ -32,7 +32,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     paddingHorizontal: 8,

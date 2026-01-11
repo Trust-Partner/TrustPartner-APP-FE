@@ -151,18 +151,18 @@ const s = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    fontSize: 15,
+    fontSize: 20,
     color: colors.BLACK,
   },
   helperText: {
     marginTop: -4,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '500',
     color: colors.GRAY_50,
   },
   sectionTitle: {
     marginTop: 20,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '500',
     color: colors.GRAY_80,
   },
@@ -185,7 +185,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
   },
   radioLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -230,7 +230,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
   },
   gridLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -256,7 +256,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_15,
   },
   submitText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.WHITE,
     fontWeight: '400',
   },

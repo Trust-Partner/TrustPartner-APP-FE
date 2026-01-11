@@ -23,7 +23,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   pillText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '500',
     color: colors.GRAY_90,
   },

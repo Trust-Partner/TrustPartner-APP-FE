@@ -382,18 +382,18 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   loading: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.RED_50,
     textAlign: 'center',
     marginBottom: 8,
   },
   errorSub: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_50,
     textAlign: 'center',
     marginBottom: 16,
@@ -407,7 +407,7 @@ const s = StyleSheet.create({
   },
   retryText: {
     color: colors.PRIMARY_50,
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: '500',
   },
   searchBox: {
@@ -431,7 +431,7 @@ const s = StyleSheet.create({
     minHeight: 36,
     paddingVertical: 0,
     marginTop: -1.5,
-    fontSize: 13,
+    fontSize: 18,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -450,7 +450,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   btnText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.PRIMARY_50,
     fontWeight: '400',
   },
@@ -485,13 +485,13 @@ const s = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: 18,
     lineHeight: 16.8,
     color: colors.GRAY_90,
     marginRight: 8,
   },
   cardBadge: {
-    fontSize: 11,
+    fontSize: 17,
     lineHeight: 15.4,
     backgroundColor: colors.GRAY_10,
     borderRadius: 10,
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 10,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
   },
@@ -528,7 +528,7 @@ const s = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 14,
     marginBottom: 14,
-    fontSize: 15,
+    fontSize: 20,
   },
   statsRow: {
     flexDirection: 'row',
@@ -543,11 +543,11 @@ const s = StyleSheet.create({
     flex: 1,
   },
   statNum: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '600',
   },
   statLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
   },
@@ -584,7 +584,7 @@ const s = StyleSheet.create({
   filterText: {
     marginRight: 8,
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
     marginBottom: 4,

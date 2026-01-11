@@ -297,7 +297,7 @@ const s = StyleSheet.create({
   },
   activeTab: { backgroundColor: colors.PRIMARY_50 },
   tabText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
@@ -318,7 +318,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
   },
   countText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 15.4,
@@ -338,12 +338,12 @@ const s = StyleSheet.create({
   },
   cardTitle: {
     fontWeight: '600',
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_90,
     lineHeight: 16.8,
   },
   totalTag: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     lineHeight: 15.4,
     borderRadius: 10,
@@ -360,7 +360,7 @@ const s = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 10,
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
   },
   badgeBlue: { backgroundColor: colors.PRIMARY_10 },
@@ -382,7 +382,7 @@ const s = StyleSheet.create({
     marginRight: 4,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     lineHeight: 15.4,
   },
@@ -416,7 +416,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     textAlign: 'center',
   },

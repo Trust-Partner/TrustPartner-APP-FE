@@ -123,7 +123,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_10,
   },
   topBtn: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 15.4,
@@ -155,7 +155,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
   },
   chipText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -168,7 +168,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   applyButtonText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.WHITE,
   },

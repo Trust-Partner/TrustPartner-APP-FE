@@ -24,7 +24,7 @@ export const EditRow = ({ label, value, onChangeText }: Props) => (
         borderRadius: 4,
         paddingHorizontal: 8,
         paddingVertical: Platform.OS === 'android' ? 0 : 8,
-        fontSize: 11,
+        fontSize: 17,
         color: colors.GRAY_90,
       }}
       value={value}

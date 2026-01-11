@@ -137,10 +137,10 @@ export default function VehicleReturnModal({
                   onPress={() => updateField(opt.key, !formData[opt.key])}
                 >
                   <View>
-                    <Text style={{ fontSize: 11, color: colors.GRAY_80 }}>
+                    <Text style={{ fontSize: 17, color: colors.GRAY_80 }}>
                       {opt.label}
                     </Text>
-                    <Text style={{ fontSize: 11, color: colors.GRAY_40 }}>
+                    <Text style={{ fontSize: 17, color: colors.GRAY_40 }}>
                       {opt.sub}
                     </Text>
                   </View>

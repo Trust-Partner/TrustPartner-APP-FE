@@ -118,7 +118,7 @@ export default function CommonSearchDropdown({
           >
             <Text
               style={{
-                fontSize: 11,
+                fontSize: 17,
                 fontWeight: '400',
                 color: colors.WHITE,
                 lineHeight: 15.4,
@@ -166,7 +166,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_05,
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     includeFontPadding: false,
@@ -186,7 +186,7 @@ const s = StyleSheet.create({
     padding: 8,
   },
   optionText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },

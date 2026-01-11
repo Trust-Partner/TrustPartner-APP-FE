@@ -125,7 +125,7 @@ const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   card: {
@@ -148,7 +148,7 @@ const s = StyleSheet.create({
     tintColor: colors.GRAY_80,
   },
   title: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -173,7 +173,7 @@ const s = StyleSheet.create({
     marginRight: 8,
   },
   contactTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -181,7 +181,7 @@ const s = StyleSheet.create({
   },
   contactName: {
     marginTop: 4,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_90,
   },
@@ -192,7 +192,7 @@ const s = StyleSheet.create({
     gap: 4,
   },
   contactPhone: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_90,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -212,12 +212,12 @@ const s = StyleSheet.create({
     padding: 8,
   },
   noticeTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
   },
   noticeText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     marginTop: 4,

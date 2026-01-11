@@ -210,7 +210,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.BLACK,
   },
@@ -234,13 +234,13 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   cardLabel: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.PRIMARY_90,
     marginBottom: 4,
   },
   cardValue: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: '600',
     color: colors.BLACK,
   },
@@ -273,13 +273,13 @@ const s = StyleSheet.create({
     tintColor: colors.PRIMARY_50,
   },
   requestTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.GRAY_90,
     marginBottom: 8,
   },
   requestDesc: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -297,7 +297,7 @@ const s = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? 2 : 0,
   },
   newAlertText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.BLACK,
     lineHeight: 15.4,
@@ -321,13 +321,13 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   alertMessage: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     fontWeight: '500',
   },
   alertRight: { flexDirection: 'row', alignItems: 'center' },
   alertTime: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -344,6 +344,6 @@ const s = StyleSheet.create({
   },
   emptyText: {
     color: colors.GRAY_50,
-    fontSize: 13,
+    fontSize: 18,
   },
 });

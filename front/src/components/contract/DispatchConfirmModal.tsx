@@ -320,7 +320,7 @@ const s = StyleSheet.create({
   vehicleTag: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     lineHeight: 16.8,
     borderRadius: 4,
@@ -328,7 +328,7 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   emptyText: {
-    fontSize: 13,
+    fontSize: 18,
     textAlign: 'center',
     color: colors.GRAY_50,
     marginTop: 8,
@@ -364,7 +364,7 @@ const s = StyleSheet.create({
     marginTop: -4,
   },
   replaceCompanyText: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_60,
     fontWeight: '500',
     lineHeight: 16.8,
@@ -379,7 +379,7 @@ const s = StyleSheet.create({
     marginTop: 2,
   },
   replaceModelText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
     lineHeight: 15.4,
@@ -392,7 +392,7 @@ const s = StyleSheet.create({
     marginTop: -2,
   },
   replaceBadgeText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 15.4,
@@ -428,7 +428,7 @@ const s = StyleSheet.create({
     marginTop: -4,
   },
   companyText: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_60,
     fontWeight: '500',
     lineHeight: 16.8,
@@ -446,13 +446,13 @@ const s = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
     lineHeight: 15.4,
   },
   subTitle: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     marginTop: 24,
     marginBottom: 4,
@@ -476,7 +476,7 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_50,
   },
   checkboxLabel: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     fontWeight: '400',
     lineHeight: 15.4,
@@ -500,7 +500,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   sendBtnText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.WHITE,
   },

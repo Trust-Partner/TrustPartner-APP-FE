@@ -237,12 +237,12 @@ const s = StyleSheet.create({
     color: colors.GRAY_90,
   },
   reserverLabel: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.PRIMARY_50,
   },
   subTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_90,
   },
@@ -256,12 +256,12 @@ const s = StyleSheet.create({
     marginVertical: 24,
   },
   infoText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
   infoValue: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
   },
@@ -294,7 +294,7 @@ const s = StyleSheet.create({
     tintColor: colors.GRAY_40,
   },
   btnText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     fontWeight: '400',
     lineHeight: 15.4,

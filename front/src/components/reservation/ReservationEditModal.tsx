@@ -102,14 +102,14 @@ const s = StyleSheet.create({
     marginVertical: 16,
   },
   carName: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '500',
     color: colors.GRAY_80,
     marginBottom: 4,
     textAlign: 'center',
   },
   summaryText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
     lineHeight: 15.4,
@@ -120,7 +120,7 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     marginBottom: 4,
   },
@@ -130,7 +130,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
     paddingHorizontal: 8,
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_80,
   },
 });

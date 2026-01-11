@@ -8,7 +8,7 @@ export const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   vehicleBox: {
@@ -23,13 +23,13 @@ export const s = StyleSheet.create({
     columnGap: 8,
   },
   vehicleModel: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
   },
   vehicleNumber: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 16.8,
@@ -56,7 +56,7 @@ export const s = StyleSheet.create({
     columnGap: 8,
   },
   topBtnText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
@@ -77,7 +77,7 @@ export const s = StyleSheet.create({
     gap: 4,
   },
   cardTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     marginTop: Platform.OS === 'android' ? -3 : 0,
@@ -88,12 +88,12 @@ export const s = StyleSheet.create({
     justifyContent: 'space-between',
   },
   infoLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },
   infoValue: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -106,7 +106,7 @@ export const s = StyleSheet.create({
   },
   tagText: {
     color: colors.PRIMARY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },
@@ -131,17 +131,17 @@ export const s = StyleSheet.create({
     marginBottom: 4,
   },
   memoDate: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
   },
   memoWriter: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
   },
   memoContent: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -158,7 +158,7 @@ export const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     padding: 8,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: 400,
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -172,5 +172,5 @@ export const s = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 8,
   },
-  memoAddText: { color: colors.WHITE, fontSize: 16, fontWeight: '600' },
+  memoAddText: { color: colors.WHITE, fontSize: 22, fontWeight: '600' },
 });
