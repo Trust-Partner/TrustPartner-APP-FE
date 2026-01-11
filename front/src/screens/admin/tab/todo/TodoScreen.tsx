@@ -376,8 +376,8 @@ const s = StyleSheet.create({
   badgeBlueBg: { backgroundColor: colors.PRIMARY_10 },
   badgeRedBg: { backgroundColor: colors.RED_05 },
   badgeIcon: {
-    width: 10,
-    height: 10,
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
     marginRight: 4,
   },
@@ -405,8 +405,8 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_15,
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginLeft: 'auto',
     resizeMode: 'contain',
   },

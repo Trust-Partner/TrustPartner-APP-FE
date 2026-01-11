@@ -190,8 +190,8 @@ const s = StyleSheet.create({
     color: colors.GRAY_80,
   },
   circle: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.GRAY_50,
@@ -235,8 +235,8 @@ const s = StyleSheet.create({
     color: colors.GRAY_80,
   },
   gridCircle: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     borderRadius: 10,
     borderWidth: 1,
     borderColor: colors.GRAY_50,

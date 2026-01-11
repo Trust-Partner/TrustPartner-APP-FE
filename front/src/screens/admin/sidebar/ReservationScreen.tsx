@@ -388,8 +388,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   cheakIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   headerTilte: {
@@ -445,8 +445,8 @@ const s = StyleSheet.create({
     marginRight: 10,
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   detailBox: {
@@ -475,8 +475,8 @@ const s = StyleSheet.create({
     gap: 4,
   },
   smallIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   emptyBox: {

@@ -97,8 +97,8 @@ const s = StyleSheet.create({
     color: colors.GRAY_50,
   },
   icon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_60,
   },
   dropdown: {

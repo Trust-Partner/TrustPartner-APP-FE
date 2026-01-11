@@ -387,8 +387,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   smallIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_80,
     marginRight: 4,
   },

@@ -142,8 +142,8 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 4,
     tintColor: colors.GRAY_80,
   },
@@ -167,8 +167,8 @@ const s = StyleSheet.create({
     alignItems: 'flex-start',
   },
   personIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_80,
     marginRight: 8,
   },
@@ -198,8 +198,8 @@ const s = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   copyIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.PRIMARY_90,
   },
   noticeBox: {

@@ -29,15 +29,15 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   closeBtn: {
     alignSelf: 'flex-end',
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     resizeMode: 'contain',
     marginRight: -8,
   },
   closeIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_60,
   },
   headerRow: {
@@ -106,8 +106,8 @@ export const modalLayoutStyles = StyleSheet.create({
     color: colors.GRAY_80,
   },
   radioCircle: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     borderRadius: 100,
     borderWidth: 1,
     borderColor: colors.GRAY_50,
@@ -170,8 +170,8 @@ export const modalLayoutStyles = StyleSheet.create({
     marginBottom: 4,
   },
   addIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
   },
   addText: {
     fontSize: 17,
@@ -187,8 +187,8 @@ export const modalLayoutStyles = StyleSheet.create({
     padding: 2,
   },
   removeIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.WHITE,
   },
   subText: {
@@ -318,15 +318,15 @@ export const modalLayoutStyles = StyleSheet.create({
     color: colors.PRIMARY_50,
   },
   prevIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.GRAY_90,
     marginRight: 4,
   },
   nextIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.PRIMARY_50,
     marginLeft: 4,

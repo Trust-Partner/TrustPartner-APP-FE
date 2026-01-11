@@ -384,8 +384,8 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
   },
   searchIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.GRAY_60,
     marginRight: 6,
@@ -520,12 +520,12 @@ const s = StyleSheet.create({
     lineHeight: 25,
   },
   smallIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   rightWrap: {

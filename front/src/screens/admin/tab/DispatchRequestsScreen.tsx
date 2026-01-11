@@ -341,7 +341,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 16,
     marginBottom: 8,
   },
@@ -354,6 +354,7 @@ const s = StyleSheet.create({
     borderRadius: 1,
     marginRight: 8,
     marginLeft: -8,
+    marginVertical: -8,
   },
   contentRow: {
     flex: 1,
@@ -386,8 +387,8 @@ const s = StyleSheet.create({
     marginRight: 10,
   },
   arrowIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_40,
     resizeMode: 'contain',
   },

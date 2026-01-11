@@ -233,8 +233,8 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   searchIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     marginRight: 4,
   },
   input: {
@@ -264,8 +264,8 @@ const s = StyleSheet.create({
   },
   dateText: { fontSize: 17, fontWeight: '500', color: colors.GRAY_50 },
   icon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     marginRight: 8,
   },
   dropdownCalendar: {
@@ -297,14 +297,14 @@ const s = StyleSheet.create({
     marginBottom: 4,
   },
   iconSmall: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 6,
     marginLeft: 4,
   },
   iconCar: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 6,
   },
   cardText: {

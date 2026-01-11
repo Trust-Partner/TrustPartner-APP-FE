@@ -328,8 +328,8 @@ const s = StyleSheet.create({
     color: colors.GRAY_50,
   },
   smallIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
   },
   rightWrap: {
     flexDirection: 'row',
@@ -341,8 +341,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   buttonRow: {

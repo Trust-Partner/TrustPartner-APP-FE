@@ -317,8 +317,8 @@ export default function SalesAnalysisScreen() {
               <Image
                 source={require('../../../assets/common/copy.png')}
                 style={{
-                  width: 12,
-                  height: 12,
+                  width: 18,
+                  height: 18,
                   tintColor: colors.WHITE,
                   marginRight: 4,
                 }}
@@ -372,8 +372,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 4,
     resizeMode: 'contain',
   },
@@ -401,8 +401,8 @@ const s = StyleSheet.create({
     marginRight: 4,
   },
   arrow: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.GRAY_50,
   },
   dropdown: {
@@ -560,8 +560,8 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   inquiryIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 4,
   },
   inquiryTitle: {
