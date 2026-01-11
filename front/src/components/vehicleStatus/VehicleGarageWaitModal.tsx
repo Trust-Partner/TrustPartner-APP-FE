@@ -176,7 +176,7 @@ export default function VehicleGarageWaitModal({
                           alignItems: 'center',
                           backgroundColor: colors.PRIMARY_05,
                           borderRadius: 4,
-                          padding: 8,
+                          padding: 12,
                           marginBottom: 8,
                         }}
                         onPress={() => updateField(opt.key, !checked)}

@@ -215,7 +215,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     fontSize: 20,
@@ -228,7 +228,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
     marginBottom: 8,
   },
@@ -260,7 +260,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   dateText: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
   icon: {
@@ -281,14 +281,14 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 12,
+    padding: 16,
   },
   card: {
     backgroundColor: colors.GRAY_05,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
   },
   cardRow: {
@@ -325,7 +325,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.PRIMARY_10,
     borderRadius: 4,
-    padding: 4,
+    padding: 8,
   },
   textRow: {
     flexDirection: 'row',

@@ -215,7 +215,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
     marginHorizontal: 16,
     borderRadius: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 32,
     shadowColor: 'rgba(146, 150, 171, 0.30)',
     shadowOpacity: 0.1,
@@ -240,7 +240,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     marginBottom: 12,
     fontSize: 17,
@@ -257,7 +257,7 @@ const s = StyleSheet.create({
   },
   inputField: {
     flex: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     fontSize: 17,
   },
@@ -265,7 +265,7 @@ const s = StyleSheet.create({
     borderColor: colors.RED_50,
   },
   eyeBtn: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   eyeImg: {
     width: 15,
@@ -305,7 +305,7 @@ const s = StyleSheet.create({
   },
   loginBtn: {
     backgroundColor: colors.PRIMARY_50,
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderRadius: 4,
     alignItems: 'center',
     marginBottom: 24,

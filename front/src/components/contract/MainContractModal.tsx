@@ -210,7 +210,7 @@ const s = StyleSheet.create({
     borderRadius: 8,
     paddingTop: 8,
     paddingBottom: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
   },
   closeBtn: {
@@ -249,7 +249,7 @@ const s = StyleSheet.create({
   infoBox: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 16,
     columnGap: 14,
     borderRadius: 4,
     backgroundColor: colors.GRAY_10,
@@ -272,7 +272,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 10,
   },
   btnDisabled: {

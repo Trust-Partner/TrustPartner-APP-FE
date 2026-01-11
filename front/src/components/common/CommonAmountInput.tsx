@@ -75,7 +75,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_05,
     borderRadius: 4,
     marginBottom: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     justifyContent: 'center',
   },
   placeholder: {

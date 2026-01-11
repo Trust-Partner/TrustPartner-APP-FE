@@ -21,17 +21,17 @@ export const fontSizes = {
 export const buttonSizes = {
   /** 작은 버튼 패딩 */
   sm: {
-    paddingVertical: 6, // 원래 4-5
-    paddingHorizontal: 10, // 원래 8
+    paddingVertical: 10, // 원래 4-5
+    paddingHorizontal: 14, // 원래 8
   },
   /** 중간 버튼 패딩 */
   md: {
-    paddingVertical: 10, // 원래 8
+    paddingVertical: 14, // 원래 8
     paddingHorizontal: 14, // 원래 12
   },
   /** 큰 버튼 패딩 */
   lg: {
-    paddingVertical: 12, // 원래 10
+    paddingVertical: 16, // 원래 10
     paddingHorizontal: 18, // 원래 16
   },
 };

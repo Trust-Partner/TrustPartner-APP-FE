@@ -89,7 +89,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 8,
+    padding: 12,
   },
   selectText: {
     fontSize: 17,
@@ -110,7 +110,7 @@ const s = StyleSheet.create({
     maxHeight: 180,
   },
   option: {
-    padding: 8,
+    padding: 12,
   },
   optionText: {
     fontSize: 17,

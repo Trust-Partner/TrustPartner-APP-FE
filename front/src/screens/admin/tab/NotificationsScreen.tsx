@@ -78,7 +78,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
@@ -100,8 +100,8 @@ const s = StyleSheet.create({
   badge: {
     backgroundColor: colors.PRIMARY_10,
     borderRadius: 2,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     marginLeft: 12,
   },
   badgeText: {
@@ -115,15 +115,15 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_15,
     borderRadius: 4,
     backgroundColor: colors.WHITE,
-    padding: 8,
+    padding: 12,
     flex: 1,
   },
   alertItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     backgroundColor: colors.WHITE,
     borderWidth: 1,
     borderColor: colors.GRAY_15,
@@ -152,7 +152,7 @@ const s = StyleSheet.create({
   },
   empty: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 60,
   },
   emptyText: {
     color: colors.GRAY_50,

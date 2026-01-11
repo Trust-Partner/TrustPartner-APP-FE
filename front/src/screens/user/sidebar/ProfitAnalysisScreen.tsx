@@ -157,11 +157,11 @@ export default function SalesAnalysisScreen() {
             <View style={s.topDivider} />
 
             {isLoading ? (
-              <View style={{ padding: 16, alignItems: 'center' }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
                 <ActivityIndicator size="small" color={colors.PRIMARY_50} />
               </View>
             ) : isError || !statistics ? (
-              <View style={{ padding: 16, alignItems: 'center' }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
                 <Text style={{ color: colors.RED_50, fontSize: 18 }}>
                   데이터를 불러올 수 없습니다.
                 </Text>
@@ -197,7 +197,7 @@ export default function SalesAnalysisScreen() {
                 </View>
               </>
             ) : (
-              <View style={{ padding: 16, alignItems: 'center' }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
                 <Text style={{ color: colors.GRAY_50, fontSize: 18 }}>
                   데이터가 없습니다.
                 </Text>
@@ -345,7 +345,7 @@ export default function SalesAnalysisScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
@@ -355,8 +355,8 @@ const s = StyleSheet.create({
   card: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
@@ -391,8 +391,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   selectText: {
     fontSize: 17,
@@ -415,7 +415,7 @@ const s = StyleSheet.create({
     zIndex: 99,
   },
   dropdownItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
   },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
@@ -436,8 +436,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 100,
     marginLeft: 6,
     backgroundColor: colors.GRAY_10,
@@ -462,14 +462,14 @@ const s = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: colors.GRAY_15,
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   footer: {
     borderTopWidth: 1,
@@ -493,7 +493,7 @@ const s = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.GRAY_15,
   },
@@ -512,7 +512,7 @@ const s = StyleSheet.create({
   rateCard: {
     backgroundColor: colors.GRAY_05,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -550,8 +550,8 @@ const s = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.PRIMARY_20,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     // marginBottom: 16,
   },
   inquiryTop: {
@@ -580,7 +580,7 @@ const s = StyleSheet.create({
   contactBtn: {
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',

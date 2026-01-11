@@ -412,7 +412,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
   },
   summaryContainer: {
@@ -426,7 +426,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -457,7 +457,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
   },
   statusBar: { width: 2, marginLeft: 4, marginVertical: 4 },
-  itemBody: { flex: 1, paddingVertical: 8, paddingHorizontal: 12 },
+  itemBody: { flex: 1, paddingVertical: 12, paddingHorizontal: 16 },
   itemTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -469,8 +469,8 @@ const s = StyleSheet.create({
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   plate: { fontSize: 17, color: colors.GRAY_60 },
 
@@ -494,7 +494,7 @@ const s = StyleSheet.create({
     marginTop: 16,
     gap: 8,
   },
-  actionBtn: { padding: 8, borderRadius: 4 },
+  actionBtn: { padding: 12, borderRadius: 4 },
   grayBtn: { backgroundColor: colors.GRAY_60 },
   blueBtn: { backgroundColor: colors.PRIMARY_50 },
   redBtn: { backgroundColor: colors.RED_50 },

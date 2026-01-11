@@ -331,7 +331,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     fontSize: 20,
@@ -348,7 +348,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    paddingVertical: 12,
+    paddingVertical: 16,
     alignItems: 'center',
   },
   summaryValue: {
@@ -376,7 +376,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   cardContainerHeader: {
     flexDirection: 'row',
@@ -417,8 +417,8 @@ const s = StyleSheet.create({
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   cardRow: {
     flexDirection: 'row',
@@ -452,7 +452,7 @@ const s = StyleSheet.create({
   detailBox: {
     borderTopWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingBottom: 10,
     paddingTop: 8,
     gap: 5,

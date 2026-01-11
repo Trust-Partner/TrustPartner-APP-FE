@@ -372,7 +372,7 @@ export default function PartnerManageScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
@@ -382,8 +382,8 @@ const s = StyleSheet.create({
   card: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
   },
@@ -407,8 +407,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   filterDropdown: {
     position: 'absolute',
@@ -421,7 +421,7 @@ const s = StyleSheet.create({
     marginTop: 8,
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
 
@@ -437,8 +437,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   selectText: {
     fontSize: 17,
@@ -461,7 +461,7 @@ const s = StyleSheet.create({
     zIndex: 99,
   },
   dropdownItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
   },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
@@ -487,8 +487,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 100,
     marginLeft: 6,
     backgroundColor: colors.GRAY_10,
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: colors.GRAY_15,
   },
@@ -518,7 +518,7 @@ const s = StyleSheet.create({
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   footer: {
     borderTopWidth: 1,
@@ -550,7 +550,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 0 : 8,
   },
   searchIcon: {
@@ -573,7 +573,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   partnerBox: {
     backgroundColor: colors.GRAY_05,
@@ -586,8 +586,8 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   partnerName: {
     fontSize: 18,
@@ -599,8 +599,8 @@ const s = StyleSheet.create({
   gradeBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   gradeText: {
     fontSize: 17,
@@ -614,7 +614,7 @@ const s = StyleSheet.create({
     tintColor: colors.GRAY_50,
   },
   detailBox: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingBottom: 8,
   },
   detailRow: {

@@ -372,7 +372,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
   },
   loadingContainer: {
@@ -400,8 +400,8 @@ const s = StyleSheet.create({
   },
   retryBtn: {
     alignSelf: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 6,
   },
@@ -417,7 +417,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
   },
   searchIcon: {
     width: 14,
@@ -443,7 +443,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.PRIMARY_50,
     borderRadius: 4,
-    padding: 10,
+    padding: 14,
     alignItems: 'center',
   },
   activeBtn: {
@@ -461,8 +461,8 @@ const s = StyleSheet.create({
     width: '49%',
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     marginBottom: 8,
   },
   cardBlue: {
@@ -495,8 +495,8 @@ const s = StyleSheet.create({
     lineHeight: 15.4,
     backgroundColor: colors.GRAY_10,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     color: colors.GRAY_60,
   },
   badgeRow: {
@@ -505,8 +505,8 @@ const s = StyleSheet.create({
     gap: 4,
   },
   badge: {
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     borderRadius: 10,
     fontSize: 17,
     fontWeight: '400',
@@ -525,7 +525,7 @@ const s = StyleSheet.create({
   searchInput: {
     backgroundColor: colors.WHITE,
     borderRadius: 8,
-    paddingVertical: 10,
+    paddingVertical: 14,
     paddingHorizontal: 14,
     marginBottom: 14,
     fontSize: 20,
@@ -535,7 +535,7 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 16,
     backgroundColor: colors.WHITE,
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderRadius: 4,
   },
   statBox: {

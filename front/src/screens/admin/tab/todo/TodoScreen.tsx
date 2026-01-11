@@ -278,7 +278,7 @@ export default function TodoScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
     backgroundColor: colors.GRAY_00,
   },
@@ -292,7 +292,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.PRIMARY_50,
     borderRadius: 4,
-    paddingVertical: 10,
+    paddingVertical: 14,
     alignItems: 'center',
   },
   activeTab: { backgroundColor: colors.PRIMARY_50 },
@@ -313,8 +313,8 @@ const s = StyleSheet.create({
   },
   countBadge: {
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     backgroundColor: colors.PRIMARY_10,
   },
   countText: {
@@ -326,7 +326,7 @@ const s = StyleSheet.create({
   card: {
     width: '49%',
     borderRadius: 4,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 16,
     marginBottom: 8,
   },
@@ -347,8 +347,8 @@ const s = StyleSheet.create({
     color: colors.GRAY_60,
     lineHeight: 15.4,
     borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     backgroundColor: colors.GRAY_10,
   },
   badgeRow: {
@@ -357,8 +357,8 @@ const s = StyleSheet.create({
     gap: 4,
   },
   badge: {
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
     borderRadius: 10,
     fontSize: 17,
     color: colors.GRAY_80,
@@ -370,8 +370,8 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 10,
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
   },
   badgeBlueBg: { backgroundColor: colors.PRIMARY_10 },
   badgeRedBg: { backgroundColor: colors.RED_05 },

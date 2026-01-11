@@ -76,7 +76,7 @@ const s = StyleSheet.create({
     width: '100%',
     borderRadius: 8,
     paddingVertical: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
     alignItems: 'center',
   },
@@ -102,7 +102,7 @@ const s = StyleSheet.create({
   btn: {
     flex: 1,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   cancel: {
