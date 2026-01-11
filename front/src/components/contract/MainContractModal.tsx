@@ -183,7 +183,7 @@ export default function MainContractModal({
           <ContractButton
             label="일반계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isRestricted || isCreating}
+            // disabled={isRestricted || isCreating}
             onPress={() => handleSelect('general')}
           />
 
