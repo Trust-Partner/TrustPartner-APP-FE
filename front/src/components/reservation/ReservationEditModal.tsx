@@ -103,14 +103,14 @@ const s = StyleSheet.create({
   },
   carName: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     marginBottom: 4,
     textAlign: 'center',
   },
   summaryText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
     textAlign: 'center',

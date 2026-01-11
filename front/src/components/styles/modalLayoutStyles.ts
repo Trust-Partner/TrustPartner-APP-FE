@@ -48,7 +48,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
   },
   vehicleInfo: {
@@ -61,7 +61,7 @@ export const modalLayoutStyles = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 28,
     borderRadius: 4,
     paddingHorizontal: 12,
@@ -175,7 +175,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   addText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   removeOverlay: {
@@ -194,7 +194,7 @@ export const modalLayoutStyles = StyleSheet.create({
   subText: {
     color: colors.GRAY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     marginTop: 12,
     textAlign: 'center',
   },
@@ -209,7 +209,7 @@ export const modalLayoutStyles = StyleSheet.create({
   subTitle: {
     fontSize: 17,
     color: colors.GRAY_50,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 12,
   },
   clearBtn: {
@@ -219,7 +219,7 @@ export const modalLayoutStyles = StyleSheet.create({
   clearText: {
     fontSize: 17,
     color: colors.GRAY_50,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   signatureWrapper: {
     borderWidth: 1,
@@ -240,7 +240,7 @@ export const modalLayoutStyles = StyleSheet.create({
     textAlign: 'center',
     color: colors.GRAY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     zIndex: 1,
   },
   missingBox: {
@@ -255,7 +255,7 @@ export const modalLayoutStyles = StyleSheet.create({
   missingTitle: {
     fontSize: 17,
     color: colors.GRAY_50,
-    fontWeight: '400',
+    fontWeight: '500',
     marginBottom: 12,
   },
   missingList: {
@@ -271,7 +271,7 @@ export const modalLayoutStyles = StyleSheet.create({
   missingTagText: {
     fontSize: 17,
     color: colors.PRIMARY_50,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   footer: {
@@ -304,7 +304,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   footerBtnText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -1 : 0,
   },
@@ -341,7 +341,7 @@ export const modalLayoutStyles = StyleSheet.create({
   sendBtnDisabled: { backgroundColor: colors.GRAY_15 },
   sendBtnText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.WHITE,
   },
 });

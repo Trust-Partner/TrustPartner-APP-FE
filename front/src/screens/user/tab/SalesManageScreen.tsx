@@ -394,7 +394,7 @@ const s = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -405,7 +405,7 @@ const s = StyleSheet.create({
   },
   tag: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
     lineHeight: 25,
     backgroundColor: colors.PRIMARY_05,
@@ -422,13 +422,13 @@ const s = StyleSheet.create({
   },
   totalAmount: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
     textAlign: 'center',
   },
   totalSub: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     textAlign: 'center',
     marginTop: 4,
@@ -448,20 +448,20 @@ const s = StyleSheet.create({
   },
   cardAmount: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
     textAlign: 'center',
   },
   cardLabel: {
     fontSize: 17,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_50,
     textAlign: 'center',
     marginTop: 4,
   },
   cardSub: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     textAlign: 'center',
     marginTop: 4,
@@ -481,7 +481,7 @@ const s = StyleSheet.create({
   },
   gradeText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
     lineHeight: 25,
   },
@@ -497,12 +497,12 @@ const s = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.PRIMARY_80,
   },
   infoValue: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_80,
   },
   infoSub: {
@@ -523,18 +523,18 @@ const s = StyleSheet.create({
   },
   dispatchTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   dispatchDate: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   dispatchAmount: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   divider: {
@@ -549,12 +549,12 @@ const s = StyleSheet.create({
   },
   footerText: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   footerAmount: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
 });

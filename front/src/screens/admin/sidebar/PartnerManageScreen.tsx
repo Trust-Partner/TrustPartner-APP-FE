@@ -397,7 +397,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -427,7 +427,7 @@ const s = StyleSheet.create({
 
   applyButtonText: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.WHITE,
   },
   selectBox: {
@@ -442,7 +442,7 @@ const s = StyleSheet.create({
   },
   selectText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     marginRight: 4,
   },
@@ -467,13 +467,13 @@ const s = StyleSheet.create({
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
   dropdownText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   dropdownTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   tabRow: {
@@ -496,7 +496,7 @@ const s = StyleSheet.create({
   tabActive: { backgroundColor: colors.PRIMARY_10 },
   tabText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_40,
     lineHeight: 25,
   },
@@ -528,16 +528,16 @@ const s = StyleSheet.create({
   },
   cell: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
   },
   boldMonth: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   boldCell: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   partnerHeader: {
     flexDirection: 'row',
@@ -562,7 +562,7 @@ const s = StyleSheet.create({
   },
   searchInput: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     color: colors.GRAY_50,
     paddingVertical: 0,
@@ -591,7 +591,7 @@ const s = StyleSheet.create({
   },
   partnerName: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_60,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -629,7 +629,7 @@ const s = StyleSheet.create({
   },
   detailText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     flex: 1,
     marginTop: Platform.OS === 'android' ? -2 : 0,

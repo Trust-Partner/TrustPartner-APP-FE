@@ -24,13 +24,13 @@ export const s = StyleSheet.create({
   },
   vehicleModel: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
   },
   vehicleNumber: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -57,7 +57,7 @@ export const s = StyleSheet.create({
   },
   topBtnText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
     lineHeight: 25,
   },
@@ -78,7 +78,7 @@ export const s = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     marginTop: Platform.OS === 'android' ? -3 : 0,
   },
@@ -89,12 +89,12 @@ export const s = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   infoValue: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
 
@@ -107,7 +107,7 @@ export const s = StyleSheet.create({
   tagText: {
     color: colors.PRIMARY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
 
@@ -132,17 +132,17 @@ export const s = StyleSheet.create({
   },
   memoDate: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   memoWriter: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
   },
   memoContent: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
 
@@ -172,5 +172,5 @@ export const s = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 8,
   },
-  memoAddText: { color: colors.WHITE, fontSize: 22, fontWeight: '600' },
+  memoAddText: { color: colors.WHITE, fontSize: 22, fontWeight: '700' },
 });

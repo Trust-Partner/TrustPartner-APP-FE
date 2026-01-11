@@ -209,20 +209,20 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
     textAlign: 'center',
     marginBottom: 24,
   },
   subText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     marginBottom: 12,
   },
   inputTittle: {
     fontSize: 17,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     marginBottom: 4,
   },
@@ -249,7 +249,7 @@ const s = StyleSheet.create({
   checkmark: {
     fontSize: 18,
     color: colors.BLACK,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 23,
     textAlign: 'center',
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
@@ -263,7 +263,7 @@ const s = StyleSheet.create({
 
   roleLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   row: {
@@ -277,7 +277,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     backgroundColor: colors.GRAY_05,
   },
   button: {
@@ -297,7 +297,7 @@ const s = StyleSheet.create({
   buttonText: {
     color: colors.WHITE,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   resultBox: {
@@ -311,18 +311,18 @@ const s = StyleSheet.create({
   resultTitle: {
     color: colors.PRIMARY_50,
     fontSize: 20,
-    fontWeight: '400',
+    fontWeight: '500',
     marginBottom: 4,
   },
   resultText: {
     color: colors.GRAY_60,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   resultId: {
     color: colors.PRIMARY_50,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   backBtn: {
     marginTop: 24,
@@ -338,6 +338,6 @@ const s = StyleSheet.create({
     textAlign: 'center',
     color: colors.GRAY_80,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
   },
 });

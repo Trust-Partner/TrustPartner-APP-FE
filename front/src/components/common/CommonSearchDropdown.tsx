@@ -119,7 +119,7 @@ export default function CommonSearchDropdown({
             <Text
               style={{
                 fontSize: 17,
-                fontWeight: '400',
+                fontWeight: '500',
                 color: colors.WHITE,
                 lineHeight: 25,
               }}
@@ -167,7 +167,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 6 : 12,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     includeFontPadding: false,
     textAlignVertical: 'center',
@@ -188,7 +188,7 @@ const s = StyleSheet.create({
   },
   optionText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   optionCustom: {

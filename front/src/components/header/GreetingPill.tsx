@@ -24,7 +24,7 @@ const s = StyleSheet.create({
   },
   pillText: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_90,
   },
 });

@@ -448,12 +448,12 @@ const s = StyleSheet.create({
   },
   value: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   label: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   listBox: {
@@ -470,7 +470,7 @@ const s = StyleSheet.create({
   },
   headerText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -494,7 +494,7 @@ const s = StyleSheet.create({
   },
   cellText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -522,7 +522,7 @@ const s = StyleSheet.create({
   actionText: {
     color: colors.WHITE,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   loadingContainer: {

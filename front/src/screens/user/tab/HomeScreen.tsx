@@ -211,7 +211,7 @@ const s = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.BLACK,
   },
   rowBetween: {
@@ -235,13 +235,13 @@ const s = StyleSheet.create({
   },
   cardLabel: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_90,
     marginBottom: 4,
   },
   cardValue: {
     fontSize: 30,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.BLACK,
   },
   cardIcon: {
@@ -274,13 +274,13 @@ const s = StyleSheet.create({
   },
   requestTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     marginBottom: 8,
   },
   requestDesc: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   alertHeader: {
@@ -298,7 +298,7 @@ const s = StyleSheet.create({
   },
   newAlertText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.BLACK,
     lineHeight: 25,
   },
@@ -323,12 +323,12 @@ const s = StyleSheet.create({
   alertMessage: {
     fontSize: 17,
     color: colors.GRAY_90,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   alertRight: { flexDirection: 'row', alignItems: 'center' },
   alertTime: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   unreadDot: {

@@ -149,7 +149,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -174,7 +174,7 @@ const s = StyleSheet.create({
   },
   contactTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -1 : 0,
@@ -182,7 +182,7 @@ const s = StyleSheet.create({
   contactName: {
     marginTop: 4,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_90,
   },
   phoneRow: {
@@ -193,7 +193,7 @@ const s = StyleSheet.create({
   },
   contactPhone: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_90,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
@@ -213,12 +213,12 @@ const s = StyleSheet.create({
   },
   noticeTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   noticeText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },

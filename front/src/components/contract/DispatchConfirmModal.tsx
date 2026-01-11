@@ -308,7 +308,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
   },
   vehicleInfo: {
@@ -321,7 +321,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 28,
     borderRadius: 4,
     paddingHorizontal: 12,
@@ -366,7 +366,7 @@ const s = StyleSheet.create({
   replaceCompanyText: {
     fontSize: 18,
     color: colors.GRAY_60,
-    fontWeight: '500',
+    fontWeight: '600',
     lineHeight: 28,
     marginRight: 8,
   },
@@ -381,7 +381,7 @@ const s = StyleSheet.create({
   replaceModelText: {
     fontSize: 17,
     color: colors.GRAY_60,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   replaceBadge: {
@@ -393,7 +393,7 @@ const s = StyleSheet.create({
   },
   replaceBadgeText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 25,
   },
@@ -430,7 +430,7 @@ const s = StyleSheet.create({
   companyText: {
     fontSize: 18,
     color: colors.GRAY_60,
-    fontWeight: '500',
+    fontWeight: '600',
     lineHeight: 28,
     marginRight: 8,
   },
@@ -448,7 +448,7 @@ const s = StyleSheet.create({
     paddingVertical: 6,
     fontSize: 17,
     color: colors.GRAY_60,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   subTitle: {
@@ -478,7 +478,7 @@ const s = StyleSheet.create({
   checkboxLabel: {
     fontSize: 17,
     color: colors.GRAY_80,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
@@ -501,7 +501,7 @@ const s = StyleSheet.create({
   },
   sendBtnText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.WHITE,
   },
 });

@@ -344,7 +344,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_90,
     textAlign: 'center',
     marginTop: 8,
@@ -362,7 +362,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 4,
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 28,
   },
   checkboxRow: {
@@ -387,7 +387,7 @@ const s = StyleSheet.create({
   label: {
     fontSize: 17,
     color: colors.GRAY_80,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
@@ -432,7 +432,7 @@ const s = StyleSheet.create({
   },
   dateText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -478,7 +478,7 @@ const s = StyleSheet.create({
   cancelText: {
     color: colors.PRIMARY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   confirmBtn: {
@@ -492,7 +492,7 @@ const s = StyleSheet.create({
   confirmText: {
     color: colors.WHITE,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
 });

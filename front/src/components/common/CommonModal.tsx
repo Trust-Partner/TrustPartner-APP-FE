@@ -88,7 +88,7 @@ const s = StyleSheet.create({
   },
   message: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     marginBottom: 24,
@@ -115,11 +115,11 @@ const s = StyleSheet.create({
   cancelText: {
     fontSize: 17,
     color: colors.PRIMARY_50,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   confirmText: {
     fontSize: 17,
     color: colors.WHITE,
-    fontWeight: '400',
+    fontWeight: '500',
   },
 });

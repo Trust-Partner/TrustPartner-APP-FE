@@ -281,7 +281,7 @@ export default function VehicleReplaceModal({
                             <Text
                               style={{
                                 fontSize: 17,
-                                fontWeight: '400',
+                                fontWeight: '500',
                                 color: colors.GRAY_80,
                               }}
                             >
@@ -290,7 +290,7 @@ export default function VehicleReplaceModal({
                             <Text
                               style={{
                                 fontSize: 17,
-                                fontWeight: '400',
+                                fontWeight: '500',
                                 color: colors.GRAY_40,
                               }}
                             >

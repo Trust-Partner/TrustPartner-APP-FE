@@ -208,7 +208,7 @@ const s = StyleSheet.create({
   },
   name: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_80,
     lineHeight: 31,
   },
@@ -216,7 +216,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginLeft: 4,
     paddingHorizontal: 12,
@@ -225,7 +225,7 @@ const s = StyleSheet.create({
   },
   branch: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 25,
     marginTop: 4,
@@ -257,7 +257,7 @@ const s = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -276,7 +276,7 @@ const s = StyleSheet.create({
   },
   selectText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 25,
     marginRight: 4,
@@ -308,7 +308,7 @@ const s = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 25,
   },
@@ -326,13 +326,13 @@ const s = StyleSheet.create({
   },
   tableLeft: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
   },
   tableRight: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
   },
@@ -354,23 +354,23 @@ const s = StyleSheet.create({
   },
   gradeLabel: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   gradeSub: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   rateText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   rateDesc: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },

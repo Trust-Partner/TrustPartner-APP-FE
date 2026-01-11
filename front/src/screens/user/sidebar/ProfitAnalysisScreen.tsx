@@ -379,7 +379,7 @@ const s = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -396,7 +396,7 @@ const s = StyleSheet.create({
   },
   selectText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     marginRight: 4,
   },
@@ -421,7 +421,7 @@ const s = StyleSheet.create({
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
   dropdownText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   dropdownTextActive: { color: colors.PRIMARY_50 },
@@ -445,14 +445,14 @@ const s = StyleSheet.create({
   tabActive: { backgroundColor: colors.PRIMARY_10 },
   tabText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_40,
     lineHeight: 25,
   },
   tabTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   topDivider: {
@@ -479,16 +479,16 @@ const s = StyleSheet.create({
   },
   cell: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
   },
   boldMonth: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   boldCell: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   tableRow: {
     flexDirection: 'row',
@@ -499,13 +499,13 @@ const s = StyleSheet.create({
   },
   tableLeft: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
   },
   tableRight: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
   },
@@ -525,23 +525,23 @@ const s = StyleSheet.create({
   },
   gradeLabel: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   gradeSub: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   rateText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   rateDesc: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
@@ -566,14 +566,14 @@ const s = StyleSheet.create({
   },
   inquiryTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   inquiryText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     marginBottom: 8,
   },
@@ -587,7 +587,7 @@ const s = StyleSheet.create({
   },
   contactText: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.WHITE,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,

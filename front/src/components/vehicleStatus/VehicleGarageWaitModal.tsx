@@ -185,7 +185,7 @@ export default function VehicleGarageWaitModal({
                           <Text
                             style={{
                               fontSize: 17,
-                              fontWeight: '400',
+                              fontWeight: '500',
                               color: colors.GRAY_80,
                             }}
                           >
@@ -194,7 +194,7 @@ export default function VehicleGarageWaitModal({
                           <Text
                             style={{
                               fontSize: 17,
-                              fontWeight: '400',
+                              fontWeight: '500',
                               color: colors.GRAY_40,
                             }}
                           >
