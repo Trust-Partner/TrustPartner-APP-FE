@@ -265,7 +265,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -301,7 +301,7 @@ const s = StyleSheet.create({
   },
   carName: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_60,
   },
   plateBadge: {
@@ -362,7 +362,7 @@ const s = StyleSheet.create({
   },
   actionText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.WHITE,
   },
   loadingContainer: {

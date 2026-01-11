@@ -298,7 +298,7 @@ const s = StyleSheet.create({
   activeTab: { backgroundColor: colors.PRIMARY_50 },
   tabText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
     lineHeight: 25,
   },
@@ -319,7 +319,7 @@ const s = StyleSheet.create({
   },
   countText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 25,
   },
@@ -337,7 +337,7 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: {
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 18,
     color: colors.GRAY_90,
     lineHeight: 28,

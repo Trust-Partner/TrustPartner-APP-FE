@@ -33,7 +33,7 @@ const s = StyleSheet.create({
   },
   input: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 6 : 12,

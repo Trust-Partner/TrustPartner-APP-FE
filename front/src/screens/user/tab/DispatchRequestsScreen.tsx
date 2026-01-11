@@ -157,13 +157,13 @@ const s = StyleSheet.create({
   helperText: {
     marginTop: -4,
     fontSize: 17,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_50,
   },
   sectionTitle: {
     marginTop: 20,
     fontSize: 17,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   radioGroup: {
@@ -186,7 +186,7 @@ const s = StyleSheet.create({
   },
   radioLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   circle: {
@@ -231,7 +231,7 @@ const s = StyleSheet.create({
   },
   gridLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   gridCircle: {
@@ -258,7 +258,7 @@ const s = StyleSheet.create({
   submitText: {
     fontSize: 17,
     color: colors.WHITE,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   submitTextDisabled: {
     color: colors.GRAY_40,

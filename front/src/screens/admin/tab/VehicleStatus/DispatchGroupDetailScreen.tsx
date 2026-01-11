@@ -221,7 +221,7 @@ const s = StyleSheet.create({
   backButton: { marginRight: 8 },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -236,7 +236,7 @@ const s = StyleSheet.create({
   countText: {
     color: colors.GRAY_60,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   tableWrapper: {
@@ -254,7 +254,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
   },
   th: {
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     fontSize: 17,
@@ -279,7 +279,7 @@ const s = StyleSheet.create({
     paddingRight: 12,
   },
   td: {
-    fontWeight: '400',
+    fontWeight: '500',
     textAlign: 'center',
     fontSize: 17,
     color: colors.GRAY_60,

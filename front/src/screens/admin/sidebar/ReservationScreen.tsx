@@ -353,13 +353,13 @@ const s = StyleSheet.create({
   },
   summaryValue: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
     marginBottom: 4,
   },
   summaryLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   calendar: {
@@ -394,7 +394,7 @@ const s = StyleSheet.create({
   },
   headerTilte: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -402,7 +402,7 @@ const s = StyleSheet.create({
   },
   headerDate: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -426,20 +426,20 @@ const s = StyleSheet.create({
   },
   carName: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_60,
     lineHeight: 28,
   },
   time: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
     lineHeight: 25,
     marginLeft: 8,
   },
   managerName: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
     marginRight: 10,
@@ -464,7 +464,7 @@ const s = StyleSheet.create({
   },
   detailText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -1 : 0,
@@ -486,7 +486,7 @@ const s = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_40,
   },
 });

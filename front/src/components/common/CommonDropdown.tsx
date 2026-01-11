@@ -93,7 +93,7 @@ const s = StyleSheet.create({
   },
   selectText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   icon: {
@@ -114,7 +114,7 @@ const s = StyleSheet.create({
   },
   optionText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   optionActive: {
@@ -122,6 +122,6 @@ const s = StyleSheet.create({
   },
   optionTextActive: {
     color: colors.PRIMARY_50,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

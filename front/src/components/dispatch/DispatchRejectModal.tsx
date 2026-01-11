@@ -80,11 +80,11 @@ const s = StyleSheet.create({
   cancelText: {
     fontSize: 17,
     color: colors.PRIMARY_50,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   rejectText: {
     fontSize: 17,
     color: colors.WHITE,
-    fontWeight: '400',
+    fontWeight: '500',
   },
 });

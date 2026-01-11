@@ -445,7 +445,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     zIndex: 1,
   },
-  value: { fontSize: 28, fontWeight: '600' },
+  value: { fontSize: 28, fontWeight: '700' },
   label: { fontSize: 18, color: colors.GRAY_70, marginTop: 2 },
 
   item: {
@@ -464,7 +464,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   carInfo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  carName: { fontSize: 18, fontWeight: '500', color: colors.GRAY_60 },
+  carName: { fontSize: 18, fontWeight: '600', color: colors.GRAY_60 },
 
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
@@ -498,7 +498,7 @@ const s = StyleSheet.create({
   grayBtn: { backgroundColor: colors.GRAY_60 },
   blueBtn: { backgroundColor: colors.PRIMARY_50 },
   redBtn: { backgroundColor: colors.RED_50 },
-  actionText: { fontSize: 17, fontWeight: '400', color: colors.WHITE },
+  actionText: { fontSize: 17, fontWeight: '500', color: colors.WHITE },
 
   // 위치 전용 스타일
   locationWrap: {

@@ -326,7 +326,7 @@ const s = StyleSheet.create({
   backIcon: { width: 20, height: 20, resizeMode: 'contain' },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -374,7 +374,7 @@ const s = StyleSheet.create({
     tintColor: colors.RED_50,
   },
   smallIcon: { width: 12, height: 12, resizeMode: 'contain' },
-  carName: { fontSize: 18, fontWeight: '500', color: colors.GRAY_60 },
+  carName: { fontSize: 18, fontWeight: '600', color: colors.GRAY_60 },
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
@@ -383,13 +383,13 @@ const s = StyleSheet.create({
   },
   plate: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 25,
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  date: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
-  time: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
+  date: { fontSize: 17, fontWeight: '500', color: colors.GRAY_50 },
+  time: { fontSize: 17, fontWeight: '500', color: colors.GRAY_50 },
   rightWrap: { flexDirection: 'row', alignItems: 'center' },
   arrowWrap: {
     paddingLeft: 10,
@@ -408,7 +408,7 @@ const s = StyleSheet.create({
   redBorderBtn: { borderWidth: 1, borderColor: colors.RED_50 },
   actionText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   loadingContainer: {

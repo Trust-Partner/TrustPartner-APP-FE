@@ -225,7 +225,7 @@ const s = StyleSheet.create({
   },
   logo: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'center',
     color: colors.PRIMARY_50,
     marginBottom: 24,
@@ -233,7 +233,7 @@ const s = StyleSheet.create({
   label: {
     fontSize: 17,
     marginBottom: 8,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   input: {
@@ -293,7 +293,7 @@ const s = StyleSheet.create({
   },
   checkmark: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 23,
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
@@ -319,7 +319,7 @@ const s = StyleSheet.create({
   },
   loginText: {
     color: colors.WHITE,
-    fontWeight: '400',
+    fontWeight: '500',
     fontSize: 17,
   },
   bottomLinks: {

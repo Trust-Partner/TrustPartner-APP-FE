@@ -387,7 +387,7 @@ const s = StyleSheet.create({
   },
   errorText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.RED_50,
     textAlign: 'center',
     marginBottom: 8,
@@ -408,7 +408,7 @@ const s = StyleSheet.create({
   retryText: {
     color: colors.PRIMARY_50,
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   searchBox: {
     flexDirection: 'row',
@@ -452,7 +452,7 @@ const s = StyleSheet.create({
   btnText: {
     fontSize: 17,
     color: colors.PRIMARY_50,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   activeText: {
     color: colors.WHITE,
@@ -484,7 +484,7 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   cardTitle: {
-    fontWeight: '600',
+    fontWeight: '700',
     fontSize: 18,
     lineHeight: 28,
     color: colors.GRAY_90,
@@ -509,7 +509,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 10,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   badgeGreen: { backgroundColor: colors.GREEN_10 },
@@ -544,11 +544,11 @@ const s = StyleSheet.create({
   },
   statNum: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   statLabel: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   divider: {
@@ -578,14 +578,14 @@ const s = StyleSheet.create({
   checkIcon: {
     color: colors.GRAY_00,
     fontSize: 8,
-    fontWeight: '600',
+    fontWeight: '700',
     lineHeight: 20,
   },
   filterText: {
     marginRight: 8,
     color: colors.GRAY_80,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginBottom: 4,
   },

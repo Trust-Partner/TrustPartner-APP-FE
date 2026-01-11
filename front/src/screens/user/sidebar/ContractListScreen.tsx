@@ -240,7 +240,7 @@ const s = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
     marginTop: -1.5,
@@ -262,7 +262,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     padding: 12,
   },
-  dateText: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
+  dateText: { fontSize: 17, fontWeight: '500', color: colors.GRAY_50 },
   icon: {
     width: 12,
     height: 12,
@@ -309,14 +309,14 @@ const s = StyleSheet.create({
   },
   cardText: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   cardDateText: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: Platform.OS === 'ios' ? 16.8 : 12,
   },
@@ -332,7 +332,7 @@ const s = StyleSheet.create({
   },
   carName: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -340,7 +340,7 @@ const s = StyleSheet.create({
   carNumber: {
     marginLeft: 4,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0.7,

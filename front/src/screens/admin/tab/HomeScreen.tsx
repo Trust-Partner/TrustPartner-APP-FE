@@ -231,7 +231,7 @@ export default function AdminHomeScreen() {
                     style={{
                       fontSize: 17,
                       color: colors.GRAY_90,
-                      fontWeight: '500',
+                      fontWeight: '600',
                     }}
                   >
                     {item.message}
@@ -275,7 +275,7 @@ const s = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.BLACK,
   },
   rowBetween: {
@@ -343,12 +343,12 @@ const s = StyleSheet.create({
   },
   cardLabel: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_90,
   },
   cardValue: {
     fontSize: 30,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.BLACK,
   },
   valueCircle: {
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
   },
   cardValueBottom: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   cardSub: {
@@ -385,7 +385,7 @@ const s = StyleSheet.create({
     color: colors.BLACK,
     fontSize: 17,
     lineHeight: 25,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   alertContainer: {
     borderWidth: 1,

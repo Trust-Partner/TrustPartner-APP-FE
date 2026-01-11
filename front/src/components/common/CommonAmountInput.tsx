@@ -83,7 +83,7 @@ const s = StyleSheet.create({
     paddingLeft: 8,
     color: colors.GRAY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     top: Platform.OS === 'android' ? '25%' : '27%',
   },
   input: {
@@ -103,7 +103,7 @@ const s = StyleSheet.create({
   },
   unitText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
   },

@@ -94,7 +94,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
     marginLeft: 12,
@@ -109,7 +109,7 @@ const s = StyleSheet.create({
   badgeText: {
     fontSize: 17,
     color: colors.GRAY_90,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   alertBox: {
@@ -141,7 +141,7 @@ const s = StyleSheet.create({
   },
   time: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_70,
     lineHeight: 25,
   },

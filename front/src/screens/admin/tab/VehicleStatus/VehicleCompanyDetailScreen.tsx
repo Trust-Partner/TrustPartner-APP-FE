@@ -410,7 +410,7 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -449,7 +449,7 @@ const s = StyleSheet.create({
   },
   value: {
     fontSize: 28,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   label: {
     fontSize: 18,
@@ -486,7 +486,7 @@ const s = StyleSheet.create({
   },
   carName: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_60,
     lineHeight: 28,
   },
@@ -499,7 +499,7 @@ const s = StyleSheet.create({
   plate: {
     fontSize: 17,
     color: colors.GRAY_60,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
   },
   row: {
@@ -509,13 +509,13 @@ const s = StyleSheet.create({
   },
   date: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
   },
   time: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_50,
     lineHeight: 25,
   },
@@ -556,7 +556,7 @@ const s = StyleSheet.create({
   },
   actionText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.WHITE,
     lineHeight: 25,
   },

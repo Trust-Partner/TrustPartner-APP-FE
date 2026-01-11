@@ -137,7 +137,7 @@ const s = StyleSheet.create({
   },
   name: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_80,
     lineHeight: 31,
   },
@@ -145,7 +145,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginLeft: 4,
     paddingHorizontal: 12,
@@ -172,7 +172,7 @@ const s = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,

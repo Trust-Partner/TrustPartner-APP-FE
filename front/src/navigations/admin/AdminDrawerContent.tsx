@@ -82,13 +82,13 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
     marginBottom: 28,
   },
   label: {
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_90,
   },
   divider: {
@@ -98,7 +98,7 @@ const s = StyleSheet.create({
   },
   logout: {
     color: colors.RED_50,
-    fontWeight: '500',
+    fontWeight: '600',
     fontSize: 20,
   },
 });

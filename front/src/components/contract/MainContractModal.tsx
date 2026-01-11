@@ -233,17 +233,17 @@ const s = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.GRAY_90,
   },
   reserverLabel: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
   },
   subTitle: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_90,
   },
   infoBox: {
@@ -257,12 +257,12 @@ const s = StyleSheet.create({
   },
   infoText: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   infoValue: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.PRIMARY_50,
   },
   btnBox: {
@@ -296,7 +296,7 @@ const s = StyleSheet.create({
   btnText: {
     fontSize: 17,
     color: colors.GRAY_90,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },

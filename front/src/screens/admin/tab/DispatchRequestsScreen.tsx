@@ -278,17 +278,17 @@ const s = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 22,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_90,
   },
   count: {
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   headerSub: {
     marginTop: 8,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_40,
   },
   loadingContainer: {
@@ -303,7 +303,7 @@ const s = StyleSheet.create({
   },
   errorText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: colors.RED_50,
     textAlign: 'center',
     marginBottom: 8,
@@ -324,7 +324,7 @@ const s = StyleSheet.create({
   retryText: {
     color: colors.PRIMARY_50,
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   emptyContainer: {
     flex: 1,
@@ -362,7 +362,7 @@ const s = StyleSheet.create({
   },
   company: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_60,
     lineHeight: 24,
   },
@@ -404,7 +404,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '500',
     lineHeight: 22,
     color: colors.GRAY_60,
   },
