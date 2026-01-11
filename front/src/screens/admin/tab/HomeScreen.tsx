@@ -384,7 +384,7 @@ const s = StyleSheet.create({
   newAlertText: {
     color: colors.BLACK,
     fontSize: 17,
-    lineHeight: 15.4,
+    lineHeight: 25,
     fontWeight: '400',
   },
   alertContainer: {

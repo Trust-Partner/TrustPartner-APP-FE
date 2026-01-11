@@ -242,7 +242,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: -1.5,
     paddingVertical: 0,
     includeFontPadding: false,
@@ -311,7 +311,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   cardDateText: {
@@ -334,7 +334,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   carNumber: {
@@ -342,7 +342,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0.7,
   },
 });

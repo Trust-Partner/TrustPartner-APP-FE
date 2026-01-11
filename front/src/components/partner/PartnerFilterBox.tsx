@@ -126,7 +126,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   divider: {
     borderWidth: 0.5,
@@ -158,7 +158,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   applyButton: {
     marginTop: 8,

@@ -112,7 +112,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
     textAlign: 'center',
   },
   field: {

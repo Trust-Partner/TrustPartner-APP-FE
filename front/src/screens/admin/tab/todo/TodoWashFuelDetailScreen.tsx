@@ -328,7 +328,7 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   item: {
@@ -385,7 +385,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   row: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   date: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
@@ -409,7 +409,7 @@ const s = StyleSheet.create({
   actionText: {
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   loadingContainer: {
     flex: 1,

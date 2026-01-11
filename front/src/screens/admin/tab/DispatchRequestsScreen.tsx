@@ -364,7 +364,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
-    lineHeight: 17,
+    lineHeight: 24,
   },
   badge: {
     backgroundColor: colors.YELLOW_00,
@@ -376,12 +376,12 @@ const s = StyleSheet.create({
   },
   badgeText: {
     fontSize: 17,
-    lineHeight: 15,
+    lineHeight: 22,
     color: colors.GRAY_60,
   },
   time: {
     fontSize: 17,
-    lineHeight: 15,
+    lineHeight: 22,
     color: colors.GRAY_60,
     marginRight: 10,
   },
@@ -405,7 +405,7 @@ const s = StyleSheet.create({
     paddingVertical: 6,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15,
+    lineHeight: 22,
     color: colors.GRAY_60,
   },
   textGray: {

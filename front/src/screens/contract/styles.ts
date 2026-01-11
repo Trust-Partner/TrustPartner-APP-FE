@@ -26,13 +26,13 @@ export const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
   },
   vehicleNumber: {
     fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 
@@ -59,7 +59,7 @@ export const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 
   card: {
@@ -108,7 +108,7 @@ export const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 
   memoContainerBox: {
@@ -161,7 +161,7 @@ export const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: 400,
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   memoAddBtn: {
     paddingVertical: 12,

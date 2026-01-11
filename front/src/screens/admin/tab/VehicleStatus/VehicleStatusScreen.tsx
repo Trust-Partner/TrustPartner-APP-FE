@@ -486,13 +486,13 @@ const s = StyleSheet.create({
   cardTitle: {
     fontWeight: '600',
     fontSize: 18,
-    lineHeight: 16.8,
+    lineHeight: 28,
     color: colors.GRAY_90,
     marginRight: 8,
   },
   cardBadge: {
     fontSize: 17,
-    lineHeight: 15.4,
+    lineHeight: 25,
     backgroundColor: colors.GRAY_10,
     borderRadius: 10,
     paddingHorizontal: 12,
@@ -579,14 +579,14 @@ const s = StyleSheet.create({
     color: colors.GRAY_00,
     fontSize: 8,
     fontWeight: '600',
-    lineHeight: 14,
+    lineHeight: 20,
   },
   filterText: {
     marginRight: 8,
     color: colors.GRAY_80,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginBottom: 4,
   },
   filterItem: {

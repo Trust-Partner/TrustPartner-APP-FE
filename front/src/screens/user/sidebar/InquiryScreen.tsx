@@ -151,7 +151,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   contactBox: {
@@ -176,7 +176,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -1 : 0,
   },
   contactName: {

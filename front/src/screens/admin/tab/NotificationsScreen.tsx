@@ -94,7 +94,7 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginLeft: 12,
   },
   badge: {
@@ -108,7 +108,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_90,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   alertBox: {
     borderWidth: 1,
@@ -131,7 +131,7 @@ const s = StyleSheet.create({
   message: {
     fontSize: 17,
     color: colors.GRAY_90,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   right: {
     flexDirection: 'row',
@@ -141,7 +141,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   dot: {
     width: 4,

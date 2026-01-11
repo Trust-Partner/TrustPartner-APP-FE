@@ -62,7 +62,7 @@ export const modalLayoutStyles = StyleSheet.create({
     color: colors.PRIMARY_50,
     fontSize: 18,
     fontWeight: '400',
-    lineHeight: 16.8,
+    lineHeight: 28,
     borderRadius: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -272,7 +272,7 @@ export const modalLayoutStyles = StyleSheet.create({
     fontSize: 17,
     color: colors.PRIMARY_50,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   footer: {
     marginTop: 24,
@@ -305,7 +305,7 @@ export const modalLayoutStyles = StyleSheet.create({
   footerBtnText: {
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -1 : 0,
   },
   draftText: {

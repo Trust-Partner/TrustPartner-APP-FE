@@ -363,7 +363,7 @@ const s = StyleSheet.create({
     marginHorizontal: 4,
     fontSize: 18,
     fontWeight: '400',
-    lineHeight: 16.8,
+    lineHeight: 28,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -388,7 +388,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_80,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   labelSmall: {
@@ -434,7 +434,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   calendarContainer: {
@@ -479,7 +479,7 @@ const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   confirmBtn: {
     flex: 1,
@@ -493,6 +493,6 @@ const s = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 });

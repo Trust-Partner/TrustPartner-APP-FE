@@ -399,7 +399,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   iconBtn: {
@@ -498,7 +498,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_40,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tabTextActive: { color: colors.PRIMARY_50 },
   topDivider: {
@@ -563,7 +563,7 @@ const s = StyleSheet.create({
   searchInput: {
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     color: colors.GRAY_50,
     paddingVertical: 0,
     marginTop: -1.5,
@@ -593,7 +593,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   gradeBadge: {
@@ -605,7 +605,7 @@ const s = StyleSheet.create({
   gradeText: {
     fontSize: 17,
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   arrowSmall: {
