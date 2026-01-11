@@ -47,6 +47,16 @@ const BILLING_STATUS_LABEL: Record<string, string> = {
   CANCELLED: '지급취소',
 };
 
+const PAYMENT_METHOD_LABEL: Record<string, string> = {
+  CARD: '카드',
+  ACCOUNT_TRANSFER: '계좌이체',
+};
+
+const PAYMENT_TIME_LABEL: Record<string, string> = {
+  PREPAID: '선불',
+  POSTPAID: '후불',
+};
+
 const ContractIntegratedScreen = () => {
   const { user } = useAuthStore();
   const route = useRoute<RouteProps>();
@@ -131,10 +141,22 @@ const ContractIntegratedScreen = () => {
     () =>
       payment
         ? {
-            method: payment.paymentMethod,
-            time: payment.paymentTime,
-            amount: String(payment.paymentAmount),
-            note: payment.memo,
+            method: payment.paymentMethod
+              ? PAYMENT_METHOD_LABEL[payment.paymentMethod] ??
+                payment.paymentMethod
+              : '',
+
+            time: payment.paymentTime
+              ? PAYMENT_TIME_LABEL[payment.paymentTime] ?? payment.paymentTime
+              : '',
+
+            amount:
+              payment.paymentAmount !== null &&
+              payment.paymentAmount !== undefined
+                ? String(payment.paymentAmount)
+                : '',
+
+            note: payment.memo ?? '',
           }
         : null,
     [payment],

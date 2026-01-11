@@ -14,7 +14,7 @@ import { HIT_SLOP } from '../../constants/touch';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { useCreateInsuranceContract } from '../../hooks/contracts/useCreateInsuranceContract';
-import { createInsuranceContract } from '../../api/contracts/contract';
+import { useCreateGeneralContract } from '../../hooks/contracts/useCreateGeneralContract';
 
 interface Props {
   visible: boolean;
@@ -35,23 +35,47 @@ export default function MainContractModal({
     isBookmarked,
     isConfirmed,
     reserverName,
+    contractType,
   } = vehicle;
 
-  const isRestricted = isBookmarked || isConfirmed;
+  const canWriteGeneral =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'GENERAL_CONTRACT');
+
+  const canWriteInsurance =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'INSURANCE_CONTRACT');
+
+  const canWriteReplacement =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'INSURANCE_CONTRACT');
+
+  const isDispatchDisabled = isBookmarked || isConfirmed;
 
   const { selectedVehicle, goTo, updateSelectedVehicle } =
     useContractModalStore();
 
-  const { mutateAsync: createContract, isPending } =
-    useCreateInsuranceContract();
+  const { mutateAsync: createGeneralContract, isPending: isGeneralPending } =
+    useCreateGeneralContract();
+
+  const {
+    mutateAsync: createInsuranceContract,
+    isPending: isInsurancePending,
+  } = useCreateInsuranceContract();
+
+  const isCreating = isInsurancePending || isGeneralPending;
+
   const handleSelect = async (
     type: 'general' | 'insurance' | 'replacement' | 'dispatch',
   ) => {
-    const vehicle = selectedVehicle!;
+    const vehicle = selectedVehicle;
     if (!vehicle) return;
 
     // 중복 클릭 방지
-    if (isPending) return;
+    if (isCreating) return;
 
     if (type === 'dispatch') {
       goTo('dispatch');
@@ -64,7 +88,31 @@ export default function MainContractModal({
     }
 
     if (type === 'general') {
-      goTo('general');
+      // 재사용 로직 (이미 일반 계약서가 있는 경우)
+      if (vehicle.contractType === 'GENERAL_CONTRACT' && vehicle.contractId) {
+        goTo('general');
+        return;
+      }
+
+      try {
+        const contractId = await createGeneralContract({
+          carId: vehicle.carId!,
+        });
+
+        updateSelectedVehicle({
+          contractType: 'GENERAL_CONTRACT',
+          contractId,
+          draftingContract: true,
+        });
+
+        goTo('general');
+      } catch {
+        Alert.alert(
+          '계약서 생성 실패',
+          '계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+        );
+      }
+
       return;
     }
 
@@ -151,27 +199,28 @@ export default function MainContractModal({
           <ContractButton
             label="일반계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isRestricted || isPending}
+            disabled={!canWriteGeneral || isCreating}
             onPress={() => handleSelect('general')}
           />
 
           <ContractButton
             label="보험계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isPending}
+            disabled={!canWriteInsurance || isCreating}
             onPress={() => handleSelect('insurance')}
           />
 
           <ContractButton
             label="교체계약서 작성"
             icon={require('../../assets/common/replace.png')}
+            disabled={!canWriteReplacement || isCreating}
             onPress={() => handleSelect('replacement')}
           />
 
           <ContractButton
             label="배차 확정"
             icon={require('../../assets/common/check.png')}
-            disabled={isRestricted}
+            disabled={isDispatchDisabled}
             onPress={() => handleSelect('dispatch')}
           />
         </View>
