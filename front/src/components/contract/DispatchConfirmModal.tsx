@@ -386,9 +386,9 @@ const s = StyleSheet.create({
   },
   replaceBadge: {
     backgroundColor: colors.YELLOW_00,
-    borderRadius: 10,
+    borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 4,
     marginTop: -2,
   },
   replaceBadgeText: {

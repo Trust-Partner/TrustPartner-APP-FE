@@ -496,7 +496,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_10,
     borderRadius: 10,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 4,
     color: colors.GRAY_60,
   },
   badgeRow: {
@@ -505,9 +505,9 @@ const s = StyleSheet.create({
     gap: 4,
   },
   badge: {
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: 16,
     fontSize: 17,
     fontWeight: '500',
     color: colors.GRAY_60,
