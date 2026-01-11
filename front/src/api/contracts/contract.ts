@@ -8,6 +8,31 @@ export interface ApiResponse<T> {
 
 export type ContractType = 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
 
+// 일반 계약서 생성
+export interface CreateGeneralContractRequest {
+  carId: number;
+}
+
+export interface CreateGeneralContractResponse {
+  contractId: number;
+}
+
+export const createGeneralContract = async (
+  body: CreateGeneralContractRequest,
+): Promise<number> => {
+  const res = await axiosInstance.post<
+    ApiResponse<CreateGeneralContractResponse>
+  >('/contracts/v1/general', body);
+
+  const contractId = res.data.data?.contractId;
+
+  if (!contractId) {
+    throw new Error('contractId not found in createGeneralContract response');
+  }
+
+  return contractId;
+};
+
 // 보험 계약서 생성
 export interface CreateInsuranceContractRequest {
   carDispatchId: number;
@@ -67,6 +92,37 @@ export const getContractUploadUrls = async (
       uploadUrl: data.signaturePhoto.uploadUrl,
     },
   };
+};
+
+// 보험 계약서 임시저장 / 최종 저장
+export type PaymentMethod = 'ACCOUNT_TRANSFER' | 'CARD' | 'CASH';
+
+export interface SaveGeneralContractRequest {
+  customerName?: string;
+  customerPhoneNumber?: string;
+  customerAddress?: string;
+
+  paymentMethod?: PaymentMethod;
+  paymentAmount?: number;
+  memo?: string;
+
+  contractPhotoKeys?: string[];
+  fuelQuantity?: number;
+
+  customerSignatureKey?: string;
+
+  /** true = 임시저장, false = 최종저장 */
+  isDraft: boolean;
+}
+
+export const saveGeneralContract = async (
+  contractId: number,
+  body: SaveGeneralContractRequest,
+): Promise<void> => {
+  await axiosInstance.put<ApiResponse<void>>(
+    `/contracts/v1/general/${contractId}`,
+    body,
+  );
 };
 
 // 보험 계약서 임시저장 / 최종 저장
