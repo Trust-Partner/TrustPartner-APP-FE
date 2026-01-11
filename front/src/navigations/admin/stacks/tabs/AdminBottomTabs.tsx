@@ -52,7 +52,7 @@ export default function AdminBottomTabs() {
           borderTopColor: colors.GRAY_10,
           borderTopWidth: 1,
         },
-        tabBarLabelStyle: { fontSize: 18, marginBottom: 2 },
+        tabBarLabelStyle: { fontSize: 14, marginBottom: 2 },
         tabBarIcon: ({ focused }) => (
           <Image
             source={iconMap[route.name as keyof typeof iconMap]}
