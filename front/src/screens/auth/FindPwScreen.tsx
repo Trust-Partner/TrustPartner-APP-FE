@@ -215,13 +215,13 @@ const s = StyleSheet.create({
     marginBottom: 24,
   },
   subText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     marginBottom: 12,
   },
   inputTittle: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '500',
     color: colors.GRAY_80,
     marginBottom: 4,
@@ -247,7 +247,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   checkmark: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.BLACK,
     fontWeight: '600',
     lineHeight: 16,
@@ -255,14 +255,14 @@ const s = StyleSheet.create({
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     lineHeight: 15.4,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 
   roleLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -276,7 +276,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     backgroundColor: colors.GRAY_05,
   },
@@ -296,7 +296,7 @@ const s = StyleSheet.create({
   },
   buttonText: {
     color: colors.WHITE,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },
@@ -310,18 +310,18 @@ const s = StyleSheet.create({
   },
   resultTitle: {
     color: colors.PRIMARY_50,
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '400',
     marginBottom: 4,
   },
   resultText: {
     color: colors.GRAY_60,
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
   },
   resultId: {
     color: colors.PRIMARY_50,
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
   },
   backBtn: {
@@ -337,7 +337,7 @@ const s = StyleSheet.create({
   backText: {
     textAlign: 'center',
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
   },
 });

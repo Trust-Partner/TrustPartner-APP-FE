@@ -81,13 +81,13 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     color: colors.GRAY_90,
     marginBottom: 8,
     textAlign: 'center',
   },
   message: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_60,
     textAlign: 'center',
@@ -113,12 +113,12 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   cancelText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.PRIMARY_50,
     fontWeight: '400',
   },
   confirmText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.WHITE,
     fontWeight: '400',
   },

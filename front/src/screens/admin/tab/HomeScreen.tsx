@@ -229,7 +229,7 @@ export default function AdminHomeScreen() {
                 <View style={{ flex: 1 }}>
                   <Text
                     style={{
-                      fontSize: 11,
+                      fontSize: 17,
                       color: colors.GRAY_90,
                       fontWeight: '500',
                     }}
@@ -274,7 +274,7 @@ const s = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.BLACK,
   },
@@ -342,12 +342,12 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_15,
   },
   cardLabel: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.PRIMARY_90,
   },
   cardValue: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: '600',
     color: colors.BLACK,
   },
@@ -360,12 +360,12 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   cardValueBottom: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: '600',
     color: colors.PRIMARY_50,
   },
   cardSub: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
   },
   alertHeader: {
@@ -383,7 +383,7 @@ const s = StyleSheet.create({
   },
   newAlertText: {
     color: colors.BLACK,
-    fontSize: 11,
+    fontSize: 17,
     lineHeight: 15.4,
     fontWeight: '400',
   },
@@ -405,7 +405,7 @@ const s = StyleSheet.create({
   },
   alertTime: {
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
     marginLeft: 12,
   },
   alertRight: {
@@ -425,6 +425,6 @@ const s = StyleSheet.create({
   },
   emptyText: {
     color: colors.GRAY_50,
-    fontSize: 13,
+    fontSize: 18,
   },
 });

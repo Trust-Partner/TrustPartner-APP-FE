@@ -412,7 +412,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   summaryContainer: {
@@ -447,12 +447,12 @@ const s = StyleSheet.create({
     zIndex: 1,
   },
   value: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '600',
     color: colors.PRIMARY_50,
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
   },
@@ -469,7 +469,7 @@ const s = StyleSheet.create({
     paddingVertical: 8,
   },
   headerText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     textAlign: 'center',
@@ -493,7 +493,7 @@ const s = StyleSheet.create({
     marginLeft: -6,
   },
   cellText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     textAlign: 'center',
@@ -521,7 +521,7 @@ const s = StyleSheet.create({
   },
   actionText: {
     color: colors.WHITE,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },
@@ -532,7 +532,7 @@ const s = StyleSheet.create({
     paddingVertical: 40,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     textAlign: 'center',
   },

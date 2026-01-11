@@ -277,7 +277,7 @@ const s = StyleSheet.create({
     marginBottom: 16,
   },
   headerTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '400',
     color: colors.GRAY_90,
   },
@@ -287,7 +287,7 @@ const s = StyleSheet.create({
   },
   headerSub: {
     marginTop: 8,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_40,
   },
@@ -298,18 +298,18 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   loading: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.RED_50,
     textAlign: 'center',
     marginBottom: 8,
   },
   errorSub: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_50,
     textAlign: 'center',
     marginBottom: 16,
@@ -323,7 +323,7 @@ const s = StyleSheet.create({
   },
   retryText: {
     color: colors.PRIMARY_50,
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: '500',
   },
   emptyContainer: {
@@ -333,7 +333,7 @@ const s = StyleSheet.create({
     paddingBottom: 40,
   },
   emptyText: {
-    fontSize: 13,
+    fontSize: 18,
     color: colors.GRAY_40,
   },
   item: {
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
     marginTop: -2,
   },
   company: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 17,
@@ -375,12 +375,12 @@ const s = StyleSheet.create({
     marginTop: -1.2,
   },
   badgeText: {
-    fontSize: 11,
+    fontSize: 17,
     lineHeight: 15,
     color: colors.GRAY_60,
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     lineHeight: 15,
     color: colors.GRAY_60,
     marginRight: 10,
@@ -403,7 +403,7 @@ const s = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15,
     color: colors.GRAY_60,

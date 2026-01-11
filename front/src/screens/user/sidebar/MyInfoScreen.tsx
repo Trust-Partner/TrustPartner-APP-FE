@@ -105,7 +105,7 @@ const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   profileCard: {
@@ -136,7 +136,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 22.4,
@@ -144,7 +144,7 @@ const s = StyleSheet.create({
   badge: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
     marginLeft: 4,
@@ -171,7 +171,7 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   cardTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -181,12 +181,12 @@ const s = StyleSheet.create({
     marginTop: 8,
   },
   label: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_70,
     marginBottom: 4,
   },
   value: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_90,
     lineHeight: 16.8,
   },

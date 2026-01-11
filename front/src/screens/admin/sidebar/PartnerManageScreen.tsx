@@ -376,7 +376,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   card: {
@@ -396,7 +396,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -426,7 +426,7 @@ const s = StyleSheet.create({
   },
 
   applyButtonText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.WHITE,
   },
@@ -441,7 +441,7 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   selectText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     marginRight: 4,
@@ -466,13 +466,13 @@ const s = StyleSheet.create({
   },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
   dropdownText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
   },
   dropdownTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
@@ -495,7 +495,7 @@ const s = StyleSheet.create({
   },
   tabActive: { backgroundColor: colors.PRIMARY_10 },
   tabText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_40,
     lineHeight: 15.4,
@@ -527,7 +527,7 @@ const s = StyleSheet.create({
     paddingTop: 8,
   },
   cell: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
   },
@@ -536,7 +536,7 @@ const s = StyleSheet.create({
     color: colors.GRAY_80,
   },
   boldCell: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
   },
   partnerHeader: {
@@ -561,7 +561,7 @@ const s = StyleSheet.create({
     marginRight: 6,
   },
   searchInput: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
     color: colors.GRAY_50,
@@ -590,7 +590,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
   },
   partnerName: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 16.8,
@@ -603,7 +603,7 @@ const s = StyleSheet.create({
     paddingVertical: 2,
   },
   gradeText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     lineHeight: 15.4,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -628,7 +628,7 @@ const s = StyleSheet.create({
     marginRight: 6,
   },
   detailText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     flex: 1,

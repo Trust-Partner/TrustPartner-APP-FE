@@ -82,12 +82,12 @@ const s = StyleSheet.create({
     position: 'absolute',
     paddingLeft: 8,
     color: colors.GRAY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     top: Platform.OS === 'android' ? '25%' : '27%',
   },
   input: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
     includeFontPadding: false,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
@@ -102,7 +102,7 @@ const s = StyleSheet.create({
     transform: [{ translateY: -9 }],
   },
   unitText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,

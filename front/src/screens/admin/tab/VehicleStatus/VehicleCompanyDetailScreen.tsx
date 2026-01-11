@@ -371,7 +371,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   emptyText: {
-    fontSize: 15,
+    fontSize: 20,
     color: colors.GRAY_40,
   },
   searchBox: {
@@ -395,7 +395,7 @@ const s = StyleSheet.create({
     minHeight: 36,
     paddingVertical: 0,
     marginTop: -1.5,
-    fontSize: 13,
+    fontSize: 18,
   },
   subHeader: {
     flexDirection: 'row',
@@ -409,7 +409,7 @@ const s = StyleSheet.create({
     marginRight: 8,
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
@@ -448,11 +448,11 @@ const s = StyleSheet.create({
     zIndex: 1,
   },
   value: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '600',
   },
   label: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_70,
     marginTop: 2,
   },
@@ -485,7 +485,7 @@ const s = StyleSheet.create({
     gap: 8,
   },
   carName: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 16.8,
@@ -497,7 +497,7 @@ const s = StyleSheet.create({
     paddingVertical: 2,
   },
   plate: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
     lineHeight: 15.4,
@@ -508,13 +508,13 @@ const s = StyleSheet.create({
     gap: 4,
   },
   date: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -555,7 +555,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   actionText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.WHITE,
     lineHeight: 15.4,

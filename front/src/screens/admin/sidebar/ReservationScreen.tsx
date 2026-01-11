@@ -334,7 +334,7 @@ const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   summaryBox: {
@@ -352,13 +352,13 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   summaryValue: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: '600',
     color: colors.PRIMARY_50,
     marginBottom: 4,
   },
   summaryLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
   },
@@ -393,7 +393,7 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   headerTilte: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -401,7 +401,7 @@ const s = StyleSheet.create({
     marginLeft: 4,
   },
   headerDate: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
     lineHeight: 15.4,
@@ -425,20 +425,20 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   carName: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
     lineHeight: 16.8,
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
     marginLeft: 8,
   },
   managerName: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -463,7 +463,7 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
   },
   detailText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -485,7 +485,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   emptyText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_40,
   },

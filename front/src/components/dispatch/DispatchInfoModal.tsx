@@ -200,12 +200,12 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_40,
     lineHeight: 15.4,
   },
   value: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     marginTop: 4,
   },

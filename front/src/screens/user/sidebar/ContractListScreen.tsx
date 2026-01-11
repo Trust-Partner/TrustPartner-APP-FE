@@ -218,7 +218,7 @@ const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   searchBox: {
@@ -239,7 +239,7 @@ const s = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,
@@ -262,7 +262,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
   },
-  dateText: { fontSize: 11, fontWeight: '400', color: colors.GRAY_50 },
+  dateText: { fontSize: 17, fontWeight: '400', color: colors.GRAY_50 },
   icon: {
     width: 12,
     height: 12,
@@ -308,14 +308,14 @@ const s = StyleSheet.create({
     marginRight: 6,
   },
   cardText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
     lineHeight: 16.8,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   cardDateText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
     lineHeight: Platform.OS === 'ios' ? 16.8 : 12,
@@ -331,7 +331,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
   },
   carName: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -339,7 +339,7 @@ const s = StyleSheet.create({
   },
   carNumber: {
     marginLeft: 4,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     lineHeight: 15.4,

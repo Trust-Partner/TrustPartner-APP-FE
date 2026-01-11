@@ -264,7 +264,7 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
@@ -300,7 +300,7 @@ const s = StyleSheet.create({
     gap: 8,
   },
   carName: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
   },
@@ -311,7 +311,7 @@ const s = StyleSheet.create({
     paddingVertical: 2,
   },
   plate: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
   },
   row: {
@@ -320,11 +320,11 @@ const s = StyleSheet.create({
     gap: 4,
   },
   date: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
   },
   smallIcon: {
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   actionText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.WHITE,
   },
@@ -371,7 +371,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     textAlign: 'center',
   },

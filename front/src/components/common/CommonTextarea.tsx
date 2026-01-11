@@ -46,7 +46,7 @@ const s = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
     includeFontPadding: false,
     paddingVertical: 0,

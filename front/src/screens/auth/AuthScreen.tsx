@@ -231,7 +231,7 @@ const s = StyleSheet.create({
     marginBottom: 24,
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     marginBottom: 8,
     fontWeight: '500',
     color: colors.GRAY_80,
@@ -243,7 +243,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     marginBottom: 12,
-    fontSize: 11,
+    fontSize: 17,
     backgroundColor: colors.GRAY_05,
   },
   inputContainer: {
@@ -259,7 +259,7 @@ const s = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 8,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
-    fontSize: 11,
+    fontSize: 17,
   },
   inputError: {
     borderColor: colors.RED_50,
@@ -292,13 +292,13 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   checkmark: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     lineHeight: 16,
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
     lineHeight: 15.4,
     marginTop: Platform.OS === 'android' ? -2 : 0,
@@ -320,7 +320,7 @@ const s = StyleSheet.create({
   loginText: {
     color: colors.WHITE,
     fontWeight: '400',
-    fontSize: 11,
+    fontSize: 17,
   },
   bottomLinks: {
     flexDirection: 'row',
@@ -328,7 +328,7 @@ const s = StyleSheet.create({
   },
   link: {
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
   },
   divider: {
     marginHorizontal: 14,

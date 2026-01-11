@@ -178,7 +178,7 @@ const s = StyleSheet.create({
     padding: 16,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   profileCard: {
@@ -207,7 +207,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   name: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_80,
     lineHeight: 22.4,
@@ -215,7 +215,7 @@ const s = StyleSheet.create({
   badge: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
     marginLeft: 4,
@@ -224,7 +224,7 @@ const s = StyleSheet.create({
     borderRadius: 100,
   },
   branch: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
     lineHeight: 15.4,
@@ -256,7 +256,7 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   cardTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -275,7 +275,7 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   selectText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 15.4,
@@ -307,7 +307,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_05,
   },
   dropdownText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
     lineHeight: 15.4,
@@ -325,13 +325,13 @@ const s = StyleSheet.create({
     borderBottomColor: colors.GRAY_15,
   },
   tableLeft: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
     lineHeight: 15.4,
   },
   tableRight: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
     lineHeight: 15.4,
@@ -353,23 +353,23 @@ const s = StyleSheet.create({
     alignItems: 'flex-end',
   },
   gradeLabel: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '400',
     color: colors.GRAY_80,
   },
   gradeSub: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   rateText: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.PRIMARY_50,
   },
   rateDesc: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     marginTop: 4,

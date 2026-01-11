@@ -220,7 +220,7 @@ const s = StyleSheet.create({
   },
   backButton: { marginRight: 8 },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
     lineHeight: 22.4,
@@ -235,7 +235,7 @@ const s = StyleSheet.create({
   },
   countText: {
     color: colors.GRAY_60,
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     lineHeight: 15.4,
   },
@@ -257,7 +257,7 @@ const s = StyleSheet.create({
     fontWeight: '400',
     color: colors.GRAY_60,
     textAlign: 'center',
-    fontSize: 11,
+    fontSize: 17,
   },
   row: {
     flexDirection: 'row',
@@ -281,7 +281,7 @@ const s = StyleSheet.create({
   td: {
     fontWeight: '400',
     textAlign: 'center',
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
   },
 });

@@ -328,7 +328,7 @@ const SalesManageScreen = () => {
                 ))
               ) : (
                 <View style={{ padding: 16, alignItems: 'center' }}>
-                  <Text style={{ color: colors.GRAY_50, fontSize: 12 }}>
+                  <Text style={{ color: colors.GRAY_50, fontSize: 18 }}>
                     배차 내역이 없습니다.
                   </Text>
                 </View>
@@ -393,7 +393,7 @@ const s = StyleSheet.create({
     marginRight: 4,
   },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
     lineHeight: 16.8,
@@ -404,7 +404,7 @@ const s = StyleSheet.create({
     gap: 4,
   },
   tag: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
@@ -421,13 +421,13 @@ const s = StyleSheet.create({
     paddingVertical: 8,
   },
   totalAmount: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: '600',
     color: colors.PRIMARY_50,
     textAlign: 'center',
   },
   totalSub: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     textAlign: 'center',
@@ -447,20 +447,20 @@ const s = StyleSheet.create({
     paddingVertical: 8,
   },
   cardAmount: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.PRIMARY_50,
     textAlign: 'center',
   },
   cardLabel: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '600',
     color: colors.GRAY_50,
     textAlign: 'center',
     marginTop: 4,
   },
   cardSub: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     textAlign: 'center',
@@ -480,7 +480,7 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   gradeText: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
@@ -496,17 +496,17 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   infoLabel: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.PRIMARY_80,
   },
   infoValue: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.PRIMARY_80,
   },
   infoSub: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
     marginTop: 4,
   },
@@ -522,18 +522,18 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   dispatchTitle: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
   },
   dispatchDate: {
-    fontSize: 11,
+    fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   dispatchAmount: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '600',
     color: colors.PRIMARY_50,
   },
@@ -548,12 +548,12 @@ const s = StyleSheet.create({
     // marginTop: 8,
   },
   footerText: {
-    fontSize: 12,
+    fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
   },
   footerAmount: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.PRIMARY_50,
   },
