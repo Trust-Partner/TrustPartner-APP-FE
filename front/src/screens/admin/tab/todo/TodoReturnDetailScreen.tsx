@@ -267,7 +267,7 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   item: {

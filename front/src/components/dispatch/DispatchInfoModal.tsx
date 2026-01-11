@@ -202,7 +202,7 @@ const s = StyleSheet.create({
   label: {
     fontSize: 17,
     color: colors.GRAY_40,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   value: {
     fontSize: 17,

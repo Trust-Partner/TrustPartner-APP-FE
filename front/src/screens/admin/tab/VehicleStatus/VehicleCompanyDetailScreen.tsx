@@ -412,7 +412,7 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   summaryContainer: {
@@ -488,7 +488,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_60,
-    lineHeight: 16.8,
+    lineHeight: 28,
   },
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
@@ -500,7 +500,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   row: {
     flexDirection: 'row',
@@ -511,13 +511,13 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   time: {
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   smallIcon: {
     width: 12,
@@ -558,6 +558,6 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.WHITE,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 });

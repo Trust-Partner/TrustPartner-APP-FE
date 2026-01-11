@@ -300,7 +300,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.BLACK,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   alertContainer: {
     marginTop: 8,

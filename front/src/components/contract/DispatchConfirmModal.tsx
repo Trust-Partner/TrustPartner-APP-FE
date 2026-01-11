@@ -322,7 +322,7 @@ const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     fontSize: 18,
     fontWeight: '400',
-    lineHeight: 16.8,
+    lineHeight: 28,
     borderRadius: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -367,7 +367,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     color: colors.GRAY_60,
     fontWeight: '500',
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginRight: 8,
   },
   replaceModelBadge: {
@@ -382,7 +382,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   replaceBadge: {
     backgroundColor: colors.YELLOW_00,
@@ -395,7 +395,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   requestCard: {
     flexDirection: 'row',
@@ -431,7 +431,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     color: colors.GRAY_60,
     fontWeight: '500',
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginRight: 8,
   },
   badge: {
@@ -449,7 +449,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   subTitle: {
     fontSize: 17,
@@ -479,7 +479,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_80,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   footer: {

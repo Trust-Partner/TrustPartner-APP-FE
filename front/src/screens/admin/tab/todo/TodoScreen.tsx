@@ -300,7 +300,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   activeTabText: {
     color: colors.WHITE,
@@ -321,7 +321,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   card: {
     width: '49%',
@@ -340,12 +340,12 @@ const s = StyleSheet.create({
     fontWeight: '600',
     fontSize: 18,
     color: colors.GRAY_90,
-    lineHeight: 16.8,
+    lineHeight: 28,
   },
   totalTag: {
     fontSize: 17,
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
     borderRadius: 10,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -384,7 +384,7 @@ const s = StyleSheet.create({
   badgeText: {
     fontSize: 17,
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   cardDefault: {
     backgroundColor: colors.WHITE,

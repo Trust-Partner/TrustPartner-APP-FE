@@ -36,8 +36,9 @@ const s = StyleSheet.create({
     fontWeight: '400',
     color: colors.GRAY_50,
     paddingHorizontal: 12,
-    paddingVertical: Platform.OS === 'android' ? 2 : 8,
+    paddingVertical: Platform.OS === 'android' ? 6 : 12,
     includeFontPadding: false,
     textAlignVertical: 'center',
+    lineHeight: 25,
   },
 });

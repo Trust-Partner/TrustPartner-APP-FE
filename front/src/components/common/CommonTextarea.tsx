@@ -50,6 +50,6 @@ const s = StyleSheet.create({
     color: colors.GRAY_90,
     includeFontPadding: false,
     paddingVertical: 0,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 });

@@ -210,14 +210,14 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_80,
-    lineHeight: 22.4,
+    lineHeight: 31,
   },
   badge: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginLeft: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -227,7 +227,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_80,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: 4,
   },
   card: {
@@ -259,7 +259,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 
@@ -278,7 +278,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginRight: 4,
   },
   arrow: {
@@ -310,7 +310,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   dropdownTextActive: {
     color: colors.PRIMARY_50,
@@ -328,13 +328,13 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tableRight: {
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 
   /* 지급비율 */

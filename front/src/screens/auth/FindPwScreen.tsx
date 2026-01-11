@@ -250,14 +250,14 @@ const s = StyleSheet.create({
     fontSize: 18,
     color: colors.BLACK,
     fontWeight: '600',
-    lineHeight: 16,
+    lineHeight: 23,
     textAlign: 'center',
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
     fontSize: 17,
     color: colors.GRAY_80,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 
@@ -298,7 +298,7 @@ const s = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   resultBox: {
     backgroundColor: colors.PRIMARY_10,

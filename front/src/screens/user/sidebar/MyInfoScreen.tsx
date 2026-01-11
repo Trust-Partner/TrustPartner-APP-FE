@@ -139,14 +139,14 @@ const s = StyleSheet.create({
     fontSize: 22,
     fontWeight: '600',
     color: colors.GRAY_80,
-    lineHeight: 22.4,
+    lineHeight: 31,
   },
   badge: {
     backgroundColor: colors.PRIMARY_10,
     color: colors.PRIMARY_50,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginLeft: 4,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -174,7 +174,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   infoRow: {
@@ -188,6 +188,6 @@ const s = StyleSheet.create({
   value: {
     fontSize: 18,
     color: colors.GRAY_90,
-    lineHeight: 16.8,
+    lineHeight: 28,
   },
 });

@@ -121,7 +121,7 @@ export default function CommonSearchDropdown({
                 fontSize: 17,
                 fontWeight: '400',
                 color: colors.WHITE,
-                lineHeight: 15.4,
+                lineHeight: 25,
               }}
             >
               기타
@@ -165,12 +165,13 @@ const s = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.GRAY_05,
     paddingHorizontal: 12,
-    paddingVertical: Platform.OS === 'android' ? 2 : 8,
+    paddingVertical: Platform.OS === 'android' ? 6 : 12,
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
     includeFontPadding: false,
     textAlignVertical: 'center',
+    lineHeight: 25,
   },
   dropdown: {
     borderWidth: 1,

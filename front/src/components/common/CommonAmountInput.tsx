@@ -90,10 +90,10 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_50,
     includeFontPadding: false,
-    paddingVertical: Platform.OS === 'android' ? 2 : 8,
+    paddingVertical: Platform.OS === 'android' ? 6 : 12,
     textAlignVertical: 'center',
     paddingRight: 25,
-    marginTop: -1,
+    lineHeight: 25,
   },
   unitBox: {
     position: 'absolute',
@@ -105,6 +105,6 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 });

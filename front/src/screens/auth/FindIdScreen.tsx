@@ -234,7 +234,7 @@ const s = StyleSheet.create({
     color: colors.WHITE,
     fontSize: 17,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   resultBox: {
     backgroundColor: colors.PRIMARY_10,

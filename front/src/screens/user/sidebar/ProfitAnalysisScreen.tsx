@@ -381,7 +381,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   selectBox: {
@@ -447,7 +447,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_40,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tabTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
@@ -501,13 +501,13 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tableRight: {
     fontSize: 17,
     fontWeight: '400',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   rateCard: {
     backgroundColor: colors.GRAY_05,
@@ -568,7 +568,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   inquiryText: {
@@ -589,7 +589,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: colors.WHITE,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 });

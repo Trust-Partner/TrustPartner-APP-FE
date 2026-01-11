@@ -297,7 +297,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     color: colors.GRAY_90,
     fontWeight: '400',
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   btnTextDisabled: {

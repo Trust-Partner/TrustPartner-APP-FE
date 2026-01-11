@@ -396,7 +396,7 @@ const s = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   gradeTagBox: {
@@ -407,7 +407,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
     backgroundColor: colors.PRIMARY_05,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -483,7 +483,7 @@ const s = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
     color: colors.PRIMARY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   infoBox: {
     borderWidth: 1,

@@ -294,13 +294,13 @@ const s = StyleSheet.create({
   checkmark: {
     fontSize: 18,
     fontWeight: '600',
-    lineHeight: 16,
+    lineHeight: 23,
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
     fontSize: 17,
     color: colors.GRAY_80,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   loginBtn: {
