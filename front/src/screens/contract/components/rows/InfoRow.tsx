@@ -32,7 +32,7 @@ export const InfoRow = ({ label, value, suffix, copyable, onCopy }: Props) => {
             >
               <Image
                 source={require('../../../../assets/common/copy.png')}
-                style={{ width: 14, height: 14, tintColor: colors.GRAY_80 }}
+                style={{ width: 20, height: 20, tintColor: colors.GRAY_80 }}
               />
             </Pressable>
           </View>

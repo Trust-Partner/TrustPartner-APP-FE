@@ -299,8 +299,8 @@ export default function VehicleReplaceModal({
                           </View>
                           <View
                             style={{
-                              width: 16,
-                              height: 16,
+                              width: 20,
+                              height: 20,
                               borderWidth: 1,
                               borderColor: colors.PRIMARY_50,
 

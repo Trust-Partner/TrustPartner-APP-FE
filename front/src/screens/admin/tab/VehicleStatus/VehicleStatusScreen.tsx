@@ -420,8 +420,8 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
   },
   searchIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.GRAY_60,
     marginRight: 6,
@@ -517,8 +517,8 @@ const s = StyleSheet.create({
   badgeBlue: { backgroundColor: colors.PRIMARY_10 },
   badgeRed: { backgroundColor: colors.RED_05 },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginLeft: 'auto',
     resizeMode: 'contain',
   },
@@ -562,8 +562,8 @@ const s = StyleSheet.create({
     marginBottom: 16,
   },
   checkBox: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,

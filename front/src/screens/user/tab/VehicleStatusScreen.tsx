@@ -477,11 +477,11 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   date: { fontSize: 17, color: colors.GRAY_50 },
   time: { fontSize: 17, color: colors.GRAY_50 },
-  smallIcon: { width: 12, height: 12 },
+  smallIcon: { width: 18, height: 18 },
 
   rightWrap: { flexDirection: 'row', alignItems: 'center' },
 
-  arrowIcon: { width: 16, height: 16, resizeMode: 'contain' },
+  arrowIcon: { width: 20, height: 20, resizeMode: 'contain' },
   arrowWrap: {
     paddingLeft: 10,
     justifyContent: 'center',
@@ -506,8 +506,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   locationIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     marginRight: 4,
   },
   locationText: {

@@ -85,7 +85,7 @@ export default function PartnerManageScreen() {
               <View style={s.headerLeft}>
                 <Image
                   source={require('../../../assets/admin-partner/chart.png')}
-                  style={{ width: 16, height: 16, marginRight: 4 }}
+                  style={{ width: 20, height: 20, marginRight: 4 }}
                 />
                 <Text style={s.title}>월별 통계</Text>
               </View>
@@ -107,7 +107,7 @@ export default function PartnerManageScreen() {
                 >
                   <Image
                     source={require('../../../assets/admin-partner/filter.png')}
-                    style={{ width: 12, height: 12, tintColor: colors.GRAY_50 }}
+                    style={{ width: 18, height: 18, tintColor: colors.GRAY_50 }}
                   />
                 </Pressable>
 
@@ -226,8 +226,8 @@ export default function PartnerManageScreen() {
                 <Image
                   source={require('../../../assets/common/building.png')}
                   style={{
-                    width: 16,
-                    height: 16,
+                    width: 20,
+                    height: 20,
                     marginRight: 4,
                   }}
                 />
@@ -266,8 +266,8 @@ export default function PartnerManageScreen() {
                         <Image
                           source={require('../../../assets/admin-partner/building.png')}
                           style={{
-                            width: 16,
-                            height: 16,
+                            width: 20,
+                            height: 20,
                             tintColor: colors.PRIMARY_50,
                             marginRight: 6,
                           }}
@@ -447,8 +447,8 @@ const s = StyleSheet.create({
     marginRight: 4,
   },
   arrow: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.GRAY_50,
   },
   dropdown: {
@@ -554,8 +554,8 @@ const s = StyleSheet.create({
     paddingVertical: Platform.OS === 'android' ? 0 : 8,
   },
   searchIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     resizeMode: 'contain',
     tintColor: colors.GRAY_60,
     marginRight: 6,
@@ -609,8 +609,8 @@ const s = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   arrowSmall: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_50,
   },
   detailBox: {
@@ -623,8 +623,8 @@ const s = StyleSheet.create({
     marginTop: 6,
   },
   detailIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 6,
   },
   detailText: {
@@ -635,7 +635,7 @@ const s = StyleSheet.create({
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   copyIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
   },
 });

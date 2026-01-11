@@ -362,18 +362,18 @@ const s = StyleSheet.create({
   },
   iconRow: { flexDirection: 'row', gap: 4 },
   washIcon: {
-    width: 10,
-    height: 10,
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
     tintColor: colors.PRIMARY_50,
   },
   fuelIcon: {
-    width: 10,
-    height: 10,
+    width: 16,
+    height: 16,
     resizeMode: 'contain',
     tintColor: colors.RED_50,
   },
-  smallIcon: { width: 12, height: 12, resizeMode: 'contain' },
+  smallIcon: { width: 18, height: 18, resizeMode: 'contain' },
   carName: { fontSize: 18, fontWeight: '600', color: colors.GRAY_60 },
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
@@ -396,7 +396,7 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  arrowIcon: { width: 16, height: 16, resizeMode: 'contain' },
+  arrowIcon: { width: 20, height: 20, resizeMode: 'contain' },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',

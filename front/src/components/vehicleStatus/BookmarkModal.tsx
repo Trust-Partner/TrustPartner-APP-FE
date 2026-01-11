@@ -331,15 +331,15 @@ const s = StyleSheet.create({
   },
   closeBtn: {
     alignSelf: 'flex-end',
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     resizeMode: 'contain',
     marginRight: -8,
   },
   closeIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_60,
   },
   title: {
@@ -371,8 +371,8 @@ const s = StyleSheet.create({
     marginTop: 24,
   },
   checkbox: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     marginRight: 8,
@@ -424,8 +424,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   dateIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     resizeMode: 'contain',
     tintColor: colors.GRAY_50,
     marginRight: 8,

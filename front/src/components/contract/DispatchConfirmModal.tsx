@@ -289,15 +289,15 @@ const s = StyleSheet.create({
   },
   closeBtn: {
     alignSelf: 'flex-end',
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     justifyContent: 'center',
     resizeMode: 'contain',
     marginRight: -8,
   },
   closeIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_60,
   },
   headerRow: {
@@ -462,8 +462,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   checkbox: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     marginRight: 8,
