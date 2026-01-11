@@ -108,15 +108,15 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   topAction: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 4,
   },
   topActionActive: {
@@ -147,8 +147,8 @@ const s = StyleSheet.create({
     gap: 4,
   },
   chip: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 4,
   },
   chipActive: {
@@ -164,7 +164,7 @@ const s = StyleSheet.create({
     marginTop: 8,
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   applyButtonText: {

@@ -313,7 +313,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   subHeader: {
     flexDirection: 'row',
@@ -347,8 +347,8 @@ const s = StyleSheet.create({
   },
   itemBody: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   itemTop: {
     flexDirection: 'row',
@@ -378,8 +378,8 @@ const s = StyleSheet.create({
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   plate: {
     fontSize: 17,
@@ -403,7 +403,7 @@ const s = StyleSheet.create({
     marginTop: 16,
     gap: 8,
   },
-  actionBtn: { padding: 8, borderRadius: 4 },
+  actionBtn: { padding: 12, borderRadius: 4 },
   blueBorderBtn: { borderWidth: 1, borderColor: colors.PRIMARY_50 },
   redBorderBtn: { borderWidth: 1, borderColor: colors.RED_50 },
   actionText: {

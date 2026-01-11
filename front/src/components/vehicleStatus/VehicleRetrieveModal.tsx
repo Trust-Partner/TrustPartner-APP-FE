@@ -168,7 +168,7 @@ export default function VehicleRetrieveModal({
                             alignItems: 'center',
                             backgroundColor: colors.PRIMARY_05,
                             borderRadius: 4,
-                            padding: 8,
+                            padding: 12,
                             marginBottom: 8,
                           }}
                           onPress={() =>

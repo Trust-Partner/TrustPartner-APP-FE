@@ -362,7 +362,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   emptyContainer: {
     flex: 1,
@@ -381,7 +381,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
   },
   searchIcon: {
     width: 14,
@@ -400,7 +400,7 @@ const s = StyleSheet.create({
   subHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 20,
     backgroundColor: colors.GRAY_00,
@@ -427,7 +427,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -471,8 +471,8 @@ const s = StyleSheet.create({
   },
   itemBody: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   itemTop: {
     flexDirection: 'row',
@@ -493,8 +493,8 @@ const s = StyleSheet.create({
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   plate: {
     fontSize: 17,
@@ -545,7 +545,7 @@ const s = StyleSheet.create({
     gap: 8,
   },
   actionBtn: {
-    padding: 8,
+    padding: 12,
     borderRadius: 4,
   },
   grayBtn: {

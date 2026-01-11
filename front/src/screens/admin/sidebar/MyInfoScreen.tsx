@@ -175,7 +175,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     fontSize: 20,
@@ -184,13 +184,13 @@ const s = StyleSheet.create({
   profileCard: {
     backgroundColor: colors.WHITE,
     borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     marginBottom: 16,
   },
   profileCircle: {
-    padding: 12,
+    padding: 16,
     borderRadius: 100,
     backgroundColor: colors.PRIMARY_05,
     alignItems: 'center',
@@ -219,8 +219,8 @@ const s = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 15.4,
     marginLeft: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 100,
   },
   branch: {
@@ -233,8 +233,8 @@ const s = StyleSheet.create({
   card: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
@@ -271,8 +271,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   selectText: {
     fontSize: 17,
@@ -299,7 +299,7 @@ const s = StyleSheet.create({
     zIndex: 99,
   },
   dropdownItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
     alignSelf: 'center',
   },
@@ -320,7 +320,7 @@ const s = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.GRAY_15,
   },
@@ -341,7 +341,7 @@ const s = StyleSheet.create({
   rateCard: {
     backgroundColor: colors.GRAY_05,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',

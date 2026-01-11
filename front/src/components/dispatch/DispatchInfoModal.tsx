@@ -161,7 +161,7 @@ const s = StyleSheet.create({
     borderRadius: 8,
     paddingTop: 8,
     paddingBottom: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
   },
   closeBtn: {
@@ -182,7 +182,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 6,
-    padding: 8,
+    padding: 12,
   },
   blueBox: {
     borderColor: colors.PRIMARY_15,

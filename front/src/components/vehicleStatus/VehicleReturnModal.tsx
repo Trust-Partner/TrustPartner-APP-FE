@@ -131,7 +131,7 @@ export default function VehicleReturnModal({
                     alignItems: 'center',
                     backgroundColor: colors.PRIMARY_05,
                     borderRadius: 4,
-                    padding: 8,
+                    padding: 12,
                     marginBottom: 8,
                   }}
                   onPress={() => updateField(opt.key, !formData[opt.key])}

@@ -327,7 +327,7 @@ const SalesManageScreen = () => {
                   </View>
                 ))
               ) : (
-                <View style={{ padding: 16, alignItems: 'center' }}>
+                <View style={{ padding: 20, alignItems: 'center' }}>
                   <Text style={{ color: colors.GRAY_50, fontSize: 18 }}>
                     배차 내역이 없습니다.
                   </Text>
@@ -365,13 +365,13 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   scroll: {
-    padding: 16,
+    padding: 20,
   },
   section: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
@@ -409,8 +409,8 @@ const s = StyleSheet.create({
     color: colors.PRIMARY_50,
     lineHeight: 15.4,
     backgroundColor: colors.PRIMARY_05,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 10,
   },
   totalBox: {
@@ -418,7 +418,7 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_20,
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   totalAmount: {
     fontSize: 22,
@@ -444,7 +444,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   cardAmount: {
     fontSize: 20,
@@ -476,8 +476,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.PRIMARY_05,
     borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   gradeText: {
     fontSize: 17,
@@ -489,7 +489,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_05,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -515,7 +515,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',

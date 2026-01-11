@@ -284,7 +284,7 @@ const s = StyleSheet.create({
     borderRadius: 8,
     paddingTop: 8,
     paddingBottom: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
   },
   closeBtn: {
@@ -324,8 +324,8 @@ const s = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 16.8,
     borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   emptyText: {
     fontSize: 18,
@@ -341,8 +341,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     backgroundColor: colors.WHITE,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     marginTop: 8,
   },
   replaceLeft: {
@@ -374,8 +374,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 50,
-    paddingHorizontal: 10,
-    paddingVertical: 2,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     marginTop: 2,
   },
   replaceModelText: {
@@ -387,8 +387,8 @@ const s = StyleSheet.create({
   replaceBadge: {
     backgroundColor: colors.YELLOW_00,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     marginTop: -2,
   },
   replaceBadgeText: {
@@ -405,8 +405,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     backgroundColor: colors.WHITE,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     marginTop: 8,
   },
   requestLeft: {
@@ -444,8 +444,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     fontSize: 17,
     color: colors.GRAY_60,
     fontWeight: '400',
@@ -492,7 +492,7 @@ const s = StyleSheet.create({
   sendBtn: {
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     alignItems: 'center',
   },
   sendBtnContent: {

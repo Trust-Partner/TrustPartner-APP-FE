@@ -408,7 +408,7 @@ export default function PrepaymentScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
@@ -427,7 +427,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 14,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -466,7 +466,7 @@ const s = StyleSheet.create({
   rowLayout: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   headerText: {
     fontSize: 17,
@@ -513,11 +513,11 @@ const s = StyleSheet.create({
     justifyContent: 'flex-end',
     gap: 8,
     marginVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   actionBtn: {
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   actionText: {
     color: colors.WHITE,
@@ -529,7 +529,7 @@ const s = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 40,
+    paddingVertical: 80,
   },
   errorText: {
     fontSize: 20,

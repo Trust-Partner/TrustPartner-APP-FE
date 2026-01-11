@@ -122,7 +122,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     fontSize: 20,
@@ -133,8 +133,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -159,7 +159,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.PRIMARY_20,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
   },
   contactRow: {
@@ -209,7 +209,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 8,
+    padding: 12,
   },
   noticeTitle: {
     fontSize: 18,

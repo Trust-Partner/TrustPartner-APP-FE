@@ -8,7 +8,7 @@ export const modalLayoutStyles = StyleSheet.create({
     borderRadius: 8,
     paddingTop: 8,
     paddingBottom: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
   },
   loadingOverlay: {
@@ -64,8 +64,8 @@ export const modalLayoutStyles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 16.8,
     borderRadius: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   stepDots: {
     flexDirection: 'row',
@@ -97,7 +97,7 @@ export const modalLayoutStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     width: '49%',
     backgroundColor: colors.GRAY_05,
   },
@@ -134,7 +134,7 @@ export const modalLayoutStyles = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     backgroundColor: colors.GRAY_05,
-    padding: 12,
+    padding: 16,
     marginBottom: 8,
   },
   photoGrid: {
@@ -162,7 +162,7 @@ export const modalLayoutStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   addIconCircle: {
-    padding: 4,
+    padding: 8,
     borderRadius: 18,
     backgroundColor: colors.PRIMARY_50,
     alignItems: 'center',
@@ -200,7 +200,7 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   signatureBox: {
     alignItems: 'center',
-    padding: 12,
+    padding: 16,
     backgroundColor: colors.GRAY_05,
     borderRadius: 4,
     borderWidth: 1,
@@ -249,7 +249,7 @@ export const modalLayoutStyles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.PRIMARY_10,
-    padding: 12,
+    padding: 16,
     width: '100%',
   },
   missingTitle: {
@@ -265,8 +265,8 @@ export const modalLayoutStyles = StyleSheet.create({
   },
   missingTag: {
     backgroundColor: colors.PRIMARY_10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
   missingTagText: {
     fontSize: 17,
@@ -284,7 +284,7 @@ export const modalLayoutStyles = StyleSheet.create({
   footerBtn: {
     flex: 1,
     alignItems: 'center',
-    padding: 8,
+    padding: 12,
     borderRadius: 4,
   },
   buttonContent: {
@@ -334,7 +334,7 @@ export const modalLayoutStyles = StyleSheet.create({
   sendBtn: {
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     alignItems: 'center',
     marginBottom: 24,
   },

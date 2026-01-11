@@ -113,7 +113,7 @@ export default function CommonSearchDropdown({
               backgroundColor: colors.PRIMARY_50,
               borderRadius: 12,
               paddingHorizontal: 6,
-              paddingVertical: 2,
+              paddingVertical: 6,
             }}
           >
             <Text
@@ -164,7 +164,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     backgroundColor: colors.GRAY_05,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
     fontSize: 17,
     fontWeight: '400',
@@ -183,7 +183,7 @@ const s = StyleSheet.create({
     elevation: 10,
   },
   option: {
-    padding: 8,
+    padding: 12,
   },
   optionText: {
     fontSize: 17,
@@ -191,7 +191,7 @@ const s = StyleSheet.create({
     color: colors.GRAY_50,
   },
   optionCustom: {
-    padding: 8,
+    padding: 12,
     borderWidth: 1,
     borderColor: colors.PRIMARY_10,
     backgroundColor: colors.PRIMARY_00,

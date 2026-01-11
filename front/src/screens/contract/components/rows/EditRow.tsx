@@ -22,7 +22,7 @@ export const EditRow = ({ label, value, onChangeText }: Props) => (
         borderWidth: 1,
         borderColor: colors.GRAY_10,
         borderRadius: 4,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         paddingVertical: Platform.OS === 'android' ? 0 : 8,
         fontSize: 17,
         color: colors.GRAY_90,

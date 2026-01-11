@@ -271,7 +271,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   header: {
     marginBottom: 16,
@@ -316,8 +316,8 @@ const s = StyleSheet.create({
   },
   retryBtn: {
     alignSelf: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 6,
   },
@@ -341,8 +341,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     marginBottom: 8,
   },
   rowWrap: {
@@ -369,7 +369,7 @@ const s = StyleSheet.create({
   badge: {
     backgroundColor: colors.YELLOW_00,
     paddingHorizontal: 6,
-    paddingVertical: 2,
+    paddingVertical: 6,
     borderRadius: 10,
     marginLeft: 6,
     marginTop: -1.2,
@@ -401,8 +401,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     fontSize: 17,
     fontWeight: '400',
     lineHeight: 15,

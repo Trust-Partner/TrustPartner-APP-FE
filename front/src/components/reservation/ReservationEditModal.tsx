@@ -98,7 +98,7 @@ const s = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.GRAY_05,
     borderRadius: 6,
-    padding: 12,
+    padding: 16,
     marginVertical: 16,
   },
   carName: {
@@ -129,7 +129,7 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     paddingVertical: Platform.OS === 'android' ? 2 : 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     fontSize: 18,
     color: colors.GRAY_80,
   },

@@ -210,7 +210,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 16,
   },
   subHeader: {
@@ -230,8 +230,8 @@ const s = StyleSheet.create({
     marginLeft: 8,
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   countText: {
     color: colors.GRAY_60,
@@ -250,8 +250,8 @@ const s = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: colors.GRAY_05,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   th: {
     fontWeight: '400',
@@ -274,7 +274,7 @@ const s = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingLeft: 6,
     paddingRight: 12,
   },
