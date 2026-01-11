@@ -312,9 +312,9 @@ const s = StyleSheet.create({
     gap: 8,
   },
   countBadge: {
-    borderRadius: 10,
+    borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 4,
     backgroundColor: colors.PRIMARY_10,
   },
   countText: {
@@ -347,7 +347,7 @@ const s = StyleSheet.create({
     color: colors.GRAY_60,
     lineHeight: 25,
     borderRadius: 10,
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 12,
     backgroundColor: colors.GRAY_10,
   },
@@ -357,9 +357,9 @@ const s = StyleSheet.create({
     gap: 4,
   },
   badge: {
-    paddingVertical: 6,
+    paddingVertical: 4,
     paddingHorizontal: 12,
-    borderRadius: 10,
+    borderRadius: 16,
     fontSize: 17,
     color: colors.GRAY_80,
   },
@@ -369,8 +369,8 @@ const s = StyleSheet.create({
   badgeWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 10,
-    paddingVertical: 6,
+    borderRadius: 16,
+    paddingVertical: 4,
     paddingHorizontal: 12,
   },
   badgeBlueBg: { backgroundColor: colors.PRIMARY_10 },
