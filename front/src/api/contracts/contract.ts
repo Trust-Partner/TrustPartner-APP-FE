@@ -94,8 +94,10 @@ export const getContractUploadUrls = async (
   };
 };
 
-// 보험 계약서 임시저장 / 최종 저장
-export type PaymentMethod = 'ACCOUNT_TRANSFER' | 'CARD' | 'CASH';
+// 일반 계약서 임시저장 / 최종 저장
+export type PaymentMethod = 'ACCOUNT_TRANSFER' | 'CARD';
+
+export type PaymentTime = 'PREPAID' | 'POSTPAID';
 
 export interface SaveGeneralContractRequest {
   customerName?: string;
@@ -103,6 +105,7 @@ export interface SaveGeneralContractRequest {
   customerAddress?: string;
 
   paymentMethod?: PaymentMethod;
+  paymentTime?: PaymentTime;
   paymentAmount?: number;
   memo?: string;
 
@@ -158,7 +161,41 @@ export const saveInsuranceContract = async (
   );
 };
 
-// 임시저장 불러오기
+// 일반 계약서 임시저장 불러오기
+export interface GetGeneralContractDraftResponse {
+  contractId: number;
+  contractType: 'GENERAL_CONTRACT';
+
+  fuelQuantity?: number;
+  memo?: string;
+
+  contractFilePaths?: string[];
+  signatureFilePath?: string;
+
+  customerDetail?: {
+    customerName?: string;
+    customerPhoneNumber?: string;
+    customerAddress?: string;
+  };
+
+  paymentDetail?: {
+    paymentMethod?: 'ACCOUNT_TRANSFER' | 'CARD';
+    paymentTime?: 'PREPAID' | 'POSTPAID';
+    paymentAmount?: number;
+  };
+}
+
+export const getGeneralContractDraft = async (
+  contractId: number,
+): Promise<GetGeneralContractDraftResponse> => {
+  const res = await axiosInstance.get<
+    ApiResponse<GetGeneralContractDraftResponse>
+  >(`/contracts/v1/${contractId}`);
+
+  return res.data.data;
+};
+
+// 보험 게약서 임시저장 불러오기
 export interface GetContractDetailResponse {
   contractId: number;
   contractType: ContractType;
