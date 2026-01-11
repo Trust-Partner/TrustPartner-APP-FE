@@ -35,9 +35,25 @@ export default function MainContractModal({
     isBookmarked,
     isConfirmed,
     reserverName,
+    contractType,
   } = vehicle;
 
-  const isRestricted = isBookmarked || isConfirmed;
+  const canWriteGeneral =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'GENERAL_CONTRACT');
+
+  const canWriteInsurance =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'INSURANCE_CONTRACT');
+
+  const canWriteReplacement =
+    isBookmarked ||
+    !isConfirmed ||
+    (isConfirmed && contractType === 'INSURANCE_CONTRACT');
+
+  const isDispatchDisabled = isBookmarked || isConfirmed;
 
   const { selectedVehicle, goTo, updateSelectedVehicle } =
     useContractModalStore();
@@ -183,27 +199,28 @@ export default function MainContractModal({
           <ContractButton
             label="일반계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            // disabled={isRestricted || isCreating}
+            disabled={!canWriteGeneral || isCreating}
             onPress={() => handleSelect('general')}
           />
 
           <ContractButton
             label="보험계약서 작성"
             icon={require('../../assets/common/file_icon.png')}
-            disabled={isCreating}
+            disabled={!canWriteInsurance || isCreating}
             onPress={() => handleSelect('insurance')}
           />
 
           <ContractButton
             label="교체계약서 작성"
             icon={require('../../assets/common/replace.png')}
+            disabled={!canWriteReplacement || isCreating}
             onPress={() => handleSelect('replacement')}
           />
 
           <ContractButton
             label="배차 확정"
             icon={require('../../assets/common/check.png')}
-            disabled={isRestricted}
+            disabled={isDispatchDisabled}
             onPress={() => handleSelect('dispatch')}
           />
         </View>
