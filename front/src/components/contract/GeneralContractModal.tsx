@@ -8,6 +8,8 @@ import {
   Alert,
   PermissionsAndroid,
   Keyboard,
+  ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { colors } from '../../constants/colors';
@@ -15,7 +17,7 @@ import { useContractForm } from '../../hooks/useContractForm';
 import CommonInput from '../common/CommonInput';
 import CommonTextarea from '../common/CommonTextarea';
 import CommonAmountInput from '../common/CommonAmountInput';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
 import CommonModal from '../common/CommonModal';
@@ -23,28 +25,43 @@ import { useContractModalStore } from '../../stores/useContractModalStore';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
+import { useGeneralContractDraft } from '../../hooks/contracts/useGeneralContractDraft';
+import { useSaveGeneralContract } from '../../hooks/contracts/useSaveGeneralContract';
+import { PaymentMethod, PaymentTime } from '../../api/contracts/contract';
 
 interface Props {
   onBack: () => void;
   vehicle: ContractVehicleBase;
 }
 
+const PAYMENT_METHOD_LABEL: Record<PaymentMethod, string> = {
+  ACCOUNT_TRANSFER: '계좌이체',
+  CARD: '카드',
+};
+
+const PAYMENT_METHODS: PaymentMethod[] = ['ACCOUNT_TRANSFER', 'CARD'];
+
+const PAYMENT_TIME_LABEL: Record<PaymentTime, string> = {
+  PREPAID: '선불',
+  POSTPAID: '후불',
+};
+
+const PAYMENT_TIMES: PaymentTime[] = ['PREPAID', 'POSTPAID'];
+
 export default function GeneralContractModal({ onBack, vehicle }: Props) {
+  if (!vehicle) return null;
+
+  /** 필수 입력값 */
   const requiredFields = ['phone'];
 
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [isDraftApplied, setIsDraftApplied] = useState(false);
 
-  useEffect(() => {
-    const initialMissing = requiredFields.filter(k => !formData[k]);
-    setMissingFields(initialMissing);
-    setIsComplete(initialMissing.length === 0);
-  }, []);
-
+  /** 계약서 폼 */
   const {
     updateField,
-    saveDraftData,
     step,
     nextStep,
     prevStep,
@@ -61,48 +78,113 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
     setIsComplete(mf.length === 0);
   });
 
-  const [isSigning, setIsSigning] = useState(false);
-  const [signatureKey, setSignatureKey] = useState(0);
+  /** 임시저장 불러오기 */
+  const { data: draft, isLoading: isDraftLoading } = useGeneralContractDraft(
+    vehicle.contractId ?? undefined,
+  );
 
-  const [containerWidth, setContainerWidth] = useState(0);
-  const itemSize = (containerWidth - 24) / 3;
+  useEffect(() => {
+    if (!draft || isDraftApplied) return;
 
+    updateField('customerName', draft.customer?.name);
+    updateField('phone', draft.customer?.phone);
+    updateField('address', draft.customer?.address);
+
+    updateField('paymentMethod', draft.payment?.method);
+    updateField('paymentTime', draft.payment?.time);
+    updateField(
+      'amount',
+      draft.payment?.amount ? String(draft.payment.amount) : undefined,
+    );
+
+    updateField('memo', draft.memo);
+    updateField(
+      'fuel',
+      draft.fuelQuantity ? String(draft.fuelQuantity) : undefined,
+    );
+
+    setIsDraftApplied(true);
+  }, [draft, isDraftApplied, updateField]);
+
+  /** 저장 훅 */
+  const { mutateAsync: saveContract, isPending } = useSaveGeneralContract();
+
+  const isDraftFetching =
+    !!vehicle.contractId && isDraftLoading && !isDraftApplied;
+  const isActionDisabled = isPending || isDraftFetching;
+
+  /** payload builder */
+  const buildPayload = (isDraft: boolean) => ({
+    customerName: formData.customerName,
+    customerPhoneNumber: formData.phone,
+    customerAddress: formData.address,
+
+    paymentMethod: formData.paymentMethod,
+    paymentTime: formData.paymentTime,
+    paymentAmount: formData.amount ? Number(formData.amount) : undefined,
+
+    memo: formData.memo,
+    fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
+
+    isDraft,
+  });
+
+  const mapAssetsToUris = (assets: Asset[]) =>
+    assets.filter(a => !!a.uri).map(a => ({ uri: a.uri! }));
+
+  /** 임시저장 */
+  const handleSaveDraft = async () => {
+    try {
+      await saveContract({
+        contractId: vehicle.contractId!,
+        payload: buildPayload(true),
+        contractPhotos: mapAssetsToUris(photos),
+        signaturePhoto: formData.signature
+          ? { uri: formData.signature }
+          : undefined,
+      });
+
+      Alert.alert('임시저장 완료', '계약서가 임시저장되었습니다.');
+    } catch {
+      Alert.alert('저장 실패', '임시저장 중 오류가 발생했습니다.');
+    }
+  };
+
+  /** 최종 전송 */
   const [sendModalVisible, setSendModalVisible] = useState(false);
   const { closeModal } = useContractModalStore();
 
-  /** 서명 로직 */
-  const handleSignature = (signature: string) => {
-    if (!signature) return;
-    updateField('signature', signature);
-    setSignatureKey(prev => prev + 1);
-  };
+  const handleSendContract = async () => {
+    try {
+      await saveContract({
+        contractId: vehicle.contractId!,
+        payload: buildPayload(false),
+        contractPhotos: mapAssetsToUris(photos),
+        signaturePhoto: formData.signature
+          ? { uri: formData.signature }
+          : undefined,
+      });
 
-  const handleClear = () => {
-    updateField('signature', '');
-    sigRef.current?.clearSignature?.();
-    setSignatureKey(prev => prev + 1);
+      setSendModalVisible(true);
+    } catch {
+      Alert.alert('전송 실패', '계약서 전송 중 오류가 발생했습니다.');
+    }
   };
 
   /** 갤러리 권한 */
   const requestGalleryPermission = async (): Promise<boolean> => {
     if (Platform.OS === 'android') {
-      try {
-        const permission =
-          Platform.Version >= 33
-            ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-            : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+      const permission =
+        Platform.Version >= 33
+          ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+          : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
 
-        const granted = await PermissionsAndroid.request(permission);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(
-            '권한 거부됨',
-            '사진을 추가하려면 갤러리 권한이 필요합니다.',
-          );
-          return false;
-        }
-        return true;
-      } catch (err) {
-        console.warn('권한 요청 오류:', err);
+      const granted = await PermissionsAndroid.request(permission);
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        Alert.alert(
+          '권한 거부됨',
+          '사진을 추가하려면 갤러리 권한이 필요합니다.',
+        );
         return false;
       }
     }
@@ -126,11 +208,25 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
     });
   };
 
-  const handleSendContract = () => {
-    // TODO: 실제 전송 로직
+  /** 서명 */
+  const [isSigning, setIsSigning] = useState(false);
+  const [signatureKey, setSignatureKey] = useState(0);
 
-    setSendModalVisible(true);
+  const handleSignature = (signature: string) => {
+    if (!signature) return;
+    updateField('signature', signature);
+    setSignatureKey(prev => prev + 1);
   };
+
+  const handleClear = () => {
+    updateField('signature', '');
+    sigRef.current?.clearSignature?.();
+    setSignatureKey(prev => prev + 1);
+  };
+
+  /** 사진 grid */
+  const [containerWidth, setContainerWidth] = useState(0);
+  const itemSize = (containerWidth - 24) / 3;
 
   return (
     <Modal
@@ -145,6 +241,13 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Pressable onPress={Keyboard.dismiss}>
           <View style={ms.modal}>
+            {isDraftFetching && (
+              <View style={ms.loadingOverlay}>
+                <ActivityIndicator size="large" color={colors.PRIMARY_50} />
+                <Text style={ms.loadingText}>임시저장 불러오는 중...</Text>
+              </View>
+            )}
+
             <Pressable
               onPress={onBack}
               hitSlop={HIT_SLOP.MEDIUM}
@@ -194,38 +297,44 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
 
               {step === 2 && (
                 <>
-                  {/* 결제방법 선택 */}
                   <View style={ms.radioWrap}>
+                    {/* 결제 수단 */}
                     <View style={ms.radioRow}>
-                      {['계좌이체', '카드'].map(opt => (
+                      {PAYMENT_METHODS.map(method => (
                         <Pressable
-                          key={opt}
+                          key={method}
                           style={ms.radioBox}
-                          onPress={() => updateField('payment', opt)}
+                          onPress={() => updateField('paymentMethod', method)}
                         >
-                          <Text style={ms.radioLabel}>{opt}</Text>
+                          <Text style={ms.radioLabel}>
+                            {PAYMENT_METHOD_LABEL[method]}
+                          </Text>
                           <View
                             style={[
                               ms.radioCircle,
-                              formData.payment === opt && ms.radioActive,
+                              formData.paymentMethod === method &&
+                                ms.radioActive,
                             ]}
                           />
                         </Pressable>
                       ))}
                     </View>
 
+                    {/* 결제 시점 */}
                     <View style={ms.radioRow}>
-                      {['선불', '후불'].map(opt => (
+                      {PAYMENT_TIMES.map(time => (
                         <Pressable
-                          key={opt}
+                          key={time}
                           style={ms.radioBox}
-                          onPress={() => updateField('payment', opt)}
+                          onPress={() => updateField('paymentTime', time)}
                         >
-                          <Text style={ms.radioLabel}>{opt}</Text>
+                          <Text style={ms.radioLabel}>
+                            {PAYMENT_TIME_LABEL[time]}
+                          </Text>
                           <View
                             style={[
                               ms.radioCircle,
-                              formData.payment === opt && ms.radioActive,
+                              formData.paymentTime === time && ms.radioActive,
                             ]}
                           />
                         </Pressable>
@@ -233,14 +342,12 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                     </View>
                   </View>
 
-                  {/* 금액 입력 */}
                   <CommonAmountInput
                     placeholder="금액 입력"
                     value={formData.amount}
                     onChangeText={v => updateField('amount', v)}
                   />
 
-                  {/* 기타 메모사항 */}
                   <CommonTextarea
                     placeholder="기타 메모사항"
                     value={formData.memo}
@@ -384,22 +491,39 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
 
             {/* 하단 */}
             <View style={ms.footer}>
-              {step === 4 && (
+              {step === 4 ? (
                 <>
                   <Pressable
-                    style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
-                    disabled={!isComplete}
+                    style={[
+                      ms.sendBtn,
+                      (!isComplete || isPending) && ms.sendBtnDisabled,
+                    ]}
+                    disabled={!isComplete || isPending}
                     onPress={handleSendContract}
                   >
-                    <Text
-                      style={[
-                        ms.sendBtnText,
-                        !isComplete && { color: colors.GRAY_40 },
-                      ]}
-                    >
-                      계약서 카카오톡 전송하기
-                    </Text>
+                    <View style={ms.buttonContent}>
+                      <Text
+                        style={[
+                          ms.sendBtnText,
+                          (!isComplete || isPending) && {
+                            color: colors.GRAY_40,
+                          },
+                          isPending && { opacity: 0 },
+                        ]}
+                      >
+                        계약서 카카오톡 전송하기
+                      </Text>
+
+                      {isPending && (
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.WHITE}
+                          style={StyleSheet.absoluteFill}
+                        />
+                      )}
+                    </View>
                   </Pressable>
+
                   <View style={ms.footerRow}>
                     <Pressable
                       style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
@@ -411,9 +535,16 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                       />
                       <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
                     </Pressable>
+
                     <Pressable
-                      style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                      onPress={saveDraftData}
+                      style={[
+                        ms.footerBtn,
+                        ms.draftBtn,
+                        { flex: 3 },
+                        isActionDisabled && { opacity: 0.6 },
+                      ]}
+                      disabled={isActionDisabled}
+                      onPress={handleSaveDraft}
                     >
                       <Text style={[ms.footerBtnText, ms.draftText]}>
                         임시저장
@@ -421,72 +552,46 @@ export default function GeneralContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                   </View>
                 </>
-              )}
-
-              {step < 4 && (
+              ) : (
                 <View style={ms.footerRow}>
-                  {step === 1 ? (
-                    <>
-                      <Pressable
-                        style={[ms.footerBtn, ms.draftBtn, { flex: 3 }]}
-                        onPress={saveDraftData}
-                      >
-                        <Text style={[ms.footerBtnText, ms.draftText]}>
-                          임시저장
-                        </Text>
-                      </Pressable>
-
-                      <Pressable
-                        style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                        onPress={nextStep}
-                      >
-                        <Text style={[ms.footerBtnText, ms.nextText]}>
-                          다음
-                        </Text>
-                        <Image
-                          source={require('../../assets/common/right_arrow.png')}
-                          style={ms.nextIcon}
-                        />
-                      </Pressable>
-                    </>
-                  ) : (
-                    <>
-                      <Pressable
-                        style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
-                        onPress={prevStep}
-                      >
-                        <Image
-                          source={require('../../assets/common/left_arrow.png')}
-                          style={ms.prevIcon}
-                        />
-                        <Text style={[ms.footerBtnText, ms.prevText]}>
-                          이전
-                        </Text>
-                      </Pressable>
-
-                      <Pressable
-                        style={[ms.footerBtn, ms.draftBtn, { flex: 2 }]}
-                        onPress={saveDraftData}
-                      >
-                        <Text style={[ms.footerBtnText, ms.draftText]}>
-                          임시저장
-                        </Text>
-                      </Pressable>
-
-                      <Pressable
-                        style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
-                        onPress={nextStep}
-                      >
-                        <Text style={[ms.footerBtnText, ms.nextText]}>
-                          다음
-                        </Text>
-                        <Image
-                          source={require('../../assets/common/right_arrow.png')}
-                          style={ms.nextIcon}
-                        />
-                      </Pressable>
-                    </>
+                  {step > 1 && (
+                    <Pressable
+                      style={[ms.footerBtn, ms.prevBtn, { flex: 1 }]}
+                      onPress={prevStep}
+                    >
+                      <Image
+                        source={require('../../assets/common/left_arrow.png')}
+                        style={ms.prevIcon}
+                      />
+                      <Text style={[ms.footerBtnText, ms.prevText]}>이전</Text>
+                    </Pressable>
                   )}
+
+                  <Pressable
+                    style={[
+                      ms.footerBtn,
+                      ms.draftBtn,
+                      { flex: 3 },
+                      isActionDisabled && { opacity: 0.6 },
+                    ]}
+                    disabled={isActionDisabled}
+                    onPress={handleSaveDraft}
+                  >
+                    <Text style={[ms.footerBtnText, ms.draftText]}>
+                      임시저장
+                    </Text>
+                  </Pressable>
+
+                  <Pressable
+                    style={[ms.footerBtn, ms.nextBtn, { flex: 1 }]}
+                    onPress={nextStep}
+                  >
+                    <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
+                    <Image
+                      source={require('../../assets/common/right_arrow.png')}
+                      style={ms.nextIcon}
+                    />
+                  </Pressable>
                 </View>
               )}
             </View>
