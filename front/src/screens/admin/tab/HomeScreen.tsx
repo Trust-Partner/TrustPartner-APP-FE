@@ -51,7 +51,7 @@ export default function AdminHomeScreen() {
     middle: [
       { label: '배차중', value: data.inUseCarCount },
       { label: '대기중', value: data.availableCarCount },
-      { label: '배차건', value: data.monthlyDispatchCount },
+      { label: '반납신청', value: data.returnRequestCarCount },
     ],
     bottom: [
       {
