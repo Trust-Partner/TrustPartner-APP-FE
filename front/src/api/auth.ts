@@ -67,3 +67,21 @@ export async function findId(
 
   return response.data.data;
 }
+
+// Find Password - Send Code
+export interface FindPasswordCodePayload {
+  name: string;
+  phoneNumber: string;
+}
+
+export async function sendFindPasswordCode(
+  role: 'admin' | 'user',
+  payload: FindPasswordCodePayload,
+): Promise<void> {
+  const endpoint =
+    role === 'admin'
+      ? '/auth/v1/staff/find-password/code'
+      : '/auth/v1/partner/find-password/code';
+
+  await axiosInstance.post<ApiResponse<null>>(endpoint, payload);
+}
