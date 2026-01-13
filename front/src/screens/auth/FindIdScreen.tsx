@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function FindIdScreen() {
   const navigation = useNavigation();
+  const [role, setRole] = useState<'admin' | 'user' | null>(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
@@ -41,6 +42,10 @@ export default function FindIdScreen() {
   };
 
   const handleSendCode = () => {
+    if (!role) {
+      Alert.alert('알림', '사용자 구분을 선택해주세요.');
+      return;
+    }
     if (!name || !phone) {
       Alert.alert('알림', '이름과 휴대폰 번호를 입력해주세요.');
       return;
@@ -78,6 +83,29 @@ export default function FindIdScreen() {
           <Text style={s.subText}>
             * 가입 시 등록된 정보와 일치해야 합니다.
           </Text>
+
+          {/* 사용자 구분 */}
+          <Text style={s.inputTittle}>사용자 구분</Text>
+          <View style={s.roleRow}>
+            {[
+              { key: 'admin', label: '매니저' },
+              { key: 'user', label: 'USER' },
+            ].map(({ key, label }) => (
+              <TouchableOpacity
+                key={key}
+                style={s.roleItem}
+                onPress={() =>
+                  setRole(role === key ? null : (key as 'admin' | 'user'))
+                }
+                disabled={verified}
+              >
+                <View style={s.checkbox}>
+                  {role === key && <Text style={s.checkmark}>✓</Text>}
+                </View>
+                <Text style={s.checkboxLabel}>{label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* 이름 */}
           <Text style={s.inputTittle}>이름</Text>
@@ -201,6 +229,40 @@ const s = StyleSheet.create({
     fontWeight: '600',
     color: colors.GRAY_80,
     marginBottom: 4,
+  },
+  roleRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    justifyContent: 'space-between',
+  },
+  roleItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    marginRight: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkmark: {
+    fontSize: 18,
+    color: colors.BLACK,
+    fontWeight: '700',
+    lineHeight: 23,
+    textAlign: 'center',
+    transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
+  },
+  checkboxLabel: {
+    fontSize: 17,
+    color: colors.GRAY_80,
+    lineHeight: 25,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   row: {
     flexDirection: 'row',
