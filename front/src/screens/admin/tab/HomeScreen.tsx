@@ -229,9 +229,9 @@ export default function AdminHomeScreen() {
                 <View style={{ flex: 1 }}>
                   <Text
                     style={{
-                      fontSize: 11,
+                      fontSize: 17,
                       color: colors.GRAY_90,
-                      fontWeight: '500',
+                      fontWeight: '600',
                     }}
                   >
                     {item.message}
@@ -267,15 +267,15 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 16,
   },
   section: {
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.BLACK,
   },
   rowBetween: {
@@ -289,8 +289,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.PRIMARY_15,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
   topCardContent: {
     flexDirection: 'row',
@@ -312,7 +312,7 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.PRIMARY_15,
-    paddingVertical: 12,
+    paddingVertical: 16,
     alignItems: 'center',
   },
   cardIconImage: {
@@ -323,7 +323,7 @@ const s = StyleSheet.create({
     width: '49%',
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 4,
-    paddingVertical: 12,
+    paddingVertical: 16,
     gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -334,7 +334,7 @@ const s = StyleSheet.create({
     width: '32%',
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 4,
-    paddingVertical: 12,
+    paddingVertical: 16,
     gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
@@ -342,13 +342,13 @@ const s = StyleSheet.create({
     borderColor: colors.PRIMARY_15,
   },
   cardLabel: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: colors.PRIMARY_90,
   },
   cardValue: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 30,
+    fontWeight: '700',
     color: colors.BLACK,
   },
   valueCircle: {
@@ -360,12 +360,12 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   cardValueBottom: {
-    fontSize: 22,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   cardSub: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
   },
   alertHeader: {
@@ -376,36 +376,36 @@ const s = StyleSheet.create({
   newAlertBadge: {
     backgroundColor: colors.GRAY_15,
     borderRadius: 2,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     marginLeft: 12,
     marginTop: Platform.OS === 'android' ? 2 : 0,
   },
   newAlertText: {
     color: colors.BLACK,
-    fontSize: 11,
-    lineHeight: 15.4,
-    fontWeight: '400',
+    fontSize: 17,
+    lineHeight: 25,
+    fontWeight: '500',
   },
   alertContainer: {
     borderWidth: 1,
     borderColor: colors.GRAY_15,
     borderRadius: 4,
     backgroundColor: colors.WHITE,
-    padding: 8,
+    padding: 12,
     maxHeight: 180,
   },
   alertItem: {
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   alertTime: {
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
     marginLeft: 12,
   },
   alertRight: {
@@ -421,10 +421,10 @@ const s = StyleSheet.create({
   },
   emptyBox: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 60,
   },
   emptyText: {
     color: colors.GRAY_50,
-    fontSize: 13,
+    fontSize: 18,
   },
 });

@@ -89,16 +89,16 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 8,
+    padding: 12,
   },
   selectText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   icon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_60,
   },
   dropdown: {
@@ -110,11 +110,11 @@ const s = StyleSheet.create({
     maxHeight: 180,
   },
   option: {
-    padding: 8,
+    padding: 12,
   },
   optionText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   optionActive: {
@@ -122,6 +122,6 @@ const s = StyleSheet.create({
   },
   optionTextActive: {
     color: colors.PRIMARY_50,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

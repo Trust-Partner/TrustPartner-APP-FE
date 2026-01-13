@@ -408,11 +408,11 @@ export default function PrepaymentScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   summaryContainer: {
@@ -427,7 +427,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 14,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -447,13 +447,13 @@ const s = StyleSheet.create({
     zIndex: 1,
   },
   value: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   label: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   listBox: {
@@ -466,11 +466,11 @@ const s = StyleSheet.create({
   rowLayout: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   headerText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -493,8 +493,8 @@ const s = StyleSheet.create({
     marginLeft: -6,
   },
   cellText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
     textAlignVertical: 'center',
@@ -504,8 +504,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   buttonRow: {
@@ -513,26 +513,26 @@ const s = StyleSheet.create({
     justifyContent: 'flex-end',
     gap: 8,
     marginVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   actionBtn: {
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   actionText: {
     color: colors.WHITE,
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
+    fontSize: 17,
+    fontWeight: '500',
+    lineHeight: 25,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 40,
+    paddingVertical: 80,
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     textAlign: 'center',
   },

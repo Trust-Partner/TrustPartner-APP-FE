@@ -113,15 +113,15 @@ export default function CommonSearchDropdown({
               backgroundColor: colors.PRIMARY_50,
               borderRadius: 12,
               paddingHorizontal: 6,
-              paddingVertical: 2,
+              paddingVertical: 6,
             }}
           >
             <Text
               style={{
-                fontSize: 11,
-                fontWeight: '400',
+                fontSize: 17,
+                fontWeight: '500',
                 color: colors.WHITE,
-                lineHeight: 15.4,
+                lineHeight: 25,
               }}
             >
               기타
@@ -164,13 +164,14 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 4,
     backgroundColor: colors.GRAY_05,
-    paddingHorizontal: 8,
-    paddingVertical: Platform.OS === 'android' ? 2 : 8,
-    fontSize: 11,
-    fontWeight: '400',
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === 'android' ? 6 : 12,
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
     includeFontPadding: false,
     textAlignVertical: 'center',
+    lineHeight: 25,
   },
   dropdown: {
     borderWidth: 1,
@@ -183,15 +184,15 @@ const s = StyleSheet.create({
     elevation: 10,
   },
   option: {
-    padding: 8,
+    padding: 12,
   },
   optionText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
   },
   optionCustom: {
-    padding: 8,
+    padding: 12,
     borderWidth: 1,
     borderColor: colors.PRIMARY_10,
     backgroundColor: colors.PRIMARY_00,

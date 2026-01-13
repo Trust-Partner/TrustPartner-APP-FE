@@ -176,7 +176,7 @@ export default function VehicleGarageWaitModal({
                           alignItems: 'center',
                           backgroundColor: colors.PRIMARY_05,
                           borderRadius: 4,
-                          padding: 8,
+                          padding: 12,
                           marginBottom: 8,
                         }}
                         onPress={() => updateField(opt.key, !checked)}
@@ -184,8 +184,8 @@ export default function VehicleGarageWaitModal({
                         <View>
                           <Text
                             style={{
-                              fontSize: 11,
-                              fontWeight: '400',
+                              fontSize: 17,
+                              fontWeight: '500',
                               color: colors.GRAY_80,
                             }}
                           >
@@ -193,8 +193,8 @@ export default function VehicleGarageWaitModal({
                           </Text>
                           <Text
                             style={{
-                              fontSize: 11,
-                              fontWeight: '400',
+                              fontSize: 17,
+                              fontWeight: '500',
                               color: colors.GRAY_40,
                             }}
                           >
@@ -203,8 +203,8 @@ export default function VehicleGarageWaitModal({
                         </View>
                         <View
                           style={{
-                            width: 16,
-                            height: 16,
+                            width: 20,
+                            height: 20,
                             borderWidth: 1,
                             borderColor: colors.PRIMARY_50,
                             borderRadius: 4,

@@ -201,7 +201,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    padding: 16,
+    padding: 20,
   },
   loading: {
     flex: 1,
@@ -210,8 +210,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.BLACK,
   },
   rowBetween: {
@@ -225,8 +225,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.PRIMARY_15,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
   },
   cardRow: {
     flexDirection: 'row',
@@ -234,14 +234,14 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   cardLabel: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: colors.PRIMARY_90,
     marginBottom: 4,
   },
   cardValue: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 30,
+    fontWeight: '700',
     color: colors.BLACK,
   },
   cardIcon: {
@@ -253,7 +253,7 @@ const s = StyleSheet.create({
     marginTop: 20,
     backgroundColor: colors.PRIMARY_00,
     borderRadius: 4,
-    paddingVertical: 12,
+    paddingVertical: 16,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.PRIMARY_15,
@@ -273,14 +273,14 @@ const s = StyleSheet.create({
     tintColor: colors.PRIMARY_50,
   },
   requestTitle: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: colors.GRAY_90,
     marginBottom: 8,
   },
   requestDesc: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   alertHeader: {
@@ -291,16 +291,16 @@ const s = StyleSheet.create({
   newAlertBadge: {
     backgroundColor: colors.GRAY_15,
     borderRadius: 2,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     marginLeft: 12,
     marginTop: Platform.OS === 'android' ? 2 : 0,
   },
   newAlertText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.BLACK,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   alertContainer: {
     marginTop: 8,
@@ -308,12 +308,12 @@ const s = StyleSheet.create({
     borderColor: colors.GRAY_15,
     borderRadius: 4,
     backgroundColor: colors.WHITE,
-    padding: 8,
+    padding: 12,
     maxHeight: 180,
   },
   alertItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderRadius: 4,
     backgroundColor: colors.PRIMARY_00,
     flexDirection: 'row',
@@ -321,14 +321,14 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   alertMessage: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_90,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   alertRight: { flexDirection: 'row', alignItems: 'center' },
   alertTime: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   unreadDot: {
@@ -340,10 +340,10 @@ const s = StyleSheet.create({
   },
   emptyBox: {
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingVertical: 60,
   },
   emptyText: {
     color: colors.GRAY_50,
-    fontSize: 13,
+    fontSize: 18,
   },
 });

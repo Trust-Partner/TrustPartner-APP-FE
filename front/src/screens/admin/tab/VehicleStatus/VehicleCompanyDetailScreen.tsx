@@ -362,7 +362,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   emptyContainer: {
     flex: 1,
@@ -371,7 +371,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.GRAY_00,
   },
   emptyText: {
-    fontSize: 15,
+    fontSize: 20,
     color: colors.GRAY_40,
   },
   searchBox: {
@@ -381,11 +381,11 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
   },
   searchIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
     tintColor: colors.GRAY_60,
     marginRight: 6,
@@ -395,12 +395,12 @@ const s = StyleSheet.create({
     minHeight: 36,
     paddingVertical: 0,
     marginTop: -1.5,
-    fontSize: 13,
+    fontSize: 18,
   },
   subHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
     paddingBottom: 20,
     backgroundColor: colors.GRAY_00,
@@ -409,10 +409,10 @@ const s = StyleSheet.create({
     marginRight: 8,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   summaryContainer: {
@@ -427,7 +427,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -448,11 +448,11 @@ const s = StyleSheet.create({
     zIndex: 1,
   },
   value: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: '700',
   },
   label: {
-    fontSize: 12,
+    fontSize: 18,
     color: colors.GRAY_70,
     marginTop: 2,
   },
@@ -471,8 +471,8 @@ const s = StyleSheet.create({
   },
   itemBody: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   itemTop: {
     flexDirection: 'row',
@@ -485,22 +485,22 @@ const s = StyleSheet.create({
     gap: 8,
   },
   carName: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_60,
-    lineHeight: 16.8,
+    lineHeight: 28,
   },
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   plate: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
-    fontWeight: '400',
-    lineHeight: 15.4,
+    fontWeight: '500',
+    lineHeight: 25,
   },
   row: {
     flexDirection: 'row',
@@ -508,24 +508,24 @@ const s = StyleSheet.create({
     gap: 4,
   },
   date: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   time: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   smallIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   rightWrap: {
@@ -545,7 +545,7 @@ const s = StyleSheet.create({
     gap: 8,
   },
   actionBtn: {
-    padding: 8,
+    padding: 12,
     borderRadius: 4,
   },
   grayBtn: {
@@ -555,9 +555,9 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   actionText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.WHITE,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
 });
