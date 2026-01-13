@@ -70,14 +70,14 @@ const s = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.GRAY_90,
     marginBottom: 28,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 20,
+    fontWeight: '600',
     color: colors.GRAY_90,
   },
   divider: {
@@ -87,7 +87,7 @@ const s = StyleSheet.create({
   },
   logout: {
     color: colors.RED_50,
-    fontWeight: '500',
-    fontSize: 14,
+    fontWeight: '600',
+    fontSize: 20,
   },
 });

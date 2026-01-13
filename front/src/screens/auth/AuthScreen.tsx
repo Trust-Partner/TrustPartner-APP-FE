@@ -215,7 +215,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
     marginHorizontal: 16,
     borderRadius: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 32,
     shadowColor: 'rgba(146, 150, 171, 0.30)',
     shadowOpacity: 0.1,
@@ -225,25 +225,25 @@ const s = StyleSheet.create({
   },
   logo: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'center',
     color: colors.PRIMARY_50,
     marginBottom: 24,
   },
   label: {
-    fontSize: 11,
+    fontSize: 17,
     marginBottom: 8,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   input: {
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
     marginBottom: 12,
-    fontSize: 11,
+    fontSize: 17,
     backgroundColor: colors.GRAY_05,
   },
   inputContainer: {
@@ -257,15 +257,15 @@ const s = StyleSheet.create({
   },
   inputField: {
     flex: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 4 : 8,
-    fontSize: 11,
+    fontSize: 17,
   },
   inputError: {
     borderColor: colors.RED_50,
   },
   eyeBtn: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
   },
   eyeImg: {
     width: 15,
@@ -282,8 +282,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   checkbox: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     marginRight: 8,
@@ -292,20 +292,20 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   checkmark: {
-    fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 16,
+    fontSize: 18,
+    fontWeight: '700',
+    lineHeight: 23,
     transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
   },
   checkboxLabel: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_80,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   loginBtn: {
     backgroundColor: colors.PRIMARY_50,
-    paddingVertical: 12,
+    paddingVertical: 16,
     borderRadius: 4,
     alignItems: 'center',
     marginBottom: 24,
@@ -319,8 +319,8 @@ const s = StyleSheet.create({
   },
   loginText: {
     color: colors.WHITE,
-    fontWeight: '400',
-    fontSize: 11,
+    fontWeight: '500',
+    fontSize: 17,
   },
   bottomLinks: {
     flexDirection: 'row',
@@ -328,7 +328,7 @@ const s = StyleSheet.create({
   },
   link: {
     color: colors.GRAY_80,
-    fontSize: 11,
+    fontSize: 17,
   },
   divider: {
     marginHorizontal: 14,

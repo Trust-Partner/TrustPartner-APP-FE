@@ -151,7 +151,7 @@ export default function VehicleReturnRequestModal({
             {error && (
               <>
                 <View style={{ marginTop: 16 }} />
-                <Text style={{ color: colors.RED_50, fontSize: 12 }}>
+                <Text style={{ color: colors.RED_50, fontSize: 18 }}>
                   {error}
                 </Text>
               </>

@@ -412,7 +412,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingTop: 16,
   },
   summaryContainer: {
@@ -426,7 +426,7 @@ const s = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     backgroundColor: colors.WHITE,
     position: 'relative',
   },
@@ -445,8 +445,8 @@ const s = StyleSheet.create({
     borderRadius: 4,
     zIndex: 1,
   },
-  value: { fontSize: 20, fontWeight: '600' },
-  label: { fontSize: 12, color: colors.GRAY_70, marginTop: 2 },
+  value: { fontSize: 28, fontWeight: '700' },
+  label: { fontSize: 18, color: colors.GRAY_70, marginTop: 2 },
 
   item: {
     flexDirection: 'row',
@@ -457,31 +457,31 @@ const s = StyleSheet.create({
     backgroundColor: colors.WHITE,
   },
   statusBar: { width: 2, marginLeft: 4, marginVertical: 4 },
-  itemBody: { flex: 1, paddingVertical: 8, paddingHorizontal: 12 },
+  itemBody: { flex: 1, paddingVertical: 12, paddingHorizontal: 16 },
   itemTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   carInfo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  carName: { fontSize: 12, fontWeight: '500', color: colors.GRAY_60 },
+  carName: { fontSize: 18, fontWeight: '600', color: colors.GRAY_60 },
 
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
-  plate: { fontSize: 11, color: colors.GRAY_60 },
+  plate: { fontSize: 17, color: colors.GRAY_60 },
 
   row: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  date: { fontSize: 11, color: colors.GRAY_50 },
-  time: { fontSize: 11, color: colors.GRAY_50 },
-  smallIcon: { width: 12, height: 12 },
+  date: { fontSize: 17, color: colors.GRAY_50 },
+  time: { fontSize: 17, color: colors.GRAY_50 },
+  smallIcon: { width: 18, height: 18 },
 
   rightWrap: { flexDirection: 'row', alignItems: 'center' },
 
-  arrowIcon: { width: 16, height: 16, resizeMode: 'contain' },
+  arrowIcon: { width: 20, height: 20, resizeMode: 'contain' },
   arrowWrap: {
     paddingLeft: 10,
     justifyContent: 'center',
@@ -494,11 +494,11 @@ const s = StyleSheet.create({
     marginTop: 16,
     gap: 8,
   },
-  actionBtn: { padding: 8, borderRadius: 4 },
+  actionBtn: { padding: 12, borderRadius: 4 },
   grayBtn: { backgroundColor: colors.GRAY_60 },
   blueBtn: { backgroundColor: colors.PRIMARY_50 },
   redBtn: { backgroundColor: colors.RED_50 },
-  actionText: { fontSize: 11, fontWeight: '400', color: colors.WHITE },
+  actionText: { fontSize: 17, fontWeight: '500', color: colors.WHITE },
 
   // 위치 전용 스타일
   locationWrap: {
@@ -506,12 +506,12 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   locationIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     marginRight: 4,
   },
   locationText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
   },
 });
