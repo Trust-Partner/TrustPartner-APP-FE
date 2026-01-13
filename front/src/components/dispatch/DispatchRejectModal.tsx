@@ -48,12 +48,12 @@ const s = StyleSheet.create({
     width: '100%',
     borderRadius: 8,
     paddingVertical: 32,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     alignSelf: 'center',
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     color: colors.GRAY_90,
     marginBottom: 24,
     textAlign: 'center',
@@ -66,7 +66,7 @@ const s = StyleSheet.create({
   btn: {
     flex: 1,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
     marginHorizontal: 8,
   },
@@ -78,13 +78,13 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   cancelText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.PRIMARY_50,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   rejectText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.WHITE,
-    fontWeight: '400',
+    fontWeight: '500',
   },
 });

@@ -15,7 +15,7 @@ export default function GreetingPill({ text }: { text: string }) {
 const s = StyleSheet.create({
   pill: {
     minHeight: 36,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.PRIMARY_10,
@@ -23,8 +23,8 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   pillText: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 20,
+    fontWeight: '600',
     color: colors.GRAY_90,
   },
 });

@@ -210,7 +210,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
     paddingVertical: 16,
   },
   subHeader: {
@@ -220,24 +220,24 @@ const s = StyleSheet.create({
   },
   backButton: { marginRight: 8 },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   countBadge: {
     marginLeft: 8,
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   countText: {
     color: colors.GRAY_60,
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
+    fontSize: 17,
+    fontWeight: '500',
+    lineHeight: 25,
   },
   tableWrapper: {
     flex: 1,
@@ -250,14 +250,14 @@ const s = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: colors.GRAY_05,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   th: {
-    fontWeight: '400',
+    fontWeight: '500',
     color: colors.GRAY_60,
     textAlign: 'center',
-    fontSize: 11,
+    fontSize: 17,
   },
   row: {
     flexDirection: 'row',
@@ -274,14 +274,14 @@ const s = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingLeft: 6,
     paddingRight: 12,
   },
   td: {
-    fontWeight: '400',
+    fontWeight: '500',
     textAlign: 'center',
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
   },
 });

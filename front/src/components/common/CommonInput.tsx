@@ -32,12 +32,13 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
-    paddingHorizontal: 8,
-    paddingVertical: Platform.OS === 'android' ? 2 : 8,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === 'android' ? 6 : 12,
     includeFontPadding: false,
     textAlignVertical: 'center',
+    lineHeight: 25,
   },
 });
