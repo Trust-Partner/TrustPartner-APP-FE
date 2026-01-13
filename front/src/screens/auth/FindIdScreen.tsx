@@ -13,14 +13,21 @@ import {
 } from 'react-native';
 import { colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
+import { useFindIdCode } from '../../hooks/auth/useFindIdCode';
+import { useFindId } from '../../hooks/auth/useFindId';
 
 export default function FindIdScreen() {
   const navigation = useNavigation();
+  const [role, setRole] = useState<'admin' | 'user' | null>(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [loginId, setLoginId] = useState<string>('');
+
+  const findIdCodeMutation = useFindIdCode();
+  const findIdMutation = useFindId();
 
   const handlePhoneChange = (text: string) => {
     const numbers = text.replace(/[^0-9]/g, '');
@@ -40,19 +47,66 @@ export default function FindIdScreen() {
     setPhone(formatted);
   };
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
+    if (!role) {
+      Alert.alert('알림', '사용자 구분을 선택해주세요.');
+      return;
+    }
     if (!name || !phone) {
       Alert.alert('알림', '이름과 휴대폰 번호를 입력해주세요.');
       return;
     }
-    setSent(true);
+
+    try {
+      // 하이픈 제거한 숫자만 추출
+      const phoneNumber = phone.replace(/[^0-9]/g, '');
+
+      await findIdCodeMutation.mutateAsync({
+        role,
+        payload: {
+          name,
+          phoneNumber,
+        },
+      });
+
+      setSent(true);
+      Alert.alert('알림', '인증번호가 발송되었습니다.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || '인증번호 발송에 실패했습니다.';
+      Alert.alert('오류', errorMessage);
+    }
   };
 
-  const handleVerify = () => {
-    if (code === '1234') {
+  const handleVerify = async () => {
+    if (!role) {
+      Alert.alert('알림', '사용자 구분을 선택해주세요.');
+      return;
+    }
+    if (!code) {
+      Alert.alert('알림', '인증번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      // 하이픈 제거한 숫자만 추출
+      const phoneNumber = phone.replace(/[^0-9]/g, '');
+
+      const response = await findIdMutation.mutateAsync({
+        role,
+        payload: {
+          name,
+          phoneNumber,
+          verificationCode: code,
+        },
+      });
+
+      setLoginId(response.loginId);
       setVerified(true);
-    } else {
-      Alert.alert('인증 실패', '올바른 인증번호를 입력해주세요.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || '인증번호 확인에 실패했습니다.';
+      Alert.alert('오류', errorMessage);
     }
   };
 
@@ -65,11 +119,11 @@ export default function FindIdScreen() {
         <View style={s.card}>
           <Text style={s.title}>아이디 찾기</Text>
 
-          {verified && (
+          {verified && loginId && (
             <View style={s.resultBox}>
               <Text style={s.resultTitle}>아이디 찾기가 완료되었습니다.</Text>
               <Text style={s.resultText}>
-                회원님의 아이디는 <Text style={s.resultId}>user123</Text>{' '}
+                회원님의 아이디는 <Text style={s.resultId}>{loginId}</Text>{' '}
                 입니다.
               </Text>
             </View>
@@ -78,6 +132,29 @@ export default function FindIdScreen() {
           <Text style={s.subText}>
             * 가입 시 등록된 정보와 일치해야 합니다.
           </Text>
+
+          {/* 사용자 구분 */}
+          <Text style={s.inputTittle}>사용자 구분</Text>
+          <View style={s.roleRow}>
+            {[
+              { key: 'admin', label: '매니저' },
+              { key: 'user', label: 'USER' },
+            ].map(({ key, label }) => (
+              <TouchableOpacity
+                key={key}
+                style={s.roleItem}
+                onPress={() =>
+                  setRole(role === key ? null : (key as 'admin' | 'user'))
+                }
+                disabled={verified}
+              >
+                <View style={s.checkbox}>
+                  {role === key && <Text style={s.checkmark}>✓</Text>}
+                </View>
+                <Text style={s.checkboxLabel}>{label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* 이름 */}
           <Text style={s.inputTittle}>이름</Text>
@@ -108,12 +185,21 @@ export default function FindIdScreen() {
               maxLength={13}
             />
             <TouchableOpacity
-              style={[s.button, sent ? s.buttonDisabled : s.buttonActive]}
-              disabled={sent || verified}
+              style={[
+                s.button,
+                sent || findIdCodeMutation.isPending
+                  ? s.buttonDisabled
+                  : s.buttonActive,
+              ]}
+              disabled={sent || verified || findIdCodeMutation.isPending}
               onPress={handleSendCode}
             >
               <Text style={s.buttonText}>
-                {sent ? '발송 완료' : '인증번호 발송'}
+                {findIdCodeMutation.isPending
+                  ? '발송 중...'
+                  : sent
+                  ? '발송 완료'
+                  : '인증번호 발송'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -135,13 +221,19 @@ export default function FindIdScreen() {
                 <TouchableOpacity
                   style={[
                     s.button,
-                    verified ? s.buttonDisabled : s.buttonActive,
+                    verified || findIdMutation.isPending
+                      ? s.buttonDisabled
+                      : s.buttonActive,
                   ]}
-                  disabled={verified}
+                  disabled={verified || findIdMutation.isPending}
                   onPress={handleVerify}
                 >
                   <Text style={s.buttonText}>
-                    {verified ? '인증 완료' : '확인'}
+                    {findIdMutation.isPending
+                      ? '확인 중...'
+                      : verified
+                      ? '인증 완료'
+                      : '확인'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -201,6 +293,40 @@ const s = StyleSheet.create({
     fontWeight: '600',
     color: colors.GRAY_80,
     marginBottom: 4,
+  },
+  roleRow: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    justifyContent: 'space-between',
+  },
+  roleItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: colors.GRAY_10,
+    marginRight: 8,
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkmark: {
+    fontSize: 18,
+    color: colors.BLACK,
+    fontWeight: '700',
+    lineHeight: 23,
+    textAlign: 'center',
+    transform: [{ translateY: Platform.OS === 'android' ? -1 : 0 }],
+  },
+  checkboxLabel: {
+    fontSize: 17,
+    color: colors.GRAY_80,
+    lineHeight: 25,
+    marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   row: {
     flexDirection: 'row',
