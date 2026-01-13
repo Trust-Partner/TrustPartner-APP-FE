@@ -14,6 +14,7 @@ import {
 import { colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useFindPasswordCode } from '../../hooks/auth/useFindPasswordCode';
+import { useFindPassword } from '../../hooks/auth/useFindPassword';
 
 export default function FindPwScreen() {
   const navigation = useNavigation();
@@ -24,8 +25,10 @@ export default function FindPwScreen() {
   const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [password, setPassword] = useState<string>('');
 
   const findPasswordCodeMutation = useFindPasswordCode();
+  const findPasswordMutation = useFindPassword();
 
   const handlePhoneChange = (text: string) => {
     const numbers = text.replace(/[^0-9]/g, '');
@@ -74,11 +77,35 @@ export default function FindPwScreen() {
     }
   };
 
-  const handleVerify = () => {
-    if (code === '1234') {
+  const handleVerify = async () => {
+    if (!role) {
+      Alert.alert('알림', '사용자 구분을 선택해주세요.');
+      return;
+    }
+    if (!code) {
+      Alert.alert('알림', '인증번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      // 하이픈 제거한 숫자만 추출
+      const phoneNumber = phone.replace(/[^0-9]/g, '');
+
+      const response = await findPasswordMutation.mutateAsync({
+        role,
+        payload: {
+          name,
+          phoneNumber,
+          verificationCode: code,
+        },
+      });
+
+      setPassword(response.password);
       setVerified(true);
-    } else {
-      Alert.alert('인증 실패', '올바른 인증번호를 입력해주세요.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || '인증번호 확인에 실패했습니다.';
+      Alert.alert('오류', errorMessage);
     }
   };
 
@@ -91,12 +118,12 @@ export default function FindPwScreen() {
         <View style={s.card}>
           <Text style={s.title}>비밀번호 찾기</Text>
 
-          {verified && (
+          {verified && password && (
             <View style={s.resultBox}>
               <Text style={s.resultTitle}>비밀번호 찾기가 완료되었습니다.</Text>
               <Text style={s.resultText}>
-                회원님의 임시 비밀번호는 <Text style={s.resultId}>user123</Text>{' '}
-                입니다.
+                회원님의 임시 비밀번호는{' '}
+                <Text style={s.resultId}>{password}</Text> 입니다.
               </Text>
             </View>
           )}
@@ -206,13 +233,19 @@ export default function FindPwScreen() {
                 <TouchableOpacity
                   style={[
                     s.button,
-                    verified ? s.buttonDisabled : s.buttonActive,
+                    verified || findPasswordMutation.isPending
+                      ? s.buttonDisabled
+                      : s.buttonActive,
                   ]}
-                  disabled={verified}
+                  disabled={verified || findPasswordMutation.isPending}
                   onPress={handleVerify}
                 >
                   <Text style={s.buttonText}>
-                    {verified ? '인증 완료' : '확인'}
+                    {findPasswordMutation.isPending
+                      ? '확인 중...'
+                      : verified
+                      ? '인증 완료'
+                      : '확인'}
                   </Text>
                 </TouchableOpacity>
               </View>
