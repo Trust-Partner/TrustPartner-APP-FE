@@ -124,6 +124,7 @@ export const s = StyleSheet.create({
     borderColor: colors.GRAY_10,
     borderRadius: 10,
     padding: 14,
+    marginBottom: 8,
   },
   memoRow: {
     flexDirection: 'row',

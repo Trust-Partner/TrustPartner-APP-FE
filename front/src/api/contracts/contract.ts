@@ -8,6 +8,31 @@ export interface ApiResponse<T> {
 
 export type ContractType = 'GENERAL_CONTRACT' | 'INSURANCE_CONTRACT';
 
+// 일반 계약서 생성
+export interface CreateGeneralContractRequest {
+  carId: number;
+}
+
+export interface CreateGeneralContractResponse {
+  contractId: number;
+}
+
+export const createGeneralContract = async (
+  body: CreateGeneralContractRequest,
+): Promise<number> => {
+  const res = await axiosInstance.post<
+    ApiResponse<CreateGeneralContractResponse>
+  >('/contracts/v1/general', body);
+
+  const contractId = res.data.data?.contractId;
+
+  if (!contractId) {
+    throw new Error('contractId not found in createGeneralContract response');
+  }
+
+  return contractId;
+};
+
 // 보험 계약서 생성
 export interface CreateInsuranceContractRequest {
   carDispatchId: number;
@@ -69,6 +94,40 @@ export const getContractUploadUrls = async (
   };
 };
 
+// 일반 계약서 임시저장 / 최종 저장
+export type PaymentMethod = 'ACCOUNT_TRANSFER' | 'CARD';
+
+export type PaymentTime = 'PREPAID' | 'POSTPAID';
+
+export interface SaveGeneralContractRequest {
+  customerName?: string;
+  customerPhoneNumber?: string;
+  customerAddress?: string;
+
+  paymentMethod?: PaymentMethod;
+  paymentTime?: PaymentTime;
+  paymentAmount?: number;
+  memo?: string;
+
+  contractPhotoKeys?: string[];
+  fuelQuantity?: number;
+
+  customerSignatureKey?: string;
+
+  /** true = 임시저장, false = 최종저장 */
+  isDraft: boolean;
+}
+
+export const saveGeneralContract = async (
+  contractId: number,
+  body: SaveGeneralContractRequest,
+): Promise<void> => {
+  await axiosInstance.put<ApiResponse<void>>(
+    `/contracts/v1/general/${contractId}`,
+    body,
+  );
+};
+
 // 보험 계약서 임시저장 / 최종 저장
 export interface SaveInsuranceContractRequest {
   customerName?: string;
@@ -102,7 +161,41 @@ export const saveInsuranceContract = async (
   );
 };
 
-// 임시저장 불러오기
+// 일반 계약서 임시저장 불러오기
+export interface GetGeneralContractDraftResponse {
+  contractId: number;
+  contractType: 'GENERAL_CONTRACT';
+
+  fuelQuantity?: number;
+  memo?: string;
+
+  contractFilePaths?: string[];
+  signatureFilePath?: string;
+
+  customerDetail?: {
+    customerName?: string;
+    customerPhoneNumber?: string;
+    customerAddress?: string;
+  };
+
+  paymentDetail?: {
+    paymentMethod?: 'ACCOUNT_TRANSFER' | 'CARD';
+    paymentTime?: 'PREPAID' | 'POSTPAID';
+    paymentAmount?: number;
+  };
+}
+
+export const getGeneralContractDraft = async (
+  contractId: number,
+): Promise<GetGeneralContractDraftResponse> => {
+  const res = await axiosInstance.get<
+    ApiResponse<GetGeneralContractDraftResponse>
+  >(`/contracts/v1/${contractId}`);
+
+  return res.data.data;
+};
+
+// 보험 게약서 임시저장 불러오기
 export interface GetContractDetailResponse {
   contractId: number;
   contractType: ContractType;
