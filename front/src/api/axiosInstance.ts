@@ -13,6 +13,8 @@ const SKIP_AUTH_PATHS = [
   '/auth/v1/staffs',
   '/auth/v1/partner/find-id/code',
   '/auth/v1/staff/find-id/code',
+  '/auth/v1/partner/find-id',
+  '/auth/v1/staff/find-id',
 ];
 
 // 요청 시 자동으로 AccessToken 주입

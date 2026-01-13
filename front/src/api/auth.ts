@@ -41,3 +41,29 @@ export async function sendFindIdCode(
 
   await axiosInstance.post<ApiResponse<null>>(endpoint, payload);
 }
+
+// Find ID - Verify Code
+export interface FindIdPayload {
+  name: string;
+  phoneNumber: string;
+  verificationCode: string;
+}
+
+export interface FindIdResponse {
+  loginId: string;
+}
+
+export async function findId(
+  role: 'admin' | 'user',
+  payload: FindIdPayload,
+): Promise<FindIdResponse> {
+  const endpoint =
+    role === 'admin' ? '/auth/v1/staff/find-id' : '/auth/v1/partner/find-id';
+
+  const response = await axiosInstance.post<ApiResponse<FindIdResponse>>(
+    endpoint,
+    payload,
+  );
+
+  return response.data.data;
+}
