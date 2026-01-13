@@ -85,3 +85,31 @@ export async function sendFindPasswordCode(
 
   await axiosInstance.post<ApiResponse<null>>(endpoint, payload);
 }
+
+// Find Password - Verify Code
+export interface FindPasswordPayload {
+  name: string;
+  phoneNumber: string;
+  verificationCode: string;
+}
+
+export interface FindPasswordResponse {
+  password: string;
+}
+
+export async function findPassword(
+  role: 'admin' | 'user',
+  payload: FindPasswordPayload,
+): Promise<FindPasswordResponse> {
+  const endpoint =
+    role === 'admin'
+      ? '/auth/v1/staff/find-password'
+      : '/auth/v1/partner/find-password';
+
+  const response = await axiosInstance.post<ApiResponse<FindPasswordResponse>>(
+    endpoint,
+    payload,
+  );
+
+  return response.data.data;
+}
