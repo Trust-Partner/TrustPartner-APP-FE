@@ -8,7 +8,12 @@ const axiosInstance = axios.create({
   timeout: 15000,
 });
 
-const SKIP_AUTH_PATHS = ['/auth/v1/partners', '/auth/v1/staffs'];
+const SKIP_AUTH_PATHS = [
+  '/auth/v1/partners',
+  '/auth/v1/staffs',
+  '/auth/v1/partner/find-id/code',
+  '/auth/v1/staff/find-id/code',
+];
 
 // 요청 시 자동으로 AccessToken 주입
 axiosInstance.interceptors.request.use(async config => {

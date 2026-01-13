@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { colors } from '../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
+import { useFindIdCode } from '../../hooks/auth/useFindIdCode';
 
 export default function FindIdScreen() {
   const navigation = useNavigation();
@@ -22,6 +23,8 @@ export default function FindIdScreen() {
   const [code, setCode] = useState('');
   const [sent, setSent] = useState(false);
   const [verified, setVerified] = useState(false);
+
+  const findIdCodeMutation = useFindIdCode();
 
   const handlePhoneChange = (text: string) => {
     const numbers = text.replace(/[^0-9]/g, '');
@@ -41,7 +44,7 @@ export default function FindIdScreen() {
     setPhone(formatted);
   };
 
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     if (!role) {
       Alert.alert('알림', '사용자 구분을 선택해주세요.');
       return;
@@ -50,7 +53,26 @@ export default function FindIdScreen() {
       Alert.alert('알림', '이름과 휴대폰 번호를 입력해주세요.');
       return;
     }
-    setSent(true);
+
+    try {
+      // 하이픈 제거한 숫자만 추출
+      const phoneNumber = phone.replace(/[^0-9]/g, '');
+
+      await findIdCodeMutation.mutateAsync({
+        role,
+        payload: {
+          name,
+          phoneNumber,
+        },
+      });
+
+      setSent(true);
+      Alert.alert('알림', '인증번호가 발송되었습니다.');
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || '인증번호 발송에 실패했습니다.';
+      Alert.alert('오류', errorMessage);
+    }
   };
 
   const handleVerify = () => {
@@ -136,12 +158,21 @@ export default function FindIdScreen() {
               maxLength={13}
             />
             <TouchableOpacity
-              style={[s.button, sent ? s.buttonDisabled : s.buttonActive]}
-              disabled={sent || verified}
+              style={[
+                s.button,
+                sent || findIdCodeMutation.isPending
+                  ? s.buttonDisabled
+                  : s.buttonActive,
+              ]}
+              disabled={sent || verified || findIdCodeMutation.isPending}
               onPress={handleSendCode}
             >
               <Text style={s.buttonText}>
-                {sent ? '발송 완료' : '인증번호 발송'}
+                {findIdCodeMutation.isPending
+                  ? '발송 중...'
+                  : sent
+                  ? '발송 완료'
+                  : '인증번호 발송'}
               </Text>
             </TouchableOpacity>
           </View>
