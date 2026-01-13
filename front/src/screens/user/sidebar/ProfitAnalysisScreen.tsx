@@ -157,12 +157,12 @@ export default function SalesAnalysisScreen() {
             <View style={s.topDivider} />
 
             {isLoading ? (
-              <View style={{ padding: 16, alignItems: 'center' }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
                 <ActivityIndicator size="small" color={colors.PRIMARY_50} />
               </View>
             ) : isError || !statistics ? (
-              <View style={{ padding: 16, alignItems: 'center' }}>
-                <Text style={{ color: colors.RED_50, fontSize: 12 }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text style={{ color: colors.RED_50, fontSize: 18 }}>
                   데이터를 불러올 수 없습니다.
                 </Text>
               </View>
@@ -197,8 +197,8 @@ export default function SalesAnalysisScreen() {
                 </View>
               </>
             ) : (
-              <View style={{ padding: 16, alignItems: 'center' }}>
-                <Text style={{ color: colors.GRAY_50, fontSize: 12 }}>
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text style={{ color: colors.GRAY_50, fontSize: 18 }}>
                   데이터가 없습니다.
                 </Text>
               </View>
@@ -317,8 +317,8 @@ export default function SalesAnalysisScreen() {
               <Image
                 source={require('../../../assets/common/copy.png')}
                 style={{
-                  width: 12,
-                  height: 12,
+                  width: 18,
+                  height: 18,
                   tintColor: colors.WHITE,
                   marginRight: 4,
                 }}
@@ -345,18 +345,18 @@ export default function SalesAnalysisScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   card: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     marginBottom: 8,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
@@ -372,16 +372,16 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 4,
     resizeMode: 'contain',
   },
   cardTitle: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   selectBox: {
@@ -391,18 +391,18 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   selectText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
     marginRight: 4,
   },
   arrow: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.GRAY_50,
   },
   dropdown: {
@@ -415,13 +415,13 @@ const s = StyleSheet.create({
     zIndex: 99,
   },
   dropdownItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
   },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
   dropdownText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   dropdownTextActive: { color: colors.PRIMARY_50 },
@@ -436,23 +436,23 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 100,
     marginLeft: 6,
     backgroundColor: colors.GRAY_10,
   },
   tabActive: { backgroundColor: colors.PRIMARY_10 },
   tabText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_40,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tabTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   topDivider: {
@@ -462,14 +462,14 @@ const s = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: colors.GRAY_15,
   },
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   footer: {
     borderTopWidth: 1,
@@ -478,41 +478,41 @@ const s = StyleSheet.create({
     paddingTop: 8,
   },
   cell: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_70,
   },
   boldMonth: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   boldCell: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
   },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.GRAY_15,
   },
   tableLeft: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tableRight: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_70,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   rateCard: {
     backgroundColor: colors.GRAY_05,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -524,24 +524,24 @@ const s = StyleSheet.create({
     alignItems: 'flex-end',
   },
   gradeLabel: {
-    fontSize: 12,
-    fontWeight: '400',
+    fontSize: 18,
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   gradeSub: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
   rateText: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     color: colors.PRIMARY_50,
   },
   rateDesc: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_50,
     marginTop: 4,
   },
@@ -550,8 +550,8 @@ const s = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.PRIMARY_20,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     // marginBottom: 16,
   },
   inquiryTop: {
@@ -560,36 +560,36 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   inquiryIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 4,
   },
   inquiryTitle: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   inquiryText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_70,
     marginBottom: 8,
   },
   contactBtn: {
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
   contactText: {
-    fontSize: 12,
-    fontWeight: '400',
+    fontSize: 18,
+    fontWeight: '500',
     color: colors.WHITE,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
 });

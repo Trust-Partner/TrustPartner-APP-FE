@@ -248,7 +248,7 @@ const s = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.GRAY_00,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   subHeader: {
     flexDirection: 'row',
@@ -264,10 +264,10 @@ const s = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: '700',
     color: colors.GRAY_90,
-    lineHeight: 22.4,
+    lineHeight: 31,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   item: {
@@ -286,8 +286,8 @@ const s = StyleSheet.create({
   },
   itemBody: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   itemTop: {
     flexDirection: 'row',
@@ -300,18 +300,18 @@ const s = StyleSheet.create({
     gap: 8,
   },
   carName: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_60,
   },
   plateBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   plate: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
   },
   row: {
@@ -320,16 +320,16 @@ const s = StyleSheet.create({
     gap: 4,
   },
   date: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
   },
   time: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_50,
   },
   smallIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
   },
   rightWrap: {
     flexDirection: 'row',
@@ -341,8 +341,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   arrowIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
   buttonRow: {
@@ -351,7 +351,7 @@ const s = StyleSheet.create({
     marginTop: 16,
   },
   actionBtn: {
-    padding: 8,
+    padding: 12,
     borderRadius: 4,
   },
   grayBtn: {
@@ -361,8 +361,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.PRIMARY_50,
   },
   actionText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.WHITE,
   },
   loadingContainer: {
@@ -371,7 +371,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_60,
     textAlign: 'center',
   },

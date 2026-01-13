@@ -51,7 +51,7 @@ export default function UserBottomTabs() {
           borderTopColor: colors.GRAY_10,
           borderTopWidth: 1,
         },
-        tabBarLabelStyle: { fontSize: 12, marginBottom: 2 },
+        tabBarLabelStyle: { fontSize: 14, marginBottom: 2 },
         tabBarIcon: ({ focused }) => (
           <Image
             source={iconMap[route.name as keyof typeof iconMap]}

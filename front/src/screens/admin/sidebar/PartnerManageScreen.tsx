@@ -85,7 +85,7 @@ export default function PartnerManageScreen() {
               <View style={s.headerLeft}>
                 <Image
                   source={require('../../../assets/admin-partner/chart.png')}
-                  style={{ width: 16, height: 16, marginRight: 4 }}
+                  style={{ width: 20, height: 20, marginRight: 4 }}
                 />
                 <Text style={s.title}>월별 통계</Text>
               </View>
@@ -107,7 +107,7 @@ export default function PartnerManageScreen() {
                 >
                   <Image
                     source={require('../../../assets/admin-partner/filter.png')}
-                    style={{ width: 12, height: 12, tintColor: colors.GRAY_50 }}
+                    style={{ width: 18, height: 18, tintColor: colors.GRAY_50 }}
                   />
                 </Pressable>
 
@@ -226,8 +226,8 @@ export default function PartnerManageScreen() {
                 <Image
                   source={require('../../../assets/common/building.png')}
                   style={{
-                    width: 16,
-                    height: 16,
+                    width: 20,
+                    height: 20,
                     marginRight: 4,
                   }}
                 />
@@ -266,8 +266,8 @@ export default function PartnerManageScreen() {
                         <Image
                           source={require('../../../assets/admin-partner/building.png')}
                           style={{
-                            width: 16,
-                            height: 16,
+                            width: 20,
+                            height: 20,
                             tintColor: colors.PRIMARY_50,
                             marginRight: 6,
                           }}
@@ -372,18 +372,18 @@ export default function PartnerManageScreen() {
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
     backgroundColor: colors.GRAY_00,
   },
   header: {
-    fontSize: 14,
+    fontSize: 20,
     color: colors.GRAY_90,
   },
   card: {
     backgroundColor: colors.WHITE,
     borderRadius: 4,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
   },
@@ -396,10 +396,10 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_80,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   iconBtn: {
@@ -407,8 +407,8 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   filterDropdown: {
     position: 'absolute',
@@ -421,13 +421,13 @@ const s = StyleSheet.create({
     marginTop: 8,
     backgroundColor: colors.PRIMARY_50,
     borderRadius: 4,
-    paddingVertical: 8,
+    paddingVertical: 12,
     alignItems: 'center',
   },
 
   applyButtonText: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.WHITE,
   },
   selectBox: {
@@ -437,18 +437,18 @@ const s = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: colors.GRAY_10,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   selectText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
     marginRight: 4,
   },
   arrow: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     tintColor: colors.GRAY_50,
   },
   dropdown: {
@@ -461,19 +461,19 @@ const s = StyleSheet.create({
     zIndex: 99,
   },
   dropdownItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 15,
   },
   dropdownItemActive: { backgroundColor: colors.GRAY_05 },
   dropdownText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
   },
   dropdownTextActive: { color: colors.PRIMARY_50 },
   unitLabel: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_80,
   },
   tabRow: {
@@ -487,18 +487,18 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   tab: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
     borderRadius: 100,
     marginLeft: 6,
     backgroundColor: colors.GRAY_10,
   },
   tabActive: { backgroundColor: colors.PRIMARY_10 },
   tabText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_40,
-    lineHeight: 15.4,
+    lineHeight: 25,
   },
   tabTextActive: { color: colors.PRIMARY_50 },
   topDivider: {
@@ -508,7 +508,7 @@ const s = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: colors.GRAY_15,
   },
@@ -518,7 +518,7 @@ const s = StyleSheet.create({
   totalRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
   },
   footer: {
     borderTopWidth: 1,
@@ -527,17 +527,17 @@ const s = StyleSheet.create({
     paddingTop: 8,
   },
   cell: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_70,
   },
   boldMonth: {
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.GRAY_80,
   },
   boldCell: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
   },
   partnerHeader: {
     flexDirection: 'row',
@@ -550,20 +550,20 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_20,
     borderRadius: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: Platform.OS === 'android' ? 0 : 8,
   },
   searchIcon: {
-    width: 12,
-    height: 12,
+    width: 18,
+    height: 18,
     resizeMode: 'contain',
     tintColor: colors.GRAY_60,
     marginRight: 6,
   },
   searchInput: {
-    fontSize: 11,
-    fontWeight: '400',
-    lineHeight: 15.4,
+    fontSize: 17,
+    fontWeight: '500',
+    lineHeight: 25,
     color: colors.GRAY_50,
     paddingVertical: 0,
     marginTop: -1.5,
@@ -573,7 +573,7 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.GRAY_10,
     borderRadius: 4,
-    padding: 8,
+    padding: 12,
   },
   partnerBox: {
     backgroundColor: colors.GRAY_05,
@@ -586,35 +586,35 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   partnerName: {
-    fontSize: 12,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '600',
     color: colors.GRAY_60,
-    lineHeight: 16.8,
+    lineHeight: 28,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   gradeBadge: {
     backgroundColor: colors.PRIMARY_05,
     borderRadius: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
   },
   gradeText: {
-    fontSize: 11,
+    fontSize: 17,
     color: colors.GRAY_60,
-    lineHeight: 15.4,
+    lineHeight: 25,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   arrowSmall: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     tintColor: colors.GRAY_50,
   },
   detailBox: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingBottom: 8,
   },
   detailRow: {
@@ -623,19 +623,19 @@ const s = StyleSheet.create({
     marginTop: 6,
   },
   detailIcon: {
-    width: 16,
-    height: 16,
+    width: 20,
+    height: 20,
     marginRight: 6,
   },
   detailText: {
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: 17,
+    fontWeight: '500',
     color: colors.GRAY_60,
     flex: 1,
     marginTop: Platform.OS === 'android' ? -2 : 0,
   },
   copyIcon: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
   },
 });
