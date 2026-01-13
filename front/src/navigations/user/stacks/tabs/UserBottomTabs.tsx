@@ -24,7 +24,14 @@ export default function UserBottomTabs() {
   const insets = useSafeAreaInsets();
   const ACTIVE = colors.PRIMARY_50;
   const INACTIVE = '#9CA3AF';
-  const tabBarHeight = Platform.select({ ios: 64, android: 60 }) ?? 60;
+  const TAB_BAR_BASE_HEIGHT =
+    Platform.select({
+      ios: 64,
+      android: 56,
+    }) ?? 56;
+
+  const MIN_BOTTOM_PADDING = Platform.OS === 'android' ? 8 : 0;
+  const bottomInset = Math.max(insets.bottom, MIN_BOTTOM_PADDING);
 
   const iconMap = useMemo(
     () => ({
@@ -44,9 +51,9 @@ export default function UserBottomTabs() {
         tabBarActiveTintColor: ACTIVE,
         tabBarInactiveTintColor: INACTIVE,
         tabBarStyle: {
-          height: tabBarHeight + 20,
+          height: TAB_BAR_BASE_HEIGHT + bottomInset,
           paddingTop: 6,
-          paddingBottom: insets.bottom,
+          paddingBottom: bottomInset,
           backgroundColor: '#fff',
           borderTopColor: colors.GRAY_10,
           borderTopWidth: 1,
