@@ -47,13 +47,13 @@ export default function MainContractModal({
     isBookmarked ||
     !isConfirmed ||
     (isConfirmed && contractType === 'INSURANCE_CONTRACT') ||
-    (!isConfirmed && contractType === null);
+    (isConfirmed && contractType === null);
 
   const canWriteReplacement =
     isBookmarked ||
     !isConfirmed ||
     (isConfirmed && contractType === 'INSURANCE_CONTRACT') ||
-    (!isConfirmed && contractType === null);
+    (isConfirmed && contractType === null);
 
   const isDispatchDisabled = isBookmarked || isConfirmed;
 
