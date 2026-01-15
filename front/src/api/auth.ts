@@ -6,19 +6,33 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export async function loginStaff(loginId: string, password: string) {
+export async function loginStaff(
+  loginId: string,
+  password: string,
+  deviceToken: string,
+  deviceType: 'ANDROID' | 'IOS',
+) {
   const response = await axiosInstance.post('auth/v1/staffs', {
     loginId,
     password,
+    deviceToken,
+    deviceType,
   });
 
   return response;
 }
 
-export async function loginPartner(loginId: string, password: string) {
+export async function loginPartner(
+  loginId: string,
+  password: string,
+  deviceToken: string,
+  deviceType: 'ANDROID' | 'IOS',
+) {
   const response = await axiosInstance.post('auth/v1/partners', {
     loginId,
     password,
+    deviceToken,
+    deviceType,
   });
 
   return response;
