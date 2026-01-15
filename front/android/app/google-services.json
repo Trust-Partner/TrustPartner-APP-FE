@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "21051963264",
+    "project_id": "trustpartner-3b723",
+    "storage_bucket": "trustpartner-3b723.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21051963264:android:f085e7dadcd511a58d7365",
+        "android_client_info": {
+          "package_name": "com.trustpartner.erp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9O5H1qXdUQ_N7gvK0reZk8xsoVCkXJxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
