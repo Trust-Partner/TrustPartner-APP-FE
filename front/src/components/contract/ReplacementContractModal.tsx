@@ -14,7 +14,7 @@ import { colors } from '../../constants/colors';
 import { useContractForm } from '../../hooks/useContractForm';
 import CommonInput from '../common/CommonInput';
 import CommonAmountInput from '../common/CommonAmountInput';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
 import CommonModal from '../common/CommonModal';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
@@ -24,6 +24,7 @@ import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { ContractVehicleBase } from '../../types/contractVehicle';
 import { fetchSimplePartners } from '../../api/partners';
 import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
+import { useSaveReplacementContract } from '../../hooks/contracts/useSaveReplacementContract';
 
 interface Props {
   onBack: () => void;
@@ -31,18 +32,19 @@ interface Props {
 }
 
 export default function ReplacementContractModal({ onBack, vehicle }: Props) {
-  const requiredFields: string[] = [
-    'phone',
-    'requestCompanyId',
-    'garageCompanyId',
-  ];
+  if (!vehicle?.contractId) return null;
+
+  const requiredFields = ['phone', 'requestCompanyId', 'garageCompanyId'];
+
   const [formData, setFormData] = useState<Record<string, any>>({});
-  const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
+  const [sendModalVisible, setSendModalVisible] = useState(false);
+
+  const { closeModal } = useContractModalStore();
+  const { mutateAsync: saveContract, isPending } = useSaveReplacementContract();
 
   const {
     updateField,
-    saveDraftData,
     step,
     nextStep,
     prevStep,
@@ -54,83 +56,103 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     signatureStyle,
   } = useContractForm('replacement', vehicle.carId.toString(), updated => {
     setFormData(updated);
-    const mf = requiredFields.filter(k => !updated[k] || updated[k] === '');
-    setMissingFields(mf);
-    setIsComplete(mf.length === 0);
+    const missing = requiredFields.filter(k => !updated[k]);
+    setIsComplete(missing.length === 0);
   });
 
+  /* 파트너 검색 */
   const searchPartners = async (query: string) => {
     if (!query.trim()) return [];
-
     const list = await fetchSimplePartners(query);
-
     return list.map(p => ({
       label: p.partnerName,
       value: p.partnerId,
     }));
   };
 
-  const [isSigning, setIsSigning] = useState(false);
-  const [signatureKey, setSignatureKey] = useState(0);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const itemSize = (containerWidth - 24) / 3;
-  const [sendModalVisible, setSendModalVisible] = useState(false);
-  const { closeModal } = useContractModalStore();
+  /* 갤러리 권한 */
+  const requestGalleryPermission = async () => {
+    if (Platform.OS !== 'android') return true;
 
-  /** 서명 처리 */
-  const handleSignature = (signature: string) => {
-    if (!signature) return;
-    updateField('signature', signature);
-    setSignatureKey(prev => prev + 1);
-  };
-  const handleClear = () => {
-    updateField('signature', '');
-    sigRef.current?.clearSignature?.();
-    setSignatureKey(prev => prev + 1);
-  };
+    const permission =
+      Platform.Version >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
 
-  /** 갤러리 권한 */
-  const requestGalleryPermission = async (): Promise<boolean> => {
-    if (Platform.OS === 'android') {
-      try {
-        const permission =
-          Platform.Version >= 33
-            ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-            : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
-        const granted = await PermissionsAndroid.request(permission);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(
-            '권한 거부됨',
-            '사진을 추가하려면 갤러리 권한이 필요합니다.',
-          );
-          return false;
-        }
-        return true;
-      } catch {
-        return false;
-      }
-    }
-    return true;
+    const granted = await PermissionsAndroid.request(permission);
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
   };
 
   const handleAddPhoto = async () => {
     if (!(await requestGalleryPermission())) return;
     launchImageLibrary(
       { mediaType: 'photo', selectionLimit: 9 - photos.length },
-      res => {
-        if (res.assets) addPhotos(res.assets);
-      },
+      res => res.assets && addPhotos(res.assets),
     );
   };
 
   const handleReplacePhoto = async (i: number) => {
     if (!(await requestGalleryPermission())) return;
     launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, res => {
-      if (res.assets && res.assets[0]) replacePhoto(i, res.assets[0]);
+      if (res.assets?.[0]) replacePhoto(i, res.assets[0]);
     });
   };
 
-  const handleSendContract = () => setSendModalVisible(true);
+  const mapAssets = (assets: Asset[]) =>
+    assets.filter(a => a.uri).map(a => ({ uri: a.uri! }));
+
+  const buildPayload = () => ({
+    customerName: formData.customerName,
+    customerPhoneNumber: formData.phone,
+    customerAddress: formData.address,
+
+    customerCarType: formData.customerCarModel,
+    customerCarNumber: formData.customerCarNumber,
+    customerCarDisplacement: formData.customerDisplacement,
+
+    insuranceCompanyName: formData.insuranceCompany,
+    insuranceApplicationNumber: formData.reportNumber,
+
+    partnerId: formData.requestCompanyId,
+    repairShopId: formData.garageCompanyId,
+
+    fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
+
+    isDraft: false,
+  });
+
+  const handleSendContract = async () => {
+    try {
+      await saveContract({
+        contractId: vehicle.contractId!,
+        payload: buildPayload(),
+        contractPhotos: mapAssets(photos),
+        signaturePhoto: formData.signature
+          ? { uri: formData.signature }
+          : undefined,
+      });
+
+      setSendModalVisible(true);
+    } catch {
+      Alert.alert('전송 실패', '교체계약서 전송 중 오류가 발생했습니다.');
+    }
+  };
+
+  const [isSigning, setIsSigning] = useState(false);
+  const [signatureKey, setSignatureKey] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
+  const itemSize = (containerWidth - 24) / 3;
+
+  const handleSignature = (signature: string) => {
+    updateField('signature', signature);
+    setSignatureKey(prev => prev + 1);
+  };
+
+  const handleClear = () => {
+    updateField('signature', '');
+    sigRef.current?.clearSignature?.();
+    setSignatureKey(prev => prev + 1);
+  };
 
   return (
     <Modal
@@ -155,6 +177,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 style={ms.closeIcon}
               />
             </Pressable>
+
             <View style={ms.headerRow}>
               <Text style={ms.title}>교체계약서 작성</Text>
             </View>
@@ -186,7 +209,6 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                     updateField('phone', raw);
                   }}
                 />
-
                 <CommonInput
                   placeholder="고객 주소"
                   value={formData.address}
@@ -351,7 +373,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 <>
                   <Pressable
                     style={[ms.sendBtn, !isComplete && ms.sendBtnDisabled]}
-                    disabled={!isComplete}
+                    disabled={!isComplete || isPending}
                     onPress={handleSendContract}
                   >
                     <Text
@@ -391,7 +413,7 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                     </Pressable>
                   )}
                   <Pressable
-                    style={[ms.footerBtn, ms.nextBtn, { flex: 0 }]}
+                    style={[ms.footerBtn, ms.nextBtn]}
                     onPress={nextStep}
                   >
                     <Text style={[ms.footerBtnText, ms.nextText]}>다음</Text>
@@ -416,7 +438,6 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
             setSendModalVisible(false);
             closeModal();
           }}
-          onCancel={() => setSendModalVisible(false)}
         />
       </View>
     </Modal>
