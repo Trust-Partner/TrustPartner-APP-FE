@@ -20,6 +20,10 @@ import CommonModal from '../common/CommonModal';
 import CommonSearchDropdown from '../common/CommonSearchDropdown';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { HIT_SLOP } from '../../constants/touch';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
+import { ContractVehicleBase } from '../../types/contractVehicle';
+import { fetchSimplePartners } from '../../api/partners';
+import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
 
 interface Props {
   onBack: () => void;
@@ -27,7 +31,11 @@ interface Props {
 }
 
 export default function ReplacementContractModal({ onBack, vehicle }: Props) {
-  const requiredFields: string[] = [];
+  const requiredFields: string[] = [
+    'phone',
+    'requestCompanyId',
+    'garageCompanyId',
+  ];
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
@@ -50,6 +58,17 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     setMissingFields(mf);
     setIsComplete(mf.length === 0);
   });
+
+  const searchPartners = async (query: string) => {
+    if (!query.trim()) return [];
+
+    const list = await fetchSimplePartners(query);
+
+    return list.map(p => ({
+      label: p.partnerName,
+      value: p.partnerId,
+    }));
+  };
 
   const [isSigning, setIsSigning] = useState(false);
   const [signatureKey, setSignatureKey] = useState(0);
@@ -160,9 +179,14 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                 />
                 <CommonInput
                   placeholder="* 고객 연락처"
-                  value={formData.phone}
-                  onChangeText={v => updateField('phone', v)}
+                  value={formatPhoneNumber(formData.phone)}
+                  keyboardType="number-pad"
+                  onChangeText={v => {
+                    const raw = v.replace(/\D/g, '');
+                    updateField('phone', raw);
+                  }}
                 />
+
                 <CommonInput
                   placeholder="고객 주소"
                   value={formData.address}
@@ -199,28 +223,23 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
                   onChangeText={v => updateField('reportNumber', v)}
                 />
                 <CommonSearchDropdown
-                  placeholder="(요청업체)"
-                  selectedValue={formData.requestCompany}
-                  onSelect={(v, isCustom) =>
-                    updateField('requestCompany', isCustom ? `${v} (기타)` : v)
-                  }
-                  onSearch={async q =>
-                    ['한라렌트카', '한독렌트카', '한양공업사'].filter(i =>
-                      i.includes(q),
-                    )
-                  }
+                  placeholder="* (요청업체)"
+                  selectedValue={formData.requestCompanyName}
+                  onSearch={searchPartners}
+                  onSelect={(item, isCustom) => {
+                    updateField('requestCompanyName', item.label);
+                    updateField('requestCompanyId', item.value);
+                  }}
                 />
+
                 <CommonSearchDropdown
-                  placeholder="(입고공업사)"
-                  selectedValue={formData.garageCompany}
-                  onSelect={(v, isCustom) =>
-                    updateField('garageCompany', isCustom ? `${v} (기타)` : v)
-                  }
-                  onSearch={async q =>
-                    ['ESA모터스', '성지공업사', '기아서비스'].filter(i =>
-                      i.includes(q),
-                    )
-                  }
+                  placeholder="* (입고공업사)"
+                  selectedValue={formData.garageCompanyName}
+                  onSearch={searchPartners}
+                  onSelect={(item, isCustom) => {
+                    updateField('garageCompanyName', item.label);
+                    updateField('garageCompanyId', item.value);
+                  }}
                 />
               </>
             )}
@@ -403,6 +422,3 @@ export default function ReplacementContractModal({ onBack, vehicle }: Props) {
     </Modal>
   );
 }
-
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
-import { ContractVehicleBase } from '../../types/contractVehicle';
