@@ -396,9 +396,63 @@ export const requestPartnerReturn = async (
   carId: number,
   payload: RequestPartnerReturnRequest,
 ): Promise<RequestPartnerReturnResponse> => {
-  const res = await axiosInstance.post<ApiResponse<RequestPartnerReturnResponse>>(
-    `/cars/v1/partners/${carId}/return`,
+  const res = await axiosInstance.post<
+    ApiResponse<RequestPartnerReturnResponse>
+  >(`/cars/v1/partners/${carId}/return`, payload);
+
+  return res.data.data;
+};
+
+/* -------------------------------------------------------------------------- */
+/*                    Partner Status (공업사 대기)                             */
+/* -------------------------------------------------------------------------- */
+
+/** 공업사 대기 요청 */
+export interface PartnerWaitingRequest {
+  locationId: number; // 공업사 locationId (default, 수정 불가)
+  needsWash: boolean; // 세차 필요 여부
+  needsFuel: boolean; // 연료 부족 여부
+  fuelLevel: number; // 연료량 (0~1)
+  photoKeys: string[]; // 업로드한 이미지 fileKey 목록
+}
+
+/** 공업사 대기 응답 */
+export interface PartnerWaitingResponse {
+  carStatus: 'AVAILABLE';
+  carId: number;
+  model: string;
+  carNum: string;
+  updatedAt: string;
+  timeAfterUpdate: string;
+  immediateDispatchable: boolean;
+  locationName: string;
+}
+
+/** 거래처 공업사 대기 처리 */
+export const requestPartnerWaiting = async (
+  carId: number,
+  payload: PartnerWaitingRequest,
+): Promise<PartnerWaitingResponse> => {
+  const res = await axiosInstance.post<ApiResponse<PartnerWaitingResponse>>(
+    `/cars/v1/partners/${carId}/status`,
     payload,
+  );
+
+  return res.data.data;
+};
+
+/** 공업사 대기용 이미지 업로드 URL 조회 */
+export interface PartnerUploadUrlItem {
+  uploadUrl: string;
+  fileKey: string;
+  expiresAt: string;
+}
+
+export const getPartnerWaitingUploadUrls = async (
+  carId: number,
+): Promise<PartnerUploadUrlItem[]> => {
+  const res = await axiosInstance.get<ApiResponse<PartnerUploadUrlItem[]>>(
+    `/cars/v1/partners/${carId}/upload-urls`,
   );
 
   return res.data.data;
