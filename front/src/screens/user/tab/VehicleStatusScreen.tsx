@@ -7,6 +7,7 @@ import {
   Image,
   Pressable,
   LayoutAnimation,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../../../constants/colors';
@@ -20,6 +21,7 @@ import { usePartnerCars } from '../../../hooks/vehicleStatus/usePartnerCars';
 import { usePartnerCarStatusSummary } from '../../../hooks/vehicleStatus/usePartnerCarStatusSummary';
 import { PartnerCarItem } from '../../../api/vehicleStatus';
 import { useAuthStore } from '../../../states/useAuthStore';
+import { useCreateImmediateDispatchContract } from '../../../hooks/contracts/useCreateImmediateDispatchContract';
 
 type VehicleStatusLabel = '배차중' | '대기중' | '반납신청';
 
@@ -78,6 +80,10 @@ export default function VehicleStatusScreen() {
     usePartnerCarStatusSummary();
   const { data: carListData, refetch: refetchCarList } =
     usePartnerCars(apiStatus);
+  const {
+    mutateAsync: createImmediateDispatchContract,
+    isPending: isImmediateDispatchCreating,
+  } = useCreateImmediateDispatchContract();
 
   const vehicles = carListData?.carList.map(mapPartnerCarToVehicle) ?? [];
 
@@ -122,6 +128,35 @@ export default function VehicleStatusScreen() {
   const toggleExpand = (id: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const handleImmediateDispatch = async (item: Vehicle) => {
+    if (isImmediateDispatchCreating) return;
+
+    try {
+      let contractId = item.contractId;
+
+      // 재사용
+      if (item.contractType === 'INSURANCE_CONTRACT' && item.contractId) {
+        contractId = item.contractId;
+      } else {
+        contractId = await createImmediateDispatchContract(item.id);
+      }
+
+      setContractVehicle({
+        ...toContractVehicleFromUser(item),
+        contractType: 'INSURANCE_CONTRACT',
+        contractId,
+        draftingContract: true,
+      });
+
+      openModal('insurance', 'direct');
+    } catch {
+      Alert.alert(
+        '계약서 생성 실패',
+        '보험 계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+      );
+    }
   };
 
   return (
@@ -351,12 +386,7 @@ export default function VehicleStatusScreen() {
 
                           <Pressable
                             style={[s.actionBtn, s.blueBtn]}
-                            onPress={() => {
-                              setContractVehicle(
-                                toContractVehicleFromUser(item),
-                              );
-                              openModal('insurance', 'direct');
-                            }}
+                            onPress={() => handleImmediateDispatch(item)}
                           >
                             <Text style={s.actionText}>바로배차</Text>
                           </Pressable>

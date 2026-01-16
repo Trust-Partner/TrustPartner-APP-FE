@@ -12,23 +12,28 @@ import {
   StyleSheet,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { colors } from '../../constants/colors';
-import { useContractForm } from '../../hooks/useContractForm';
-import CommonInput from '../common/CommonInput';
-import CommonAmountInput from '../common/CommonAmountInput';
 import { Asset, launchImageLibrary } from 'react-native-image-picker';
 import SignatureScreen from 'react-native-signature-canvas';
-import CommonModal from '../common/CommonModal';
-import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
-import { useContractModalStore } from '../../stores/useContractModalStore';
-import CommonSearchDropdown from '../common/CommonSearchDropdown';
+
+import { colors } from '../../constants/colors';
 import { HIT_SLOP } from '../../constants/touch';
-import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
-import { ContractVehicleBase } from '../../types/contractVehicle';
-import { fetchSimplePartners } from '../../api/partners';
+import { CONTRACT_FIELD_LABELS } from '../../constants/contractFieldLabels';
+
+import { useContractForm } from '../../hooks/useContractForm';
 import { useSaveInsuranceContract } from '../../hooks/contracts/useSaveInsuranceContract';
 import { useInsuranceContractDraft } from '../../hooks/contracts/useInsuranceContractDraft';
+
+import { ContractVehicleBase } from '../../types/contractVehicle';
+import { fetchSimplePartners } from '../../api/partners';
 import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
+
+import CommonInput from '../common/CommonInput';
+import CommonAmountInput from '../common/CommonAmountInput';
+import CommonSearchDropdown from '../common/CommonSearchDropdown';
+import CommonModal from '../common/CommonModal';
+
+import { useContractModalStore } from '../../stores/useContractModalStore';
+import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 
 interface Props {
   onBack: () => void;
@@ -65,34 +70,18 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     'requestCompanyId',
     'garageCompanyId',
   ];
+
   const [formData, setFormData] = useState<InsuranceContractFormData>({});
   const [missingFields, setMissingFields] = useState<string[]>([]);
   const [isComplete, setIsComplete] = useState(false);
   const [isDraftApplied, setIsDraftApplied] = useState(false);
+  const [sendModalVisible, setSendModalVisible] = useState(false);
 
   const { mutateAsync: saveContract, isPending } = useSaveInsuranceContract();
 
-  const buildPayload = (isDraft: boolean) => ({
-    customerName: formData.customerName,
-    customerPhoneNumber: formData.phone,
-    customerAddress: formData.address,
-    customerCarType: formData.customerCarType,
-    customerCarNumber: formData.customerCarNumber,
-    customerCarDisplacement: formData.customerDisplacement,
-
-    insuranceCompanyName: formData.insuranceCompany,
-    insuranceApplicationNumber: formData.claimNumber,
-
-    partnerId: formData.requestCompanyId,
-    repairShopId: formData.garageCompanyId,
-
-    fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
-
-    isDraft,
-  });
-
-  const mapAssetsToUris = (assets: Asset[]) =>
-    assets.filter(a => !!a.uri).map(a => ({ uri: a.uri! }));
+  const { data: draft, isLoading: isDraftLoading } = useInsuranceContractDraft(
+    vehicle.contractId!,
+  );
 
   const {
     updateField,
@@ -107,14 +96,11 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     signatureStyle,
   } = useContractForm('insurance', vehicle.carId.toString(), updated => {
     setFormData(updated);
+
     const mf = requiredFields.filter(k => !updated[k] || updated[k] === '');
     setMissingFields(mf);
     setIsComplete(mf.length === 0);
   });
-
-  const { data: draft, isLoading: isDraftLoading } = useInsuranceContractDraft(
-    vehicle.contractId!,
-  );
 
   useEffect(() => {
     if (!draft || isDraftApplied) return;
@@ -142,83 +128,82 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
     );
 
     setIsDraftApplied(true);
-  }, [draft]);
+  }, [draft, isDraftApplied, updateField]);
 
   const isDraftFetching =
     !!vehicle.contractId && isDraftLoading && !isDraftApplied;
   const isActionDisabled = isPending || isDraftFetching;
 
+  const buildPayload = (isDraft: boolean) => ({
+    customerName: formData.customerName,
+    customerPhoneNumber: formData.phone,
+    customerAddress: formData.address,
+
+    customerCarType: formData.customerCarType,
+    customerCarNumber: formData.customerCarNumber,
+    customerCarDisplacement: formData.customerDisplacement,
+
+    insuranceCompanyName: formData.insuranceCompany,
+    insuranceApplicationNumber: formData.claimNumber,
+
+    partnerId: formData.requestCompanyId,
+    repairShopId: formData.garageCompanyId,
+
+    fuelQuantity: formData.fuel ? Number(formData.fuel) : undefined,
+
+    isDraft,
+  });
+
+  const mapAssetsToUris = (assets: Asset[]) =>
+    assets.filter(a => !!a.uri).map(a => ({ uri: a.uri! }));
+
   const [isSigning, setIsSigning] = useState(false);
   const [signatureKey, setSignatureKey] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const itemSize = (containerWidth - 24) / 3;
-  const [sendModalVisible, setSendModalVisible] = useState(false);
-  const { closeModal } = useContractModalStore();
 
-  // 파트너 검색
-  const searchPartners = async (query: string) => {
-    if (!query.trim()) return [];
-
-    const list = await fetchSimplePartners(query);
-
-    return list.map(p => ({
-      label: p.partnerName,
-      value: p.partnerId,
-    }));
-  };
-
-  // 서명 처리
   const handleSignature = (signature: string) => {
     if (!signature) return;
     updateField('signature', signature);
     setSignatureKey(prev => prev + 1);
   };
+
   const handleClear = () => {
     updateField('signature', '');
     sigRef.current?.clearSignature?.();
     setSignatureKey(prev => prev + 1);
   };
 
-  // 갤러리 권한
   const requestGalleryPermission = async (): Promise<boolean> => {
-    if (Platform.OS === 'android') {
-      try {
-        const permission =
-          Platform.Version >= 33
-            ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-            : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+    if (Platform.OS !== 'android') return true;
 
-        const granted = await PermissionsAndroid.request(permission);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          Alert.alert(
-            '권한 거부됨',
-            '사진을 추가하려면 갤러리 권한이 필요합니다.',
-          );
-          return false;
-        }
-        return true;
-      } catch (err) {
-        console.warn('권한 요청 오류:', err);
-        return false;
-      }
+    const permission =
+      Platform.Version >= 33
+        ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+        : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+
+    const granted = await PermissionsAndroid.request(permission);
+    if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+      Alert.alert('권한 필요', '갤러리 접근 권한이 필요합니다.');
+      return false;
     }
     return true;
   };
 
   const handleAddPhoto = async () => {
     if (!(await requestGalleryPermission())) return;
+
     launchImageLibrary(
       { mediaType: 'photo', selectionLimit: 9 - photos.length },
-      res => {
-        if (res.assets) addPhotos(res.assets);
-      },
+      res => res.assets && addPhotos(res.assets),
     );
   };
 
-  const handleReplacePhoto = async (i: number) => {
+  const handleReplacePhoto = async (index: number) => {
     if (!(await requestGalleryPermission())) return;
+
     launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, res => {
-      if (res.assets && res.assets[0]) replacePhoto(i, res.assets[0]);
+      if (res.assets?.[0]) replacePhoto(index, res.assets[0]);
     });
   };
 
@@ -234,7 +219,7 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
       });
 
       Alert.alert('임시저장 완료', '계약서가 임시저장되었습니다.');
-    } catch (e) {
+    } catch {
       Alert.alert('저장 실패', '임시저장 중 오류가 발생했습니다.');
     }
   };
@@ -251,9 +236,21 @@ export default function InsuranceContractModal({ onBack, vehicle }: Props) {
       });
 
       setSendModalVisible(true);
-    } catch (e) {
+    } catch {
       Alert.alert('전송 실패', '계약서 전송 중 오류가 발생했습니다.');
     }
+  };
+
+  const { closeModal } = useContractModalStore();
+
+  const searchPartners = async (query: string) => {
+    if (!query.trim()) return [];
+
+    const list = await fetchSimplePartners(query);
+    return list.map(p => ({
+      label: p.partnerName,
+      value: p.partnerId,
+    }));
   };
 
   return (
