@@ -46,6 +46,17 @@ const statusMap = {
   반납신청: 'RETURN_REQUESTED',
 } as const;
 
+/** ISO 8601 날짜를 'YYYY-MM-DD HH:mm' 형식으로 변환 */
+const formatDateTime = (isoDate: string): string => {
+  const date = new Date(isoDate);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
 const mapPartnerCarToVehicle = (car: PartnerCarItem): Vehicle => ({
   id: car.carId,
   name: car.model,
@@ -56,7 +67,7 @@ const mapPartnerCarToVehicle = (car: PartnerCarItem): Vehicle => ({
       : car.carStatus === 'AVAILABLE'
       ? '대기중'
       : '반납신청',
-  lastUpdate: car.updatedAt,
+  lastUpdate: formatDateTime(car.updatedAt),
   duration: car.timeAfterUpdate,
   location: car.locationName,
   immediateDispatchable: car.immediateDispatchable,
