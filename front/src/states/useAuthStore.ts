@@ -65,6 +65,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         user = {
           kind: 'USER',
           partnerId: data.partnerId,
+          locationId: data.locationId,
           name: data.name,
           loginId: data.loginId,
           phoneNumber: data.phoneNumber,

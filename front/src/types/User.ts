@@ -21,6 +21,7 @@ export interface PartnerUser {
   kind: 'USER';
 
   partnerId: string;
+  locationId: number;
   name: string;
 
   role: {
