@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,38 +11,41 @@ import {
 } from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { colors } from '../../../constants/colors';
-import { adminMyInfoMock } from '../../../mock/adminMyInfoMock';
 import ToastMessage from '../../../components/common/ToastMessage';
 import AppHeader from '../../../components/common/AppHeader';
 import { usePartnerMonthlyStatistics } from '../../../hooks/billings/usePartnerMonthlyStatistics';
 import { useGeneralManagerInquiry } from '../../../hooks/inquiry/useGeneralManagerInquiry';
+import { usePartnerGrades } from '../../../hooks/mypage/usePartnerGrades';
+import { useCarFees } from '../../../hooks/mypage/useCarFees';
 import { formatPhoneNumber } from '../../../utils/formatPhoneNumber';
 
 export default function SalesAnalysisScreen() {
   const [tab, setTab] = useState<'sales' | 'count'>('sales');
-  const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [openYear, setOpenYear] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
-  const [selectedGrade, setSelectedGrade] =
-    useState<keyof typeof data.carRatesByGrade>('1등급');
+
+  const { data: grades = [] } = usePartnerGrades();
+  const [selectedGrade, setSelectedGrade] = useState<number | null>(null);
   const [open, setOpen] = useState(false);
 
-  const data = adminMyInfoMock;
-  const carRates = data.carRatesByGrade[selectedGrade];
-  const yearOptions = [2025, 2024, 2023];
+  useEffect(() => {
+    if (grades.length > 0 && selectedGrade === null) {
+      setSelectedGrade(grades[0].gradeId);
+    }
+  }, [grades, selectedGrade]);
 
-  // API 호출
+  const { data: carFeeData } = useCarFees(selectedGrade ?? undefined);
+  const carFees = carFeeData?.grades ?? [];
+
   const {
     data: statistics,
     isLoading,
     isError,
   } = usePartnerMonthlyStatistics({ year: selectedYear });
 
-  // API 데이터를 화면 형식에 맞게 변환
   const partnerStats = useMemo(() => {
     if (!statistics?.monthlyStatistics) return [];
-
-    // 연도 뒷 두자리 추출 (예: 2025 -> '25')
     const yearShort = String(selectedYear).slice(-2);
 
     return statistics.monthlyStatistics.map(item => ({
@@ -52,25 +55,17 @@ export default function SalesAnalysisScreen() {
     }));
   }, [statistics, selectedYear]);
 
-  // 총합 계산
-  const totalSales = useMemo(() => {
-    return statistics?.totalAmount ?? 0;
-  }, [statistics]);
+  const totalSales = statistics?.totalAmount ?? 0;
+  const totalCount = statistics?.totalDispatchCount ?? 0;
 
-  const totalCount = useMemo(() => {
-    return statistics?.totalDispatchCount ?? 0;
-  }, [statistics]);
-
-  const {
-    data: manager,
-    isLoading: isManagerLoading,
-    isError: isManagerError,
-  } = useGeneralManagerInquiry();
+  const { data: manager } = useGeneralManagerInquiry();
 
   const handleCopy = (text: string) => {
     Clipboard.setString(text);
     setToastMsg('전화번호가 복사되었습니다.');
   };
+
+  const yearOptions = [2026];
 
   return (
     <View style={{ flex: 1 }}>
@@ -81,7 +76,7 @@ export default function SalesAnalysisScreen() {
 
       <ScrollView bounces={false} alwaysBounceVertical={false}>
         <View style={s.container}>
-          {/* 월별 통계 */}
+          {/* ================= 월별 통계 ================= */}
           <View style={s.card}>
             <View style={s.cardHeader}>
               <View style={s.cardTitleBox}>
@@ -154,6 +149,7 @@ export default function SalesAnalysisScreen() {
                 </Pressable>
               </View>
             </View>
+
             <View style={s.topDivider} />
 
             {isLoading ? (
@@ -205,7 +201,7 @@ export default function SalesAnalysisScreen() {
             )}
           </View>
 
-          {/* 등급별 지급비율표 */}
+          {/* ================= 등급별 지급비율표 ================= */}
           <View style={s.card}>
             <View style={s.cardHeader}>
               <View style={s.cardTitleBox}>
@@ -217,22 +213,22 @@ export default function SalesAnalysisScreen() {
               </View>
             </View>
 
-            {data.gradeRates.map((g, i) => (
+            {grades.map((g, i) => (
               <View key={i} style={s.rateCard}>
                 <View>
-                  <Text style={s.gradeLabel}>{g.grade}</Text>
-                  <Text style={s.gradeSub}>{g.name}</Text>
+                  <Text style={s.gradeLabel}>{g.gradeName}</Text>
+                  <Text style={s.gradeSub}>{g.description}</Text>
                 </View>
 
                 <View style={s.rateCardRight}>
-                  <Text style={s.rateText}>{g.rate}</Text>
+                  <Text style={s.rateText}>{g.discountRate}%</Text>
                   <Text style={s.rateDesc}>지급비율</Text>
                 </View>
               </View>
             ))}
           </View>
 
-          {/* 차량관리 금액표 */}
+          {/* ================= 차량관리 금액표 ================= */}
           <View style={s.card}>
             <View style={s.cardHeader}>
               <View style={s.cardTitleBox}>
@@ -245,7 +241,10 @@ export default function SalesAnalysisScreen() {
 
               <View style={{ position: 'relative' }}>
                 <Pressable style={s.selectBox} onPress={() => setOpen(!open)}>
-                  <Text style={s.selectText}>{selectedGrade}</Text>
+                  <Text style={s.selectText}>
+                    {grades.find(g => g.gradeId === selectedGrade)?.gradeName ??
+                      '등급 선택'}
+                  </Text>
                   <Image
                     source={require('../../../assets/common/down_arrow.png')}
                     style={s.arrow}
@@ -254,27 +253,27 @@ export default function SalesAnalysisScreen() {
 
                 {open && (
                   <View style={s.dropdown}>
-                    {Object.keys(data.carRatesByGrade).map(grade => (
+                    {grades.map(grade => (
                       <Pressable
-                        key={grade}
+                        key={grade.gradeId}
                         style={[
                           s.dropdownItem,
-                          grade === selectedGrade && s.dropdownItemActive,
+                          grade.gradeId === selectedGrade &&
+                            s.dropdownItemActive,
                         ]}
                         onPress={() => {
-                          setSelectedGrade(
-                            grade as keyof typeof data.carRatesByGrade,
-                          );
+                          setSelectedGrade(grade.gradeId);
                           setOpen(false);
                         }}
                       >
                         <Text
                           style={[
                             s.dropdownText,
-                            grade === selectedGrade && s.dropdownTextActive,
+                            grade.gradeId === selectedGrade &&
+                              s.dropdownTextActive,
                           ]}
                         >
-                          {grade}
+                          {grade.gradeName}
                         </Text>
                       </Pressable>
                     ))}
@@ -283,15 +282,17 @@ export default function SalesAnalysisScreen() {
               </View>
             </View>
 
-            {carRates.map((item, i) => (
+            {carFees.map((item, i) => (
               <View key={i} style={s.tableRow}>
-                <Text style={s.tableLeft}>{item.type}</Text>
-                <Text style={s.tableRight}>{item.amount}</Text>
+                <Text style={s.tableLeft}>{item.gradeName}</Text>
+                <Text style={s.tableRight}>
+                  ₩ {item.managementFee.toLocaleString('ko-KR')}
+                </Text>
               </View>
             ))}
           </View>
 
-          {/* 매출관리 기준 문의 */}
+          {/* ================= 매출관리 기준 문의 ================= */}
           <View style={s.inquiryCard}>
             <View style={s.inquiryTop}>
               <Image
@@ -300,6 +301,7 @@ export default function SalesAnalysisScreen() {
               />
               <Text style={s.inquiryTitle}>매출관리 기준 문의</Text>
             </View>
+
             <Text style={s.inquiryText}>
               등급별 비율 조정이나 렌트차량 금액에 대한 문의사항은 매니저에게
               문의해주세요.
