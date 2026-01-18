@@ -15,6 +15,7 @@ import { ContractVehicleBase } from '../../types/contractVehicle';
 import { useContractModalStore } from '../../stores/useContractModalStore';
 import { useCreateInsuranceContract } from '../../hooks/contracts/useCreateInsuranceContract';
 import { useCreateGeneralContract } from '../../hooks/contracts/useCreateGeneralContract';
+import { useCreateReplacementContract } from '../../hooks/contracts/useCreateReplacementContract';
 
 interface Props {
   visible: boolean;
@@ -68,7 +69,13 @@ export default function MainContractModal({
     isPending: isInsurancePending,
   } = useCreateInsuranceContract();
 
-  const isCreating = isInsurancePending || isGeneralPending;
+  const {
+    mutateAsync: createReplacementContract,
+    isPending: isReplacementPending,
+  } = useCreateReplacementContract();
+
+  const isCreating =
+    isInsurancePending || isGeneralPending || isReplacementPending;
 
   const handleSelect = async (
     type: 'general' | 'insurance' | 'replacement' | 'dispatch',
@@ -81,11 +88,6 @@ export default function MainContractModal({
 
     if (type === 'dispatch') {
       goTo('dispatch');
-      return;
-    }
-
-    if (type === 'replacement') {
-      goTo('replacement');
       return;
     }
 
@@ -125,7 +127,6 @@ export default function MainContractModal({
         return;
       }
 
-      // 없을 때만 생성
       try {
         const contractId = await createInsuranceContract({
           carDispatchId: vehicle.carDispatchId!,
@@ -143,6 +144,35 @@ export default function MainContractModal({
         Alert.alert(
           '계약서 생성 실패',
           '계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
+        );
+      }
+
+      return;
+    }
+
+    if (type === 'replacement') {
+      // 재사용 로직 (이미 교체계약서가 있는 경우)
+      if (vehicle.contractType === 'INSURANCE_CONTRACT' && vehicle.contractId) {
+        goTo('replacement');
+        return;
+      }
+
+      try {
+        const contractId = await createReplacementContract({
+          carDispatchId: vehicle.carDispatchId!,
+        });
+
+        updateSelectedVehicle({
+          contractType: 'INSURANCE_CONTRACT',
+          contractId,
+          draftingContract: true,
+        });
+
+        goTo('replacement');
+      } catch {
+        Alert.alert(
+          '계약서 생성 실패',
+          '교체계약서를 생성하는 중 오류가 발생했습니다.\n잠시 후 다시 시도해주세요.',
         );
       }
 
