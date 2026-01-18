@@ -8,6 +8,7 @@ import {
   PermissionsAndroid,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -18,6 +19,8 @@ import CommonAmountInput from '../common/CommonAmountInput';
 import { HIT_SLOP } from '../../constants/touch';
 import { modalLayoutStyles as ms } from '../styles/modalLayoutStyles';
 import { Vehicle } from '../../screens/user/tab/VehicleStatusScreen';
+import { usePartnerWaiting } from '../../hooks/vehicleStatus/usePartnerWaiting';
+import { useAuthStore } from '../../states/useAuthStore';
 
 interface Props {
   visible: boolean;
@@ -32,6 +35,9 @@ export default function VehicleGarageWaitModal({
   vehicle,
   companyName,
 }: Props) {
+  const user = useAuthStore(s => s.user);
+  const partnerWaitingMutation = usePartnerWaiting();
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [photos, setPhotos] = useState<any[]>([]);
@@ -99,6 +105,49 @@ export default function VehicleGarageWaitModal({
 
   const handleRemovePhoto = (i: number) => {
     setPhotos(prev => prev.filter((_, idx) => idx !== i));
+  };
+
+  const buildPayload = () => {
+    if (!user || user.kind !== 'USER' || !user.locationId) {
+      throw new Error('USER_LOCATION_ID_NOT_FOUND');
+    }
+
+    return {
+      locationId: user.locationId,
+      needsFuel: !!formData.fuelLack,
+      needsWash: !!formData.needWash,
+      fuelLevel: formData.fuel ? Math.min(Number(formData.fuel) / 100, 1) : 0,
+    };
+  };
+
+  const isSubmitting = partnerWaitingMutation.isPending;
+
+  const handleSubmit = () => {
+    if (isSubmitting) return;
+
+    try {
+      partnerWaitingMutation.mutate(
+        {
+          carId: vehicle.id,
+          payload: buildPayload(),
+          photos: photos.map(p => ({ uri: p.uri })),
+        },
+        {
+          onSuccess: () => {
+            setSendModalVisible(true);
+          },
+          onError: err => {
+            console.error(err);
+            Alert.alert(
+              '요청 실패',
+              '공업사 대기 요청 중 오류가 발생했습니다.',
+            );
+          },
+        },
+      );
+    } catch {
+      Alert.alert('요청 불가', '사용자 위치 정보를 불러올 수 없습니다.');
+    }
   };
 
   return (
@@ -328,12 +377,31 @@ export default function VehicleGarageWaitModal({
                     style={[
                       ms.footerBtn,
                       { flex: 2, backgroundColor: colors.PRIMARY_50 },
+                      isSubmitting && { opacity: 0.7 },
                     ]}
-                    onPress={() => setSendModalVisible(true)}
+                    onPress={handleSubmit}
+                    disabled={isSubmitting}
                   >
-                    <Text style={[ms.footerBtnText, { color: colors.WHITE }]}>
-                      완료
-                    </Text>
+                    <View
+                      style={{ alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <Text
+                        style={[
+                          ms.footerBtnText,
+                          isSubmitting && { opacity: 0 },
+                        ]}
+                      >
+                        완료
+                      </Text>
+
+                      {isSubmitting && (
+                        <ActivityIndicator
+                          size="small"
+                          color={colors.WHITE}
+                          style={{ position: 'absolute' }}
+                        />
+                      )}
+                    </View>
                   </Pressable>
                 </View>
               )}

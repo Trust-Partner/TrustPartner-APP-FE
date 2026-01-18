@@ -409,11 +409,11 @@ export const requestPartnerReturn = async (
 
 /** 공업사 대기 요청 */
 export interface PartnerWaitingRequest {
-  locationId: number; // 공업사 locationId (default, 수정 불가)
-  needsWash: boolean; // 세차 필요 여부
-  needsFuel: boolean; // 연료 부족 여부
-  fuelLevel: number; // 연료량 (0~1)
-  photoKeys: string[]; // 업로드한 이미지 fileKey 목록
+  locationId: number;
+  needsWash: boolean;
+  needsFuel: boolean;
+  fuelLevel: number;
+  photoKeys: string[];
 }
 
 /** 공업사 대기 응답 */
