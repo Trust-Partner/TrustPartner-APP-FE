@@ -59,6 +59,33 @@ export const createInsuranceContract = async (
   return contractId;
 };
 
+// 교체 계약서 생성
+export interface CreateReplacementContractRequest {
+  carDispatchId: number;
+}
+
+export interface CreateReplacementContractResponse {
+  contractId: number;
+}
+
+export const createReplacementContract = async (
+  body: CreateReplacementContractRequest,
+): Promise<number> => {
+  const res = await axiosInstance.post<
+    ApiResponse<CreateReplacementContractResponse>
+  >('/contracts/v1/replacement', body);
+
+  const contractId = res.data.data?.contractId;
+
+  if (!contractId) {
+    throw new Error(
+      'contractId not found in createReplacementContract response',
+    );
+  }
+
+  return contractId;
+};
+
 // 이미지 업로드 URL 발급
 export interface ContractUploadSlot {
   fileKey: string;
@@ -161,6 +188,40 @@ export const saveInsuranceContract = async (
   );
 };
 
+// 교체 계약서 임시저장 / 최종저장
+export interface SaveReplacementContractRequest {
+  customerName?: string;
+  customerPhoneNumber?: string;
+  customerAddress?: string;
+
+  customerCarType?: string;
+  customerCarNumber?: string;
+  customerCarDisplacement?: string;
+
+  insuranceCompanyName?: string;
+  insuranceApplicationNumber?: string;
+
+  partnerId?: string;
+  repairShopId?: string;
+
+  contractPhotoKeys?: string[];
+  fuelQuantity?: number;
+  customerSignatureKey?: string;
+
+  /** true = 임시저장, false = 최종저장 */
+  isDraft: boolean;
+}
+
+export const saveReplacementContract = async (
+  contractId: number,
+  body: SaveReplacementContractRequest,
+): Promise<void> => {
+  await axiosInstance.put<ApiResponse<void>>(
+    `/contracts/v1/replacement/${contractId}`,
+    body,
+  );
+};
+
 // 일반 계약서 임시저장 불러오기
 export interface GetGeneralContractDraftResponse {
   contractId: number;
@@ -234,6 +295,59 @@ export const getInsuranceContractDraft = async (
   const res = await axiosInstance.get<ApiResponse<GetContractDetailResponse>>(
     `/contracts/v1/${contractId}`,
   );
+
+  return res.data.data;
+};
+
+// 교체 계약서 임시저장 불러오기
+export interface GetReplacementContractDraftResponse {
+  contractId: number;
+  contractType: ContractType;
+
+  fuelQuantity?: number;
+
+  contractFilePaths?: string[];
+  signatureFilePath?: string;
+
+  customerDetail?: {
+    customerName?: string;
+    customerPhoneNumber?: string;
+    customerAddress?: string;
+
+    customerCarType?: string;
+    customerCarNumber?: string;
+    customerCarDisplacement?: string;
+  };
+
+  insuranceDetail?: {
+    insuranceCompanyName?: string;
+    insuranceApplicationNumber?: string;
+  };
+
+  partnerInfo?: {
+    partnerId?: string;
+    partnerName?: string;
+    partnerPhoneNumber?: string;
+  };
+
+  repairShopInfo?: {
+    partnerId?: string;
+    partnerName?: string;
+    partnerPhoneNumber?: string;
+  };
+
+  carDispatchInfo?: {
+    carDispatchId?: number;
+    carModel?: string;
+  };
+}
+
+export const getReplacementContractDraft = async (
+  contractId: number,
+): Promise<GetReplacementContractDraftResponse> => {
+  const res = await axiosInstance.get<
+    ApiResponse<GetReplacementContractDraftResponse>
+  >(`/contracts/v1/${contractId}`);
 
   return res.data.data;
 };
