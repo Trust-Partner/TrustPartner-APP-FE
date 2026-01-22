@@ -11,6 +11,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		46781E950B1F44E4B3153829 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 462780907B5E4521B0878AE1 /* BootSplash.storyboard */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		7F8DE3BF2F18CACB005AB073 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7F8DE3BE2F18CACB005AB073 /* GoogleService-Info.plist */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		91BFF8C07A191514B8B8627B /* libPods-TrustPartner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 35CAD412028997443B615603 /* libPods-TrustPartner.a */; };
 		D054657B7F3C82FEDEBF2146 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
@@ -27,6 +28,7 @@
 		735992228B90C87973DEE952 /* Pods-TrustPartner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrustPartner.debug.xcconfig"; path = "Target Support Files/Pods-TrustPartner/Pods-TrustPartner.debug.xcconfig"; sourceTree = "<group>"; };
 		743CCDFA66A322CD828E5A73 /* Pods-TrustPartner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TrustPartner.release.xcconfig"; path = "Target Support Files/Pods-TrustPartner/Pods-TrustPartner.release.xcconfig"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TrustPartner/AppDelegate.swift; sourceTree = "<group>"; };
+		7F8DE3BE2F18CACB005AB073 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = TrustPartner/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -46,6 +48,7 @@
 		13B07FAE1A68108700A75B9A /* TrustPartner */ = {
 			isa = PBXGroup;
 			children = (
+				7F8DE3BE2F18CACB005AB073 /* GoogleService-Info.plist */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -170,6 +173,7 @@
 				D054657B7F3C82FEDEBF2146 /* PrivacyInfo.xcprivacy in Resources */,
 				46781E950B1F44E4B3153829 /* BootSplash.storyboard in Resources */,
 				045FED7C331941EDB96C0B4E /* Colors.xcassets in Resources */,
+				7F8DE3BF2F18CACB005AB073 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

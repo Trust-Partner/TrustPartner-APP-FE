@@ -3,6 +3,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import axiosInstance from '../api/axiosInstance';
 import { User } from '../types/User';
 import { loginStaff, loginPartner } from '../api/auth';
+import { getFcmToken } from '../utils/fcm';
+import { getDeviceType } from '../utils/device';
 
 type Role = 'USER' | 'ADMIN';
 
@@ -33,10 +35,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async (loginId, password, role, autoLogin) => {
     try {
+      const deviceToken = await getFcmToken();
+      const deviceType = getDeviceType();
+
       const response =
         role === 'ADMIN'
-          ? await loginStaff(loginId, password)
-          : await loginPartner(loginId, password);
+          ? await loginStaff(loginId, password, deviceToken, deviceType)
+          : await loginPartner(loginId, password, deviceToken, deviceType);
 
       const data = response.data.data;
 
@@ -44,7 +49,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const accessToken = rawToken?.replace('Bearer ', '') ?? '';
       const refreshToken = ''; // 아직 없음
 
-      // User 타입 생성
       let user: User;
 
       if (role === 'ADMIN') {
