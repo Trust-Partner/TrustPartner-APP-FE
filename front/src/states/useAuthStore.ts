@@ -38,14 +38,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const deviceToken = await getFcmToken();
       const deviceType = getDeviceType();
 
-      // 테스트용 로그
-      console.log('[LOGIN REQUEST]', {
-        loginId,
-        role,
-        deviceType,
-        deviceToken: deviceToken ? `${deviceToken.slice(0, 8)}...` : '(empty)',
-      });
-
       const response =
         role === 'ADMIN'
           ? await loginStaff(loginId, password, deviceToken, deviceType)
